@@ -6,7 +6,7 @@
         <TimelineItem color="green">9.25 文件上传模板组件化,相关模块全部应用</TimelineItem>
         <TimelineItem color="green">9.29 人员管理，新增人员对话modal模板化</TimelineItem>
         <TimelineItem color="green">9.29 角色管理，新增角色对话框模板化</TimelineItem>
-        
+        <TimelineItem color="green">10.08 事项页签选择，事项页签便捷页面</TimelineItem>
     </Timeline>
      
 

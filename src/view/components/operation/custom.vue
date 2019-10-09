@@ -8,13 +8,9 @@
                         <Input v-model="formdata.TaskName" placeholder='请输入事项要点'></Input>
                 </FormItem>
                </Col>
-               <Col span="12">
-                <FormItem label="事项标签" >
-                        <Input  placeholder='请选择事项标签'></Input>
-                </FormItem>
-               </Col>
+              
            </Row>
-
+            <change-tap @getValue="getTapValue"></change-tap>
              <FormItem label="报送人"  prop="name">
                 <Input v-model="name" disabled placeholder="请输入报送人"></Input>
            </FormItem>
@@ -60,10 +56,12 @@
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import processBasic from "@/view/components/template/process_basic"
+import changeTap from "@/view/components/template/change_tap.vue"
 export default {
      components:{
         UploadFiles,
-        processBasic
+        processBasic,
+        changeTap
     },
     data(){
         
@@ -129,6 +127,8 @@ export default {
             this.$refs["uploadModal"].showModal(true);
         },showProcess(){
              this.$refs["processBasic"].showModal(true);
+        },getTapValue(tap,tapDet){
+            console.log(tap,tapDet)
         }
     }
 }

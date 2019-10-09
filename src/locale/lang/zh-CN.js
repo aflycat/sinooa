@@ -46,6 +46,7 @@ export default {
     change_program: "项目变动",
     change_role: "角色变动",
     change_admin: "权限变动",
+    change_tap: "页签变动",
     change_schedule: "进度计划",
     setting: "设置",
     information: "个人信息",

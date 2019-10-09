@@ -56,163 +56,13 @@
                 </Form>
             </Card>
             <Card class="itemCard" >
-                <p slot="title"><Checkbox v-model="single" style="margin-right:16px;">全选</Checkbox>费用列表</p>
-                <Card class="itemCard">
-                    <p slot="title">
-                        <Checkbox v-model="single"></Checkbox>
-                        费用列表1
-                    </p>
-                    <Form :label-width="80">
-                        <Row>
-                            <Col span="6">
-                                <FormItem label="前往日期" prop="name">
-                                    <Input  v-model="name" placeholder="请输入前往日期"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="返回日期" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入返回日期"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="出发地" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入出发地"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="到达地" prop="name">
-                                    <Input  v-model="name" placeholder="请输入收款人姓名"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="机车船费" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入收款账号"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="接驳费" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="市内交通" prop="name">
-                                    <Input  v-model="name" placeholder="请输入收款人姓名"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="住宿费" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入收款账号"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="伙食补助" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                             <Col span="6">
-                                <FormItem label="交通补助" prop="name">
-                                    <Input  v-model="name" placeholder="请输入收款人姓名"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="住宿补助" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入收款账号"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="其他" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                             <Col span="6">
-                                <FormItem label="合计" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                        </Row>
-                       
-                    </Form>   
-
-                </Card>
-
-                <Card class="itemCard">
-                    <p slot="title">
-                        <Checkbox v-model="single"></Checkbox>
-                        费用列表2
-                    </p>
-                    <Form :label-width="80">
-                        <Row>
-                            <Col span="6">
-                                <FormItem label="前往日期" prop="name">
-                                    <Input  v-model="name" placeholder="请输入前往日期"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="返回日期" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入返回日期"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="出发地" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入出发地"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="到达地" prop="name">
-                                    <Input  v-model="name" placeholder="请输入收款人姓名"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="机车船费" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入收款账号"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="接驳费" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="市内交通" prop="name">
-                                    <Input  v-model="name" placeholder="请输入收款人姓名"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="住宿费" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入收款账号"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="伙食补助" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                             <Col span="6">
-                                <FormItem label="交通补助" prop="name">
-                                    <Input  v-model="name" placeholder="请输入收款人姓名"></Input>
-                                </FormItem>
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="住宿补助" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入收款账号"></Input>
-                                </FormItem>   
-                            </Col>
-                            <Col span="6">
-                                <FormItem label="其他" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                             <Col span="6">
-                                <FormItem label="合计" prop="phone">
-                                    <Input v-model="phone" placeholder="请输入开户行"></Input>
-                                </FormItem>   
-                            </Col>
-                        </Row>
-                       
-                    </Form>   
-                </Card>
-                    <Button type="primary" style="margin-right:8px;">增加</Button>
-                    <Button type="error">删除</Button>    
+                <p slot="title">费用列表</p>
+                <Table  :columns="columnsCost" :data="dataCost"></Table>
+                <p style="margin-top:20px;">
+                    <Button type="primary" style="margin-right:8px;" @click="flagMod=true">增加</Button>
+                    <Button type="error">删除</Button> 
+                </p>
+                   
                 
                 <!-- <Table border ref="selection" :columns="travelColums" :data="travelData"></Table> -->
             </Card>
@@ -233,12 +83,93 @@
                 </Form>   
 
             </Card>
+        <Modal
+            v-model="flagMod"
+            title="费用详情"
+             width="700"
+            @on-ok="asyncOK">
+                <Form  :label-width="80">
+                    <Row :gutter="8">
+                          <Col span="12">
+                            <FormItem label="前往日期">
+                                <DatePicker type="date" show-week-numbers placeholder="请选择前往日期" style="width:100%;"></DatePicker>
+                            </FormItem>
+                          </Col> 
+                          <Col span="12">
+                            <FormItem label="返回日期">
+                                <DatePicker type="date" show-week-numbers placeholder="请选择返回日期" style="width:100%;"></DatePicker>
+                            </FormItem>
+                          </Col>  
+                        <Col span="12">
+                            <FormItem label="出发地">
+                                <Input  placeholder="请输入出发地"></Input>
+                            </FormItem>
+                          </Col>
+                         
+                          <Col span="12">
+                            <FormItem label="到达地">
+                                <Input  placeholder="请输入到达地"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="天数">
+                                <Input  placeholder="请输入天数"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="机车船费">
+                                <Input  placeholder="请输入机车船费"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="接驳费">
+                                <Input  placeholder="请输入接驳费"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="市内交通">
+                                <Input  placeholder="请输入市内交通"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="住宿费">
+                                <Input  placeholder="请输入住宿费"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="伙食补助">
+                                <Input  placeholder="请输入伙食补助"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="交通补助">
+                                <Input  placeholder="请输入交通补助"></Input>
+                            </FormItem>
+                          </Col>
+                          <Col span="12">
+                            <FormItem label="其他">
+                                <Input  placeholder="请输入其他"></Input>
+                            </FormItem>
+                          </Col>  
+                          <Col span="12">
+                            <FormItem label="合计">
+                                <Input  placeholder="请输入合计"></Input>
+                            </FormItem>
+                          </Col>  
+                    </Row>
+                   
+                </Form>
+
+
+        </Modal>
+        
     </div>
 </template>
 <script>
 export default {
     data(){
         return{
+            flagMod:false,
             name:'',
             phone:'',
             cityData:['a', 'b', 'c'],
@@ -280,8 +211,7 @@ export default {
                         label: 'Canberra'
                     }
             ],
-            travelColums:[
-                {type: 'selection',width: 60,align: 'center'},
+            columnsCost:[
                 {title: '前往日期', key: 'name'},
                 {title: '返回日期', key: 'name'},
                 {title: '出发地', key: 'name'},
@@ -294,17 +224,32 @@ export default {
                 {title: '伙食补助	', key: 'name'},
                 {title: '交通补助', key: 'name'},
                 {title: '其他', key: 'name'},
-                {title: '合计', key: 'name',
-                 render:(h,params)=>{
-                     return h('div',[
-                         h('Input')
-                     ])
-                    }
-                },
+                {title: '合计', key: 'name'},
+                {title: '操作', key: 'deal',render:(h,params)=>{
+                    return h('div',[
+                         h('span',{
+                                style:{color:"#2d8cf0",cursor:"pointer",marginRight:"8px"},
+                                on:{
+                                    click:()=>{
+                                      this.flagMod=true;
+                                    }
+                                }
+                            },'编辑'),
+                            h('span',{
+                                style:{color:"#ed4014",cursor:"pointer"},
+                                on:{
+                                    click:()=>{
+                                        
+                                    }
+                                }
+                            },'删除')
+                        ])
+                    
+                }},
 
             ],
-            travelData:[
-                { name: ''},
+            dataCost:[
+               {name:''}
             ],
             postdata:{
                     TaskTypeID:3,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
@@ -379,7 +324,10 @@ export default {
          filterMethod (value, option) {
              console.log(value,option)
                 return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-            }
+            },
+        asyncOK(){
+
+        }
     }
 }
 </script>

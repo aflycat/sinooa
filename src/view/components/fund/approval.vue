@@ -272,6 +272,9 @@
                 <p slot="title">项目信息</p>
                   <Form :label-width="80">
                     <Row>
+                        <Col span="16">
+                            <change-tap @getValue="getTapValue"></change-tap>
+                        </Col>
                         <Col span="8">
                             <FormItem label="项目品种" prop="ProjectType">
                                 <AutoComplete v-model="TypeVlaue" :data="TypeData" :filter-method="filterMethod" placeholder="请选择项目品种"></AutoComplete>
@@ -307,20 +310,7 @@
                             </FormItem>   
                         </Col>
                         
-                        <Col span="8">
-                            <FormItem label="工时费用" prop="ProjectEstimatedHourCost">
-                                <Input v-model="postdata.Project.ProjectEstimatedHourCost" type="number" placeholder="请输入工时费">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>   
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="直接费用" prop="ProjectEstimatedFeeCost">
-                                <Input v-model="postdata.Project.ProjectEstimatedFeeCost" type="number" placeholder="请输入直接费用">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>   
-                        </Col>
+                       
                          <Col span="8">
                             <FormItem label="项目内容" prop="phone">
                                 <Input v-model="postdata.Project.ProjectSummary" placeholder="请输入项目内容"></Input>
@@ -342,6 +332,20 @@
                                   <DatePicker type="date" placeholder="请选择结束日期" style="width: 100%;"></DatePicker>
                                 <!-- <Input v-model="postdata.Project.ProjectEndDate" placeholder="请选择预计周期"></Input> -->
                             </FormItem>
+                        </Col>
+                         <Col span="8">
+                            <FormItem label="工时费用" prop="ProjectEstimatedHourCost">
+                                <Input v-model="postdata.Project.ProjectEstimatedHourCost" type="number" placeholder="请输入工时费">
+                                      <span slot="append">万元</span>
+                                </Input>
+                            </FormItem>   
+                        </Col>
+                         <Col span="8">
+                            <FormItem label="直接费用" prop="ProjectEstimatedFeeCost">
+                                <Input v-model="postdata.Project.ProjectEstimatedFeeCost" type="number" placeholder="请输入直接费用">
+                                      <span slot="append">万元</span>
+                                </Input>
+                            </FormItem>   
                         </Col>
                     </Row>
 
@@ -386,10 +390,12 @@
 </template>
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
+import changeTap from "@/view/components/template/change_tap.vue"
 
 export default {
     components:{
-        UploadFiles
+        UploadFiles,
+        changeTap
     },
     data(){
         return{
@@ -528,6 +534,8 @@ export default {
         },showUploadFile(){
             //显示modal
             this.$refs["uploadModal"].showModal(true);
+        },getTapValue(tap,tapDet){
+            console.log(tap,tapDet)
         }
     }
 }

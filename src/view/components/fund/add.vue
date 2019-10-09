@@ -45,12 +45,26 @@ export default {
                             style:{
                                 color:"#3498db",
                                 marginRight:'8px'
+                            },on:{
+                                click:()=>{
+                                    this.showPart()
+                                }
                             }
                         },'编辑'),
                          h('span',{
                               style:{
                                 color:"#ed4014",
 
+                            },on:{
+                                click:()=>{
+                                    this.$Modal.warning({
+                                        title:"删除人员",
+                                        content:"确定删除该基金合伙人?",
+                                        onOk(){
+                                            console.log("删除")
+                                        }
+                                    })
+                                }
                             }
                         },'删除')
                     ])
@@ -75,12 +89,27 @@ export default {
                             style:{
                                 color:"#3498db",
                                 marginRight:'8px'
+                            },on:{
+                                click:()=>{
+                                     this. showDecision()
+                                }
                             }
                         },'编辑'),
                          h('span',{
-                              style:{
+                            style:{
                                 color:"#ed4014",
 
+                            },on:{
+                                click:()=>{
+                                   this.$Modal.warning({
+                                        title:"删除人员",
+                                        content:"确定删除该基金投决委员?",
+                                        onOk(){
+                                            console.log("删除")
+                                        }
+
+                                    })
+                                }
                             }
                         },'删除')
                     ])
