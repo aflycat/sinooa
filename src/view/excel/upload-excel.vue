@@ -64,6 +64,7 @@ export default {
       this.$Message.info('上传的文件已删除！')
     },
     handleBeforeUpload (file) {
+      console.log(file)
       const fileExt = file.name.split('.').pop().toLocaleLowerCase()
       if (fileExt === 'xlsx' || fileExt === 'xls') {
         this.readFile(file)
@@ -94,6 +95,7 @@ export default {
       reader.onload = e => {
         this.$Message.info('文件读取成功')
         const data = e.target.result
+        console.log(data)
         const { header, results } = excel.read(data, 'array')
         const tableTitle = header.map(item => { return { title: item, key: item } })
         this.tableData = results
