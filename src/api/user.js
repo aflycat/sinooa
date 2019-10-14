@@ -46,10 +46,21 @@ export const getDealTask = (data) => {
     })
 }
 
+
 //文件上传
 export const uploadFile = (data) => {
     return axios.request({
         url: "http://120.78.154.66:8089/api/taskfile/add/",
+        data,
+        method: 'post'
+    })
+}
+
+
+//提交个人工时周报
+export const workWeekSubmit = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/workReport/saveSubmit",
         data,
         method: 'post'
     })

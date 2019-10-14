@@ -1,13 +1,24 @@
 import axios from '@/libs/api.request'
-//获取项目列表
+//根据状态获取项目列表
 export const getProjectList = data => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/projecttask/projectlistquery',
+            data: data,
+            method: 'post',
+        })
+    }
+    //根据id获取项目列表
+
+
+
+//获取周报历史数据
+export const getworkWeekHistory = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/projecttask/projectlistquery',
-        data: data,
-        method: 'post',
+        url: "http://120.78.154.66:8089/api/workReport/qry",
+        data,
+        method: "post"
     })
 }
-
 
 
 

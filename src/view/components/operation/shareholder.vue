@@ -113,12 +113,17 @@ export default {
             //             setTimeout(()=>{
             //                 this.loading=false;
             //             },2000)
-            //             if(res.data.code==2001){
-            //                 this.$Message.success("操作成功");
-            //                 this.handleReset();
-            //             }else{
-            //                 this.$Message.error("操作失败："+res.data.message)
-            //             }
+            //            if(res.data.code==2001){
+            //               this.$Notice.success({
+                                    //     title: '操作成功',
+                                    // });
+            //                this.handleReset();
+            //            }else{
+            //                this.$Notice.error({
+                                //         title: '操作失败：',
+                                //         desc:res.data.message
+                                // });
+            //            }
             //         })
 
             //     }else{
