@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     showTitle (item) {
-      console.log(item)
+      
       return showTitle(item, this)
     },
     isCustomIcon (iconName) {

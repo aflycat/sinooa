@@ -66,57 +66,19 @@ export const workWeekSubmit = (data) => {
     })
 }
 
-
-export const getUnreadCount = () => {
+//提交项目开发报告,无文件提交
+export const projectAdd = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/projecttask/pmtadd/",
+            data,
+            method: 'post'
+        })
+    }
+    //提交项目开发报告,有文件提交
+export const projectAddFile = (data) => {
     return axios.request({
-        url: 'message/count',
-        method: 'get'
-    })
-}
-
-export const getMessage = () => {
-    return axios.request({
-        url: 'message/init',
-        method: 'get'
-    })
-}
-
-export const getContentByMsgId = msg_id => {
-    return axios.request({
-        url: 'message/content',
-        method: 'get',
-        params: {
-            msg_id
-        }
-    })
-}
-
-export const hasRead = msg_id => {
-    return axios.request({
-        url: 'message/has_read',
-        method: 'post',
-        data: {
-            msg_id
-        }
-    })
-}
-
-export const removeReaded = msg_id => {
-    return axios.request({
-        url: 'message/remove_readed',
-        method: 'post',
-        data: {
-            msg_id
-        }
-    })
-}
-
-export const restoreTrash = msg_id => {
-    return axios.request({
-        url: 'message/restore',
-        method: 'post',
-        data: {
-            msg_id
-        }
+        url: "http://120.78.154.66:8089/api/projecttask/pmtaddtofile/",
+        data,
+        method: 'post'
     })
 }

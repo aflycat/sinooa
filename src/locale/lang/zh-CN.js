@@ -54,6 +54,10 @@ export default {
     role: "角色管理",
     member: "人员管理",
     components: "组件",
+    define_process: "动态模板流程",
+    define_excel: "自定义表单",
+
+
     count_to_page: "数字渐变",
     tables_page: "多功能表格",
     split_pane_page: "分割窗口",

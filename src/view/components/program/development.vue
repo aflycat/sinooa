@@ -41,13 +41,16 @@
                         </Col>
                         <Col span="8">
                             <FormItem label="所在省市" prop="ClientRegion">
-                                <AutoComplete v-model="cityVlaue" :data="cityData" :filter-method="filterMethod" placeholder="请选择所在省市"></AutoComplete>
-
+                                <Select v-model="postdata.Client.ClientRegion" filterable   placeholder="请选择所在省市">
+                                    <Option v-for="item in cityData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
-                        </Col>
+                        </Col> 
                          <Col span="8">
                             <FormItem label="所属行业" prop="ClientIndustry">
-                                <AutoComplete v-model="IndustryVlaue" :data="IndustryData" :filter-method="filterMethod" placeholder="请选择所属行业"></AutoComplete>
+                                 <Select v-model="postdata.Client.ClientIndustry" filterable   placeholder="请选择所属行业">
+                                    <Option v-for="item in IndustryData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
 
                             </FormItem>
                         </Col>
@@ -76,7 +79,7 @@
 
                          <Col span="8">
                             <FormItem label="成立日期" prop="ClientOpenDate">
-                                 <DatePicker type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
+                                 <DatePicker @on-change="getClientOpenDate"  type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
                             </FormItem>   
                         </Col>
                         <Col span="8">
@@ -185,31 +188,40 @@
                         </Col>
                         <Col span="8">
                             <FormItem label="项目品种" prop="ProjectType">
-                                <AutoComplete v-model="TypeVlaue" :data="TypeData" :filter-method="filterMethod" placeholder="请选择项目品种"></AutoComplete>
-
+                                <Select v-model="postdata.Project.ProjectType" filterable   placeholder="请选择项目品种">
+                                    <Option v-for="item in TypeData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
                          <Col span="8">
                             <FormItem label="项目角色" prop="ProjectRole">
-                                 <AutoComplete v-model="RoleVlaue" :data="RoleData" :filter-method="filterMethod" placeholder="请选择项目角色"></AutoComplete>
+                                 <Select v-model="postdata.Project.ProjectRole" filterable   placeholder="请选择项目角色">
+                                    <Option v-for="item in RoleData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
+                                
                             </FormItem>   
                         </Col>
 
                          <Col span="8">
                             <FormItem label="项目经理" prop="Manager">
-                                 <AutoComplete v-model="ManagerVlaue" :data="ManagerData" :filter-method="filterMethod" placeholder="请选择项目经理"></AutoComplete>
+                                 <Select v-model="ManagerVlaue" filterable @on-change="getManager" label-in-value  placeholder="请选择项目经理">
+                                    <Option v-for="item in ManagerData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>  
                         </Col>
                         <Col span="8">
                             <FormItem label="项目主办" prop="Owner">
-                                 <AutoComplete v-model="OwnerVlaue" :data="OwnerData" :filter-method="filterMethod" placeholder="请选择项目主办"></AutoComplete>
+                                 <Select v-model="OwnerVlaue" filterable  @on-change="getOwner" label-in-value  placeholder="请选择项目主办">
+                                    <Option v-for="item in ManagerData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
-                         <Col span="8">
+                         <Col span="16">
                             <FormItem label="项目成员" prop="Member">
-                                <Select v-model="MemberData" multiple style="width:100%;">
-                                    <Option v-for="item in MemberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                 <Select v-model="MemberData" filterable multiple @on-change="getMember" label-in-value placeholder="请选择项目成员">
+                                    <Option v-for="item in ManagerData" :value="item.value" :key="item.value">{{ item.label }}</Option>
                                 </Select>
+                                
                             </FormItem>   
                         </Col>
                         
@@ -226,12 +238,12 @@
                         </Col>
                         <Col span="8">
                             <FormItem label="开始日期" prop="ProjectStartDate">
-                                  <DatePicker type="date" placeholder="请选择开始日期" style="width: 100%;"></DatePicker>
+                                  <DatePicker @on-change="getProjectStartDate" type="date" placeholder="请选择开始日期" style="width: 100%;"></DatePicker>
                             </FormItem>
                         </Col>
                         <Col span="8">
-                            <FormItem label="结束日期" prop="name">
-                                  <DatePicker type="date" placeholder="请选择结束日期" style="width: 100%;"></DatePicker>
+                            <FormItem label="结束日期" prop="ProjectEndDate">
+                                  <DatePicker  @on-change="getProjectEndDate"  type="date" placeholder="请选择结束日期" style="width: 100%;"></DatePicker>
                             </FormItem>
                         </Col>
                           <Col span="8">
@@ -279,7 +291,11 @@
 
                      <FormItem>
                         <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                        <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+                        <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')" >
+                            <span v-if="!loading">提交</span>
+                            <span v-else>提交中...</span>
+                            
+                        </Button>
                        
                     </FormItem>
                 </Form>   
@@ -291,57 +307,45 @@
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import changeTap from "@/view/components/template/change_tap.vue"
-
+import store from "@/store"
+import {getprogectType,getprogectRole,getuserList,getCityList,getIndustryList} from "@/api/data"
+import {projectAdd,projectAddFile} from "@/api/user"
 export default {
     components:{
         UploadFiles,
         changeTap
 
     },
+    mounted(){
+        this.name=JSON.parse(localStorage.getItem("userName"));
+        this.phone=JSON.parse(localStorage.getItem("phone"));
+        this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"))
+        this.getCityList();
+        this.getIndustryList();
+        this.getprogectType();
+        this.getprogectRole();
+        this.getuserList();
+    },
     data(){
         return{
+            loading:false,
             name:'',
             phone:'',
-            cityData:['a', 'b', 'c'],
+            cityData:[],
             cityVlaue:'',
-            IndustryData:['a', 'b', 'c'],
+            IndustryData:[],
             IndustryVlaue:'',
             DataVlaue:'',
             TypeVlaue:'',
-            TypeData:['a', 'b', 'c'],
+            TypeData:[],
             RoleVlaue:'',
-            RoleData:['a', 'b', 'c'],
+            RoleData:[],
             ManagerVlaue:'',
-            ManagerData:['a', 'b', 'c'],
+            ManagerData:[],
             OwnerVlaue:'',
-            OwnerData:['a', 'b', 'c'],
+            OwnerData:[],
             MemberData:[],
-            MemberList:[
-                {
-                        value: 'New York',
-                        label: 'New York'
-                    },
-                    {
-                        value: 'London',
-                        label: 'London'
-                    },
-                    {
-                        value: 'Sydney',
-                        label: 'Sydney'
-                    },
-                    {
-                        value: 'Ottawa',
-                        label: 'Ottawa'
-                    },
-                    {
-                        value: 'Paris',
-                        label: 'Paris'
-                    },
-                    {
-                        value: 'Canberra',
-                        label: 'Canberra'
-                    }
-            ],
+            MemberList:[],
             fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
@@ -391,34 +395,158 @@ export default {
                         ProjectEstimatedFeeCost:0,//预计直接费用
                         ProjectEstimatedHourCost:0,//预计工时费用
                         ProjectStatus:1,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                        Members:[
-                            {
-                                ID:0,//数据ID (用默认值0)
-                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                                MemberID:'',//项目成员ID，与用户表UserID对应
-                                MemberName:'',//项目成员的姓名
-                                MemberType:1,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                                EstimatedHour:0,//预计投入工时，暂未使用
-                                MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                            },
-                            {
-                                ID:0,//数据ID (用默认值0)
-                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                                MemberID:'',//项目成员ID，与用户表UserID对应
-                                MemberName:'',//项目成员的姓名
-                                MemberType:2,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                                EstimatedHour:0,//预计投入工时，暂未使用
-                                MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                            }
-                        ]
+                        Members:[]
                     }
             }
         }
     },
     methods:{
-         filterMethod (value, option) {
-                return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-            },
+        handleSubmit(){
+            console.log(this.postdata);
+            this.postdata.Project.ClientCode= this.postdata.Client.ClientCode;
+            this.loading=true;
+
+            console.log(this.postdata.Project.Members)
+            if(this.fileWrap.length==0){//没有文件上传
+                
+            }else{//有文件上传
+
+            }
+            
+
+
+
+        },
+        getManager(value){
+            this.postdata.Project.Members[0]={
+                
+                    ID:0,//数据ID (用默认值0)
+                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                    MemberID:value.value,//项目成员ID，与用户表UserID对应
+                    MemberName:value.label,//项目成员的姓名
+                    MemberType:1,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                    EstimatedHour:0,//预计投入工时，暂未使用
+                    MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
+                
+            }
+        },
+        getOwner(value){
+            this.postdata.Project.Members[1]={
+                    ID:0,//数据ID (用默认值0)
+                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                    MemberID:value.value,//项目成员ID，与用户表UserID对应
+                    MemberName:value.label,//项目成员的姓名
+                    MemberType:2,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                    EstimatedHour:0,//预计投入工时，暂未使用
+                    MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
+            }
+        },
+        getMember(value){
+            this.postdata.Project.Members.splice(2,this.postdata.Project.Members.length-1)
+            value.forEach(element=>{
+                 this.postdata.Project.Members.push({
+                    ID:0,//数据ID (用默认值0)
+                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                    MemberID:element.value,//项目成员ID，与用户表UserID对应
+                    MemberName:element.label,//项目成员的姓名
+                    MemberType:3,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                    EstimatedHour:0,//预计投入工时，暂未使用
+                    MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
+                 })
+            })
+        },
+        getClientOpenDate(value){
+            this.postdata.Client.ClientOpenDate=value;
+        },
+        getProjectStartDate(value){
+            this.postdata.Project.ProjectStartDate=value;
+        },
+        getProjectEndDate(value){
+            this.postdata.Project.ProjectEndDate=value;
+        },
+        getprogectType(){
+            getprogectType({"PageIndex":1,"PageSize":1000}).then(res=>{
+                 if(res.data.code==0){
+                    res.data.projectTypeList.forEach(element => {
+                        this.TypeData.push({
+                            label:element.projectTypeName,
+                            value:element.projectTypeId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"项目品种信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getprogectRole(){
+            getprogectRole({"PageIndex":1,"PageSize":1000}).then(res=>{
+                 if(res.data.code==0){
+                    res.data.projectRoleList.forEach(element => {
+                        this.RoleData.push({
+                            label:element.projectRoleName,
+                            value:element.projectRoleId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"项目角色信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getuserList(){
+            getuserList({"PageIndex":1,"PageSize":1000}).then(res=>{
+                if(res.data.code==0){
+                    res.data.userList.forEach(element => {
+                        this.ManagerData.push({
+                            label:element.userName,
+                            value:element.userId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"成员信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getCityList(){
+            getCityList({"PageIndex":1,"PageSize":500}).then(res=>{
+                
+                if(res.data.code==0){
+                    res.data.regionList.forEach(element => {
+                        this.cityData.push({
+                            label:element.regionName,
+                            value:element.regionId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"公司所在省市信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getIndustryList(){
+            getIndustryList({"PageIndex":1,"PageSize":500}).then(res=>{
+                if(res.data.code==0){
+                    
+                    res.data.industryList.forEach(element => {
+                        this.IndustryData.push({
+                            label:element.industryName,
+                            value:element.industryId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"公司所属行业信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        
         deleteFile(index){
             this.fileName.splice(index,1);
             this.fileWrap.splice(index,1);

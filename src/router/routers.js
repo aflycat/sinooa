@@ -798,6 +798,25 @@ export default [{
             }
         ]
     },
+    {
+        path: "/define_process",
+        name: "define_process",
+        meta: {
+            icon: "ios-stats",
+            title: "动态模板流程"
+        },
+        component: Main,
+        children: [{
+            path: "define_excel",
+            name: "define_excel",
+            meta: {
+                icon: "ios-grid",
+                title: "自定义表单"
+            },
+            component: () =>
+                import ("@/view/components/define/excel.vue")
+        }]
+    },
     // {
     //     path: "/tools_methods",
     //     name: "tools_methods",

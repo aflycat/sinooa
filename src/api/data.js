@@ -20,6 +20,55 @@ export const getworkWeekHistory = (data) => {
     })
 }
 
+//获取项目品种
+export const getprogectType = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/projectType/qryPage/",
+        data,
+        method: "post"
+    })
+}
+
+
+//获取项目角色
+export const getprogectRole = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/projectRole/qryPage/",
+        data,
+        method: "post"
+    })
+}
+
+
+//获取项目成员
+export const getuserList = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/user/qryPage/",
+        data,
+        method: "post"
+    })
+}
+
+
+//获取所在城市
+export const getCityList = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/region/qryPage/",
+        data,
+        method: "post"
+    })
+}
+
+
+//获取所属行业
+export const getIndustryList = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/industry/qryPage/",
+        data,
+        method: "post"
+    })
+}
+
 
 
 export const getTableData = () => {
