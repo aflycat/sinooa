@@ -31,9 +31,9 @@
                     <Row>
                            <Col span="8">
                             <FormItem label="项目简称" prop="ProjectType">
-                                <AutoComplete v-model="ProjectVlaue" :data="ProjectData" :filter-method="filterMethod" placeholder="请选择项目"></AutoComplete>
-
-                                <!-- <Input v-model="postdata.Project.ProjectType" placeholder="请选择项目品种"></Input> -->
+                                 <Select v-model="ProjectVlaue" filterable  @on-change="selectProDetail">
+                                    <Option v-for="item in ProjectData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
                       </Row>
@@ -57,16 +57,16 @@
                         </Col>
                         <Col span="8">
                             <FormItem label="所在省市" prop="ClientRegion">
-                                <AutoComplete v-model="cityVlaue" :data="cityData" :filter-method="filterMethod" placeholder="请选择所在省市"></AutoComplete>
-                                <!-- <Input v-model="postdata.Client.ClientRegion" placeholder="请输入所在城市"></Input> -->
-
+                                 <Select v-model="postdata.Client.ClientRegion" filterable   placeholder="请选择所在省市">
+                                    <Option v-for="item in cityData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
                          <Col span="8">
                             <FormItem label="所属行业" prop="ClientIndustry">
-                                <AutoComplete v-model="IndustryVlaue" :data="IndustryData" :filter-method="filterMethod" placeholder="请选择所属行业"></AutoComplete>
-                                <!-- <Input v-model="postdata.Client.ClientIndustry" placeholder="请输入所在城市"></Input> -->
-
+                                <Select v-model="postdata.Client.ClientIndustry" filterable   placeholder="请选择所属行业">
+                                    <Option v-for="item in IndustryData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
                          
@@ -92,9 +92,9 @@
                             </FormItem>   
                         </Col>
 
-                         <Col span="8">
+                        <Col span="8">
                             <FormItem label="成立日期" prop="ClientOpenDate">
-                                 <DatePicker type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
+                                 <DatePicker type="date" :value="postdata.Client.ClientOpenDate"  placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
                                 <!-- <Input v-model="postdata.Client.ClientOpenDate" placeholder="请输入成立日期"></Input> -->
                             </FormItem>   
                         </Col>
@@ -202,38 +202,41 @@
                          <Col span="16">
                             <change-tap @getValue="getTapValue"></change-tap>
                         </Col>
-                        <Col span="8">
+                       <Col span="8">
                             <FormItem label="项目品种" prop="ProjectType">
-                                <AutoComplete v-model="TypeVlaue" :data="TypeData" :filter-method="filterMethod" placeholder="请选择项目品种"></AutoComplete>
-
-                                <!-- <Input v-model="postdata.Project.ProjectType" placeholder="请选择项目品种"></Input> -->
+                                <Select v-model="postdata.Project.ProjectType" filterable   placeholder="请选择项目品种">
+                                    <Option v-for="item in TypeData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
                          <Col span="8">
                             <FormItem label="项目角色" prop="ProjectRole">
-                                 <AutoComplete v-model="RoleVlaue" :data="RoleData" :filter-method="filterMethod" placeholder="请选择项目角色"></AutoComplete>
-                                <!-- <Input v-model="postdata.Project.ProjectRole" placeholder="请选择项目角色"></Input> -->
+                                 <Select v-model="postdata.Project.ProjectRole" filterable   placeholder="请选择项目角色">
+                                    <Option v-for="item in RoleData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
+                                
                             </FormItem>   
                         </Col>
 
-                         <Col span="8">
+                           <Col span="8">
                             <FormItem label="项目经理" prop="Manager">
-                                 <AutoComplete v-model="ManagerVlaue" :data="ManagerData" :filter-method="filterMethod" placeholder="请选择项目经理"></AutoComplete>
-                                <!-- <Input  placeholder="请选择项目经理"></Input> -->
+                                 <Select v-model="ManagerVlaue" @on-change="getManager" filterable  label-in-value  placeholder="请选择项目经理">
+                                    <Option v-for="item in ManagerData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>  
                         </Col>
                         <Col span="8">
-                            <FormItem label="项目主办" prop="Owner">
-                                 <AutoComplete v-model="OwnerVlaue" :data="OwnerData" :filter-method="filterMethod" placeholder="请选择项目主办"></AutoComplete>
-                                <!-- <Input  placeholder="请选择项目主办"></Input> -->
+                            <FormItem label="项目主办" prop="Owner"> 
+                                 <Select v-model="OwnerVlaue"  @on-change="getOwner" filterable  label-in-value  placeholder="请选择项目主办">
+                                    <Option v-for="item in ManagerData" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
-                         <Col span="8">
+                         <Col span="16">
                             <FormItem label="项目成员" prop="Member">
-                                <Select v-model="MemberData" multiple style="width:100%;">
-                                    <Option v-for="item in MemberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                 <Select v-model="MemberData"  @on-change="getMember" filterable multiple  label-in-value placeholder="请选择项目成员">
+                                    <Option v-for="item in ManagerData" :value="item.value" :key="item.value">{{ item.label }}</Option>
                                 </Select>
-                                <!-- <Input  placeholder="请选择项目成员"></Input> -->
                             </FormItem>   
                         </Col>
                         
@@ -248,16 +251,14 @@
                                 <Input v-model="postdata.Project.ProjectSource" placeholder="请输入项目来源"></Input>
                             </FormItem>   
                         </Col>
-                        <Col span="8">
+                          <Col span="8">
                             <FormItem label="开始日期" prop="ProjectStartDate">
-                                  <DatePicker type="date" placeholder="请选择开始日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Project.ProjectStartDate" placeholder="请选择预计周期"></Input> -->
+                                  <DatePicker :value="postdata.Project.ProjectStartDate" type="date" placeholder="请选择开始日期" style="width: 100%;"></DatePicker>
                             </FormItem>
                         </Col>
                         <Col span="8">
                             <FormItem label="结束日期" prop="name">
-                                  <DatePicker type="date" placeholder="请选择结束日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Project.ProjectEndDate" placeholder="请选择预计周期"></Input> -->
+                                  <DatePicker :value="postdata.Project.ProjectEndDate" type="date" placeholder="请选择结束日期" style="width: 100%;"></DatePicker>
                             </FormItem>
                         </Col>
                         <Col span="8">
@@ -304,8 +305,12 @@
                     </FormItem>
                      <FormItem>
                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                        <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-                       
+                        <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')">
+
+                             <span v-if="!loading">提交</span>
+                            <span v-else>提交中...</span>
+                            
+                        </Button>
                     </FormItem>
                 </Form>   
 

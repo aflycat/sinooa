@@ -79,8 +79,16 @@ export default {
             index:0,
             timeType:[
                 {
+                    value: 'year',
+                    label: '年'
+                },
+                {
+                    value: 'month',
+                    label: '年月'
+                },
+                {
                     value: 'date',
-                    label: '日期'
+                    label: '年月日'
                 },
                 {
                     value: 'daterange',
@@ -93,15 +101,8 @@ export default {
                 {
                     value: 'datetimerange',
                     label: '时间段'
-                },
-                {
-                    value: 'year',
-                    label: '年'
-                },
-                {
-                    value: 'month',
-                    label: '年月'
                 }
+                
             ]
         }
     },methods:{

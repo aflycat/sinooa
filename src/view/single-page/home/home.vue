@@ -5,7 +5,7 @@
           <p slot="title">常用功能</p>
           <Row :gutter='20' type="flex" justify="space-between" align="middle" style="text-align:center;">
             <Col span="3" >
-              <router-link to="/normal/week">
+              <router-link to="/normal/weekly">
                  <Card class="narmalBtn">
                     <Icon type="ios-paper"  size="36" color="rgb(105, 192, 255)"/>
                     <p style="color:#515a6e;">周报</p>

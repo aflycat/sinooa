@@ -56,12 +56,12 @@ export const component = {
         value: "",
         items: [{
                 label: '选项1',
-                value: '1',
+                value: '0',
 
             },
             {
                 label: '选项2',
-                value: '2',
+                value: '1',
 
             }
         ]

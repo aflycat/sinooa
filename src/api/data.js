@@ -9,6 +9,16 @@ export const getProjectList = data => {
     }
     //根据id获取项目列表
 
+//根据项目id获取项目的详细信息
+// "ProjectID":""
+export const getProjectDetail = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/projecttask/projectquery/',
+        data,
+        method: 'post',
+    })
+}
+
 
 
 //获取周报历史数据

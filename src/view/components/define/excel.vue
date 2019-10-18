@@ -231,7 +231,7 @@ export default {
 
 <style lang="less" scoped>
     .check{
-        background: #eee;
+        background: #e8f3ff;
     }
     .ivu-card.ivu-card-bordered{
         overflow: visible;

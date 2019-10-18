@@ -1,7 +1,7 @@
 <template>
 
     <div class="component" style="float:left;" :style="'width:'+obj.width+'%'"  @click="returnIndex()">
-        {{obj}}
+        <!-- {{obj}} -->
        
             <Form v-if="obj.type=='input'" :label-width="80">
                 <FormItem :label="obj.label">
