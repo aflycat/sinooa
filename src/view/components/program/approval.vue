@@ -340,9 +340,7 @@ export default {
             ProjectVlaue:'',
             ProjectData:[],
             cityData:[],
-            
             IndustryData:[],
-            
             DataVlaue:'',
             TypeVlaue:'',
             TypeData:[],
@@ -505,7 +503,6 @@ export default {
                                 this.MemberData.push(element.memberID);
                             }
                         })
-                        console.log(this.postdata.Client.ClientOpenDate)
                     }else{
                         this.$Message.error({
                             content:"获取项目详细信息失败："+res.data.message

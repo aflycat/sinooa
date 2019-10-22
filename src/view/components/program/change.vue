@@ -199,7 +199,7 @@
                 <p slot="title">项目信息</p>
                   <Form :label-width="80">
                     <Row>
-                         <Col span="16">
+                        <Col span="16">
                             <change-tap @getValue="getTapValue"></change-tap>
                         </Col>
                        <Col span="8">
@@ -320,6 +320,9 @@
 </template>
 
 <script>
+import store from "@/store"
+import {getprogectType,getprogectRole,getuserList,getCityList,getIndustryList,getProjectList,getProjectDetail} from "@/api/data"
+
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import changeTap from "@/view/components/template/change_tap.vue"
 
@@ -330,48 +333,25 @@ export default {
     },
     data(){
         return{
-             name:'',
-            phone:'',
-            cityData:['a', 'b', 'c'],
-            cityVlaue:'',
-            IndustryData:['a', 'b', 'c'],
+            loading:false,
+            name:'',
+             phone:'',
+           ProjectVlaue:'',
+            ProjectData:[],
+            cityData:[],
+            IndustryData:[],
             DataVlaue:'',
             TypeVlaue:'',
-            TypeData:['a', 'b', 'c'],
+            TypeData:[],
             RoleVlaue:'',
-            RoleData:['a', 'b', 'c'],
+            RoleData:[],
             ManagerVlaue:'',
-            ManagerData:['a', 'b', 'c'],
+            ManagerData:[],
             OwnerVlaue:'',
-            OwnerData:['a', 'b', 'c'],
+            OwnerData:[],
             MemberData:[],
-            MemberList:[
-                {
-                        value: 'New York',
-                        label: 'New York'
-                    },
-                    {
-                        value: 'London',
-                        label: 'London'
-                    },
-                    {
-                        value: 'Sydney',
-                        label: 'Sydney'
-                    },
-                    {
-                        value: 'Ottawa',
-                        label: 'Ottawa'
-                    },
-                    {
-                        value: 'Paris',
-                        label: 'Paris'
-                    },
-                    {
-                        value: 'Canberra',
-                        label: 'Canberra'
-                    }
-            ],
-             fileName:[],
+            MemberList:[],
+            fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
             postdata:{
@@ -442,8 +422,231 @@ export default {
                     }
             }
         }
+    },mounted(){
+        this.name=JSON.parse(localStorage.getItem("userName"));
+        this.phone=JSON.parse(localStorage.getItem("phone"));
+        this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"));
+        this.getProList(2);
+        this.getCityList();
+        this.getIndustryList();
+        this.getprogectType();
+        this.getprogectRole();
+        this.getuserList();
     },
         methods:{
+             handleSubmit(){
+                this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"));
+                console.log(this.postdata)
+
+            },
+            selectProDetail(){
+                 getProjectDetail({ProjectID:this.ProjectVlaue}).then(res=>{
+                    if(res.data.code==2307){
+                        console.log(res)
+                        res=res.data;
+                        this.postdata={
+                                TaskTypeID:5,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
+                                Client:{
+                                    ClientID:res.client.clientID,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
+                                    ClientName:res.client.clientName,//公司全称
+                                    ClientRegion:parseInt(res.client.clientRegion) ,//所在省市，下拉表，从后台字典表中获取
+                                    ClientShortName:res.client.clientShortName,//公司简称
+                                    ClientCode:res.client.clientCode,//客户代码，不同客户使用该唯一的代码区分
+                                    ClientScope:res.client.clientScope,//经营范围
+                                    ClientIndustry:parseInt(res.client.clientIndustry),//所属行业，下拉表，从后台字典表中获取
+                                    ClientLegalPerson:res.client.clientLegalPerson,//法人代表
+                                    ClientManager:res.client.clientManager,//总经理
+                                    ClientRegisteredCapital:res.client.clientRegisteredCapital,//注册资本
+                                    ClientOpenDate:res.client.clientOpenDate.substr(0,10),//成立日期
+                                    ClientAddress:res.client.clientAddress,//注册地址
+                                    ClientZip:res.client.clientZip,//邮政编码
+                                    ClientContact:res.client.clientContact,//联系人员
+                                    ClientContactEmail:res.client.clientContactEmail,//联系电邮
+                                    ClientContactPhone:res.client.clientContactPhone,//联系电话
+                                    ClientContactFax:res.client.clientContactFax,//联系传真
+                                    ClientTotalAssets:res.client.clientTotalAssets,//总资产
+                                    ClientNetAssets:res.client.clientNetAssets,//净资产
+                                    ClientIncome:res.client.clientIncome,//营业收入
+                                    ClientProfit:res.client.clientProfit,//营业利润
+                                    ClientNetProfit:res.client.clientNetProfit,//净利润
+                                    ClientFinancialYear:res.client.clientFinancialYear,//财务年度
+                                    ClientFinancialQuarter:res.client.clientFinancialQuarter,//财务季度
+                                    ClientStatus:1//状态，1表示最新信息，0表示历史信息(如果是变动，查到什么就是什么)
+                                },
+                                Project:{
+                                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
+                                    ClientID:res.project.clientID,//客户ID 
+                                    ClientCode:res.project.clientCode,//客户代码，不同项目使用“客户代码 + 项目品种 + 项目角色”唯一区分
+                                    ProjectType:parseInt(res.project.projectType),//项目品种，下拉表，从后台字典表中获取
+                                    ProjectRole:parseInt(res.project.projectRole),//项目角色，下拉表，从后台字典表中获取
+                                    ProjectSummary:res.project.projectSummary,//项目概要
+                                    ProjectSource:res.project.projectSource,//项目来源
+                                    ProjectStartDate:res.project.projectStartDate.substr(0,10),//项目开始日期
+                                    ProjectEndDate:res.project.projectEndDate.substr(0,10),//项目结束日期
+                                    ProjectEstimatedFeeCost:res.project.projectEstimatedFeeCost,//预计直接费用
+						            ProjectEstimatedHourCost:res.project.projectEstimatedHourCost,//预计工时费用
+                                    ProjectStatus:1,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
+                                    Members:[{},{}]
+                                }
+                        }
+                        res.project.members.forEach(element=>{
+                            if(element.memberType==1){
+                                this.postdata.Project.Members[0]=element;
+                                this.ManagerVlaue=element.memberID;
+                            }else if(element.memberType==2){
+                                this.postdata.Project.Members[1]=element;
+                                this.OwnerVlaue=element.memberID;
+                            }else{
+                                this.postdata.Project.Members.push(element);   
+                                this.MemberData.push(element.memberID);
+                            }
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:"获取项目详细信息失败："+res.data.message
+                        })
+                    }
+                })
+            },
+            getManager(value){
+                 this.postdata.Project.Members[0]={
+                
+                    ID:0,//数据ID (用默认值0)
+                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                    MemberID:value.value,//项目成员ID，与用户表UserID对应
+                    MemberName:value.label,//项目成员的姓名
+                    MemberType:1,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                    EstimatedHour:0,//预计投入工时，暂未使用
+                    MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
+                
+                }
+            },
+            getOwner(value){
+                this.postdata.Project.Members[1]={
+                    ID:0,//数据ID (用默认值0)
+                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                    MemberID:value.value,//项目成员ID，与用户表UserID对应
+                    MemberName:value.label,//项目成员的姓名
+                    MemberType:2,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                    EstimatedHour:0,//预计投入工时，暂未使用
+                    MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
+                }
+            },
+            getMember(value){
+                this.postdata.Project.Members.splice(2,this.postdata.Project.Members.length-1)
+                value.forEach(element=>{
+                    this.postdata.Project.Members.push({
+                        ID:0,//数据ID (用默认值0)
+                        ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                        MemberID:element.value,//项目成员ID，与用户表UserID对应
+                        MemberName:element.label,//项目成员的姓名
+                        MemberType:3,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                        EstimatedHour:0,//预计投入工时，暂未使用
+                        MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
+                    })
+                })
+            },
+            getProList(status){
+                //获取项目列表
+                getProjectList({"ProjectStatus":2,"USerID":JSON.parse(localStorage.getItem("userId"))}).then(res=>{
+                    if(res.data.code==2306){
+                        res.data.projectList.forEach(element => {
+                            this.ProjectData.push({
+                                label:element.clientCode+'--'+element.projectType+'--'+element.projectRole,
+                                value:element.projectID
+                            })
+                        });
+                       
+                    }else{
+                        this.$Message.error({
+                            content:'项目列表数据加载失败：'+res.data.message
+                        })
+                    }
+                })
+            },
+            
+        getprogectType(){
+            getprogectType({"PageIndex":1,"PageSize":1000}).then(res=>{
+                 if(res.data.code==0){
+                    res.data.projectTypeList.forEach(element => {
+                        this.TypeData.push({
+                            label:element.projectTypeName,
+                            value:element.projectTypeId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"项目品种信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getprogectRole(){
+            getprogectRole({"PageIndex":1,"PageSize":1000}).then(res=>{
+                 if(res.data.code==0){
+                    res.data.projectRoleList.forEach(element => {
+                        this.RoleData.push({
+                            label:element.projectRoleName,
+                            value:element.projectRoleId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"项目角色信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getuserList(){
+            getuserList({"PageIndex":1,"PageSize":1000}).then(res=>{
+                if(res.data.code==0){
+                    res.data.userList.forEach(element => {
+                        this.ManagerData.push({
+                            label:element.userName,
+                            value:element.userId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"成员信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getCityList(){
+            getCityList({"PageIndex":1,"PageSize":500}).then(res=>{
+                
+                if(res.data.code==0){
+                    res.data.regionList.forEach(element => {
+                        this.cityData.push({
+                            label:element.regionName,
+                            value:element.regionId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"公司所在省市信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getIndustryList(){
+            getIndustryList({"PageIndex":1,"PageSize":500}).then(res=>{
+                if(res.data.code==0){
+                    
+                    res.data.industryList.forEach(element => {
+                        this.IndustryData.push({
+                            label:element.industryName,
+                            value:element.industryId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"公司所属行业信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
             filterMethod (value, option) {
                 console.log(value,option)
                     return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;

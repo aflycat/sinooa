@@ -264,26 +264,22 @@
                             <FormItem label="项目品种" prop="ProjectType">
                                 <AutoComplete v-model="TypeVlaue" :data="TypeData" :filter-method="filterMethod" placeholder="请选择项目品种"></AutoComplete>
 
-                                <!-- <Input v-model="postdata.Project.ProjectType" placeholder="请选择项目品种"></Input> -->
                             </FormItem>
                         </Col>
                          <Col span="8">
                             <FormItem label="项目角色" prop="ProjectRole">
                                  <AutoComplete v-model="RoleVlaue" :data="RoleData" :filter-method="filterMethod" placeholder="请选择项目角色"></AutoComplete>
-                                <!-- <Input v-model="postdata.Project.ProjectRole" placeholder="请选择项目角色"></Input> -->
                             </FormItem>   
                         </Col>
 
                          <Col span="8">
                             <FormItem label="项目经理" prop="Manager">
                                  <AutoComplete v-model="ManagerVlaue" :data="ManagerData" :filter-method="filterMethod" placeholder="请选择项目经理"></AutoComplete>
-                                <!-- <Input  placeholder="请选择项目经理"></Input> -->
                             </FormItem>  
                         </Col>
                         <Col span="8">
                             <FormItem label="项目主办" prop="Owner">
                                  <AutoComplete v-model="OwnerVlaue" :data="OwnerData" :filter-method="filterMethod" placeholder="请选择项目主办"></AutoComplete>
-                                <!-- <Input  placeholder="请选择项目主办"></Input> -->
                             </FormItem>
                         </Col>
                          <Col span="16">
@@ -291,7 +287,6 @@
                                 <Select v-model="MemberData" multiple style="width:100%;">
                                     <Option v-for="item in MemberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                                 </Select>
-                                <!-- <Input  placeholder="请选择项目成员"></Input> -->
                             </FormItem>   
                         </Col>
                         
@@ -309,13 +304,11 @@
                         <Col span="8">
                             <FormItem label="开始日期" prop="ProjectStartDate">
                                   <DatePicker type="date" placeholder="请选择开始日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Project.ProjectStartDate" placeholder="请选择预计周期"></Input> -->
                             </FormItem>
                         </Col>
                         <Col span="8">
                             <FormItem label="结束日期" prop="name">
                                   <DatePicker type="date" placeholder="请选择结束日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Project.ProjectEndDate" placeholder="请选择预计周期"></Input> -->
                             </FormItem>
                         </Col>
                          <Col span="8">

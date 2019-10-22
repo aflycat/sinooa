@@ -13,8 +13,9 @@
         <TimelineItem color="green">10.16 自定义表单界面开发完成</TimelineItem>
         <TimelineItem color="green">10.17 自定义表单界面提交界面完成,js提交数据完成</TimelineItem>
         <TimelineItem color="green">10.18 项目立项开发完成，等待新接口对接</TimelineItem>
-
-
+        <TimelineItem color="green">10.22 项目变动开发完成，等待新接口对接</TimelineItem>
+        <TimelineItem color="green">10.22 项目进展开发完成，等待新接口对接</TimelineItem>
+        <TimelineItem color="green">10.22 项目管理除了其他事宜，接等待新接口的对接</TimelineItem>
     </Timeline>
      
 
