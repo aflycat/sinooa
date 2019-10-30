@@ -57,6 +57,7 @@
                     </Row>
                 </Card>
             </Col>
+            <p>{{postdata}}</p>
             <Col span="16">
                  <Card style="overflow:auto;">
                     <p slot="title">表格详情</p>
@@ -106,7 +107,8 @@ export default {
             checkIndex:-1,
             AttrData:null,
             indexAttr:0,
-            title:'',
+            title:'这个是表头',
+            postdata:{},
             tableData:[
                 // {
                 //     type: 'input',
@@ -114,7 +116,7 @@ export default {
                 //     placholder:'请输入内容',
                 //     props: 'text',
                 //     value: '',
-                //     width: '100',
+                //     width: 100,
                 //     maxlength:null,
                 //     readonly:false,
                 //     disabled:false
@@ -125,7 +127,7 @@ export default {
                 //     props: 'textarea',
                 //     placholder:'请输入内容',
                 //     value: '',
-                //     width: '100',
+                //     width: 50,
                 //     rows: 5,
                 //     maxlength:null,
                 // },
@@ -134,7 +136,7 @@ export default {
                 //     props: 'email',
                 //     label: '标题',
                 //     value: '',
-                //     width: '100',
+                //     width:50,
                 //     maxlength:null,
                 //     readonly:false,
                 //     disabled:false
@@ -144,7 +146,7 @@ export default {
                 //     props: 'number',
                 //     label: '标题',
                 //     value: '',
-                //     width: '100',
+                //     width: 100,
                 //     maxlength: null,
                 //     readonly: false,
                 //     disabled: false
@@ -153,7 +155,7 @@ export default {
                 //     type: 'radio',
                 //     label: '标题',
                 //     width: '100',
-                //     value:'',
+                //     value:'选项1',
                 //     items: [{
                 //             label: '选项1',
                             
@@ -167,8 +169,8 @@ export default {
                 //  {
                 //     type: 'checkbox',
                 //     label: '标题',
-                //     width: '100',
-                //     value:[],
+                //     width: 50,
+                //     value:['选项2'],
                 //     items: [{
                 //             label: '选项1',
                 //             value:'0'
@@ -182,7 +184,7 @@ export default {
                 // {
                 //     type: 'select',
                 //     label: '标题',
-                //     width: '100',
+                //     width: 50,
                 //     multiple: true,
                 //     value:[],
                 //     items: [{
@@ -200,10 +202,10 @@ export default {
                 // {
                 //     type: 'timepicker',
                 //     label: '标题',
-                //     width: '100',
+                //     width: 100,
                 //     value:'',
                 //     placeholder:'选择日期',
-                //     value: '',
+                //     value: '2019-07',
                 //     minCompany: 'month'
                 // }
             ]
@@ -224,6 +226,11 @@ export default {
         },submit(){
             console.log(this.title);
             console.log(this.tableData)
+            this.postdata={
+                title:this.title,
+                tableData:this.tableData
+            }
+            
         }
     }
 }

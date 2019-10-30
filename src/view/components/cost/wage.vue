@@ -8,7 +8,7 @@
                     <Row>
                         <Col span="8">
                             <FormItem label="标题" prop="name">
-                                <Input disabled v-model="name" placeholder="请输入标题"></Input>
+                                <Input disabled v-model="postdata.TaskName" placeholder="请输入标题"></Input>
                             </FormItem>
                         </Col> 
                         <Col span="8">
@@ -18,7 +18,7 @@
                         </Col>
                         <Col span="8">
                             <FormItem label="发放月份" prop="name">
-                                <Input  v-model="name" placeholder="请输入发放月份"></Input>
+                                <Input  v-model="mon" placeholder="请输入发放月份"></Input>
                             </FormItem>
                         </Col>
                     </Row>
@@ -61,125 +61,113 @@ export default {
         return{
             name:'',
             phone:'',
-            cityData:['a', 'b', 'c'],
-            cityVlaue:'',
-            IndustryData:['a', 'b', 'c'],
-            DataVlaue:'',
-            TypeVlaue:'',
-            TypeData:['a', 'b', 'c'],
-            RoleVlaue:'',
-            RoleData:['a', 'b', 'c'],
-            ManagerVlaue:'',
-            ManagerData:['a', 'b', 'c'],
-            OwnerVlaue:'',
-            OwnerData:['a', 'b', 'c'],
-            MemberData:[],
-            MemberList:[
-                {
-                        value: 'New York',
-                        label: 'New York'
-                    },
-                    {
-                        value: 'London',
-                        label: 'London'
-                    },
-                    {
-                        value: 'Sydney',
-                        label: 'Sydney'
-                    },
-                    {
-                        value: 'Ottawa',
-                        label: 'Ottawa'
-                    },
-                    {
-                        value: 'Paris',
-                        label: 'Paris'
-                    },
-                    {
-                        value: 'Canberra',
-                        label: 'Canberra'
-                    }
-            ],
             wagecolumns:[
                 {type: 'selection',width: 60, align: 'center'},
-                {title: '姓名', align: 'center',key:'user'},
-                {title: '基本工资', key: 'name',render:(h,params)=>{
+                {title: '姓名', align: 'center',key:'PayeeName'},
+                {title: '基本工资', key: 'PayBase',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '社保-个人', key: 'name',render:(h,params)=>{
+                {title: '社保-个人', key: 'Social_e',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '社保-单位', key: 'name',render:(h,params)=>{
+                {title: '社保-单位', key: 'Social_c',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '所得税', key: 'name',render:(h,params)=>{
+                {title: '所得税', key: 'Tax',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '考勤扣款', key: 'name',render:(h,params)=>{
+                {title: '考勤扣款', key: 'Absence',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '实发工资', key: 'name',render:(h,params)=>{
+                {title: '实发工资', key: 'PayReal',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '外勤费用', key: 'name',render:(h,params)=>{
+                {title: '外勤费用', key: 'FieldCost',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '现金工资', key: 'name',render:(h,params)=>{
+                {title: '现金工资', key: 'PayCash',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
                 }},
-                {title: '人力成本', key: 'name',render:(h,params)=>{
+                {title: '人力成本', key: 'PayHrcost',render:(h,params)=>{
                     return h('div',[
                         h('Input',{
                             style:{
                                 width:'100%'
+                            },
+                            props:{
+                                value:params.row.Social_c
                             }
                         })
                     ])
@@ -188,84 +176,55 @@ export default {
 
             ],
             wagedata:[
-                {user:'小红',name:0}, 
-                {user:'小明',name:0},
-                {user:'合计',name:0,cellClassName:{user:'allClass'}}
+                {PayeeName:'合计',PayBase:0,Social_e:0,Social_c:0,Tax:0,Absence:0,PayReal:0,FieldCost:0,PayCash:0,PayHrcost:0}
             ],
             postdata:{
-                    TaskTypeID:3,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
-                    TaskName:'',//任务名（UI中的请示事项要点）
-                    TaskSummary:'',//任务概要（UI中的请示事项具体内容）
-                    TaskOwner:'',//任务申请人ID，与User表的UserID对应，取自当前登录用户
-                    Client:{
-                        ClientID:0,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
-                        ClientName:'',//公司全称
-                        ClientRegion:'',//所在省市，下拉表，从后台字典表中获取
-                        ClientShortName:'',//公司简称
-                        ClientCode:'',//客户代码，不同客户使用该唯一的代码区分
-                        ClientScope:'',//经营范围
-                        ClientIndustry:'',//所属行业，下拉表，从后台字典表中获取
-                        ClientLegalPerson:'',//法人代表
-                        ClientManager:'',//总经理
-                        ClientRegisteredCapital:0,//注册资本
-                        ClientOpenDate:'',//成立日期
-                        ClientAddress:'',//注册地址
-                        ClientZip:'',//邮政编码
-                        ClientContact:'',//联系人员
-                        ClientContactEmail:'',//联系电邮
-                        ClientContactPhone:'',//联系电话
-                        ClientContactFax:'',//联系传真
-                        ClientTotalAssets:0,//总资产
-                        ClientNetAssets:0,//净资产
-                        ClientIncome:0,//营业收入
-                        ClientProfit:0,//营业利润
-                        ClientNetProfit:0,//净利润
-                        ClientFinancialYear:0,//财务年度
-                        ClientFinancialQuarter:0,//财务季度
-                        ClientStatus:1//状态，1表示最新信息，0表示历史信息
-                    },
-                    Project:{
-                        ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
-                        ClientID:0,//客户ID 
-                        ClientCode:'',//客户代码，不同项目使用“客户代码 + 项目品种 + 项目角色”唯一区分
-                        ProjectType:'',//项目品种，下拉表，从后台字典表中获取
-                        ProjectRole:'',//项目角色，下拉表，从后台字典表中获取
-                        ProjectSummary:'',//项目概要
-                        ProjectSource:'',//项目来源
-                        ProjectStartDate:'',//项目开始日期
-                        ProjectEndDate:'',//项目结束日期
-                        ProjectEstimatedFeeCost:0,//预计直接费用
-                        ProjectEstimatedHourCost:0,//预计工时费用
-                        ProjectStatus:1,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                        Members:[
-                            {
-                                ID:0,//数据ID (用默认值0)
-                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                                MemberID:'',//项目成员ID，与用户表UserID对应
-                                MemberName:'',//项目成员的姓名
-                                MemberType:1,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                                EstimatedHour:0,//预计投入工时，暂未使用
-                                MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                            },
-                            {
-                                ID:0,//数据ID (用默认值0)
-                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                                MemberID:'',//项目成员ID，与用户表UserID对应
-                                MemberName:'',//项目成员的姓名
-                                MemberType:2,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                                EstimatedHour:0,//预计投入工时，暂未使用
-                                MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                            }
-                        ]
-                    }
-            }
+                TaskTypeId: '',
+                TaskName: '',//任务名（UI中的报销单据要点）
+                TaskSummary: '',//任务概要（UI中的备注）
+                TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户
+                PayDetails: []
+            },
+            addDataDetail:[{
+                ID: 0, //数据ID 0
+                TaskID: 0, //任务ID 1
+                PayMonth: '1970-01', //发放月份 2
+                PayeeID: '', //发放对象ID，与User表的UserID对应 3
+                PayeeName: '', //发放对象姓名，与User表的UserName对应 4
+                PayBase: 0, //基本工资 5
+                PayAttendance: 0, //考勤补贴 6
+                Pension_e: 0, //养老保险（个人） 8
+                Pension_c: 0, //养老保险（单位） 9
+                Housing_e: 0, //住房公积金（个人） 10
+                Housing_c: 0, //住房公积金（单位） 11
+                Medical_e: 0, //医疗保险（个人） 12
+                Medical_c: 0, //医疗保险（单位） 13
+                Injury_e: 0, //工伤保险（个人） 14
+                Injury_c: 0, //工伤保险（单位） 15
+                Unemploy_e: 0, //失业保险（个人） 16
+                Unemploy_c: 0, //失业保险（单位） 17
+                Maternity_e: 0, //生育保险（个人） 18
+                Maternity_c: 0, //生育保险（单位） 19
+                Tax: 0, //所得税 20
+                Absence: 0, //考勤扣款 21
+                PayReal: 0, //实发工资 22
+                FieldCost: 0, //外勤费用 23
+                PayCash: 0, //现金工资 24
+                PayHrcost: 0, //人力成本 7
+                Remark: '' //备注 25
+            }]
         }
     },
+    mounted(){
+        this.name=JSON.parse(localStorage.getItem('userName'));
+        let date=new Date();
+        let year=date.getFullYear();
+        let mon=(date.getMonth()+1)>=10?(date.getMonth()+1):('0'+(date.getMonth()+1));
+        this.mon=year+'-'+mon;
+        this.postdata.TaskName=mon+'月工资发放单据'
+    },
     methods:{
-         filterMethod (value, option) {
-             console.log(value,option)
-                return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-            }
+         
     }
 }
 </script>

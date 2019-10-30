@@ -4,7 +4,7 @@
             <Row :gutter="16">
                 <Col span="12">
                     <FormItem label="角色名称">
-                        <Input  placeholder="角色名称" disabled></Input>
+                        <Input  placeholder="角色名称" v-model="roleName" disabled></Input>
                     </FormItem>
                 </Col>
                 <Col span="12">
@@ -23,11 +23,18 @@
     </Modal>
 </template>
 <script>
+import {getRolePermission} from "@/api/data"
+import {modRolePermission} from "@/api/user"
 export default {
     name:"roleManage",
+    props:{
+        roleName:String,
+        roleId:String
+    },
     data(){
         return{
            flags:false,
+            dataPermission:0,
            columnsRole:[
                {title:"菜单",key:"menu"},
                {title:"查看权限",key:"read",render:(h,params)=>{
@@ -45,12 +52,29 @@ export default {
             {menu:'总经理会'},
             {menu:'合伙人会'},
             {menu:'股东会'}
-
            ]
 
          
         }
-    },methods:{
+    },watch:{
+        roleId(){
+
+        }
+    },
+    methods:{
+        getRolePermission(){
+            getRolePermission({RoleId:this.roleId}).then(res=>{
+                if(res.data.code==0){
+                    console.log(res.data)
+                    this.dataPermission=res.data.dataPermission;
+                    // this.                    res.data.menuPermissionList
+                }else{
+                    this.$Message.error({
+                        content:'角色信息请求失败：'+res.data.message
+                    })
+                }
+            })
+        },
         handleOk(){
             
         },

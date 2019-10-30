@@ -22,6 +22,7 @@
     </div>
 </template>
 <script>
+import {getuserList,deleteUser} from "@/api/data"
 import memBasic from "@/view/components/template/mem_basic"
 export default {
     components:{

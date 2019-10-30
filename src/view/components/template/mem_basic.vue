@@ -138,6 +138,7 @@
     </Modal>
 </template>
 <script>
+import {addUser,modUser} from "@/api/data"
 export default {
     name:"memBasic",
     data(){

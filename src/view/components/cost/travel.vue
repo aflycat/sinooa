@@ -29,6 +29,9 @@
                                 </Select>
                             </FormItem>   
                         </Col>
+                         <Col span="16">
+                            <change-tap @getValue="getTapValue"></change-tap>
+                        </Col>
                     </Row>
                    
                 </Form>
@@ -64,17 +67,22 @@
             </Card>
             <Card class="itemCard" >
                 <p slot="title">费用列表</p>
-                <Table  :columns="columnsCost" :data="dataCost"></Table>
+                <Table stripe :columns="columnsCost" :data="dataCost"></Table>
                  
                 <p style="margin-top:20px;">
-                    <Button type="primary" style="margin-right:8px;" @click="flagMod=true">增加</Button>
+                    <Button type="primary" style="margin-right:8px;" @click="addCost">增加</Button>
                   
                 </p>
                 <Form :label-width="80" style="margin-top:10px;">
                     <Row>
                         <Col span="12">
                             <FormItem label="总计" prop="name">
-                                <Input v-model="postdata.IncoExpe.TotalAmountCN"  placeholder="请输入合计大写"></Input>
+                                <Input readonly v-model="postdata.IncoExpe.TotalAmount"  placeholder="请输入合计"></Input>
+                            </FormItem>
+                        </Col>
+                        <Col span="12">
+                            <FormItem label="总计" prop="name">
+                                <Input readonly v-model="postdata.IncoExpe.TotalAmountCN"  placeholder="请输入合计大写"></Input>
                             </FormItem>
                         </Col>
                        
@@ -95,7 +103,10 @@
                     </FormItem>
                     <FormItem>
                        
-                        <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+                        <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')">
+                             <span v-if="!loading">提交</span>
+                            <span v-else>提交中...</span>
+                        </Button>
                        
                     </FormItem>
                 </Form>   
@@ -105,78 +116,79 @@
             v-model="flagMod"
             title="费用详情"
              width="700"
-            @on-ok="asyncOK">
+            @on-ok="asyncOK"
+            @on-cancel="asyncCancel">
                 <Form  :label-width="80">
                     <Row :gutter="8">
                           <Col span="12">
                             <FormItem label="前往日期">
-                                <DatePicker :value="costDetail[0].OccurDate" type="date" show-week-numbers placeholder="请选择前往日期" style="width:100%;"></DatePicker>
+                                <DatePicker :value="dataCost[edictIndex].OccurDate" type="date" @on-change="subOccurDate" show-week-numbers placeholder="请选择前往日期" style="width:100%;"></DatePicker>
                             </FormItem>
                           </Col> 
                           <Col span="12">
                             <FormItem label="返回日期">
-                                <DatePicker :value="costDetail[0].ReturnDate" type="date" show-week-numbers placeholder="请选择返回日期" style="width:100%;"></DatePicker>
+                                <DatePicker :value="dataCost[edictIndex].ReturnDate" type="date" @on-change="subReturnDate" show-week-numbers placeholder="请选择返回日期" style="width:100%;"></DatePicker>
                             </FormItem>
                           </Col>  
                         <Col span="12">
                             <FormItem label="出发地">
-                                <Input v-model="costDetail[0].FromCity" placeholder="请输入出发地"></Input>
+                                <Input v-model="dataCost[edictIndex].FromCity" placeholder="请输入出发地"></Input>
                             </FormItem>
                           </Col>
                          
                           <Col span="12">
                             <FormItem label="到达地">
-                                <Input v-model="costDetail[0].ToCity"  placeholder="请输入到达地"></Input>
+                                <Input v-model="dataCost[edictIndex].ToCity"   placeholder="请输入到达地"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="天数">
-                                <Input type="number" v-model="costDetail[0].TripDays"  placeholder="请输入天数"></Input>
+                                <Input type="number" v-model="dataCost[edictIndex].TripDays" placeholder="请输入天数"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="机车船费">
-                                <Input type="number" v-model="costDetail[0].Amount"  placeholder="请输入机车船费"></Input>
+                                <Input type="number" v-model="dataCost[edictIndex]['101']" @on-blur="sumCost"   placeholder="请输入机车船费"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="接驳费">
-                                <Input type="number" v-model="costDetail[1].Amount"   placeholder="请输入接驳费"></Input>
+                                <Input type="number" v-model="dataCost[edictIndex]['102']" @on-blur="sumCost"  placeholder="请输入接驳费"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="市内交通">
-                                <Input  type="number" v-model="costDetail[2].Amount"  placeholder="请输入市内交通"></Input>
+                                <Input  type="number" v-model="dataCost[edictIndex]['103']" @on-blur="sumCost" placeholder="请输入市内交通"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="住宿费">
-                                <Input type="number" v-model="costDetail[3].Amount"  placeholder="请输入住宿费"></Input>
+                                <Input type="number" v-model="dataCost[edictIndex]['104']" @on-blur="sumCost" placeholder="请输入住宿费"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="伙食补助">
-                                <Input type="number" v-model="costDetail[4].Amount"  placeholder="请输入伙食补助"></Input>
+                                <Input type="number" v-model="dataCost[edictIndex]['105']" @on-blur="sumCost" placeholder="请输入伙食补助"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="交通补助">
-                                <Input type="number" v-model="costDetail[5].Amount"  placeholder="请输入交通补助"></Input>
+                                <Input type="number" v-model="dataCost[edictIndex]['106']" @on-blur="sumCost" placeholder="请输入交通补助"></Input>
                             </FormItem>
                           </Col>
                            <Col span="12">
                             <FormItem label="住宿补助">
-                                <Input  type="number" v-model="costDetail[6].Amount"  placeholder="请输入住宿补助"></Input>
+                                <Input  type="number" v-model="dataCost[edictIndex]['107']" @on-blur="sumCost"  placeholder="请输入住宿补助"></Input>
                             </FormItem>
                           </Col>
                           <Col span="12">
                             <FormItem label="其他">
-                                <Input type="number" v-model="costDetail[7].Amount"  placeholder="请输入其他"></Input>
+                                <Input type="number" v-model="dataCost[edictIndex]['108']" @on-blur="sumCost" placeholder="请输入其他"></Input>
                             </FormItem>
                           </Col>  
                           <Col span="12">
                             <FormItem label="合计">
-                                <Input  type="number" v-model="costDetail[8].total" placeholder="请输入合计"></Input>
+                                <Input  type="number" readonly v-model="dataCost[edictIndex].total" placeholder="自动计算合计"></Input>
                             </FormItem>
                           </Col>  
                     </Row>
@@ -190,18 +202,26 @@
 </template>
 <script>
 import {getProjectList} from "@/api/data"
+import {digitUppercase} from "@/libs/tools"
+import changeTap from "@/view/components/template/change_tap.vue"
 
 export default {
+    components:{
+        changeTap
+    },
     data(){
         return{
             flagMod:false,
+            loading:false,
+            flag:false,
             name:'',
             phone:'',
             ProjectID:'',
+            edictIndex:0,
             ProjectData:[],
             columnsCost:[
-                {title: '前往日期', key: 'OccurDate'},
-                {title: '返回日期', key: 'ReturnDate'},
+                {title: '前往日期', key: 'OccurDate',width:100},
+                {title: '返回日期', key: 'ReturnDate',width:100},
                 {title: '出发地', key: 'FromCity'},
                 {title: '到达地', key: 'ToCity'},
                 {title: '天数', key: 'TripDays'},
@@ -211,60 +231,66 @@ export default {
                 {title: '住宿费', key: '104'},
                 {title: '伙食补助', key: '105'},
                 {title: '交通补助', key: '106'},
-                {title: '其他', key: '107'},
-                {title: '合计', key: '108'},
-                {title: '操作', key: 'deal',render:(h,params)=>{
-                    return h('div',[
-                         h('span',{
-                                style:{color:"#2d8cf0",cursor:"pointer",marginRight:"8px"},
-                                on:{
-                                    click:()=>{
-                                      this.flagMod=true;
-                                    }
-                                }
-                            },'编辑'),
-                            h('span',{
-                                style:{color:"#ed4014",cursor:"pointer"},
-                                on:{
-                                    click:()=>{
-                                        
-                                    }
-                                }
-                            },'删除')
-                        ])
-                    
+                {title: '住宿补助', key: '107'},
+                {title: '其他', key: '108'},
+                {title: '合计', key: 'total',render:(h,params)=>{
+                    if(params.row.FromCity=="合计"){
+                        return h('')
+                    }else{
+                        return h('span',params.row['total'])
+                    }
                 }},
+                {title: '操作', key: 'deal',render:(h,params)=>{
+                        if(params.row.FromCity=="合计"){
+                            return h('')
+                        }else{
+                            return h('div',[
+                            h('span',{
+                                    style:{color:"#2d8cf0",cursor:"pointer",marginRight:"8px"},
+                                    on:{
+                                        click:()=>{
+                                            this.flagMod=true;
+                                            this.edictIndex=params.index;
+                                           
+                                        }
+                                    }
+                                },'编辑'),
+                                h('span',{
+                                    style:{color:"#ed4014",cursor:"pointer"},
+                                    on:{
+                                        click:()=>{
+                                            console.log(params);
+                                            this.$Modal.warning({
+                                                title:"删除",
+                                                content:"确定删除此项？",
+                                                onOk:()=>{
+                                                    this.dataCost.splice(params.index,1)
+                                                    let arr=this.dataCost[this.dataCost.length-1];
+                                                    let lg=this.dataCost.length;
+
+                                                    for (const key in arr) {
+                                                        if (arr.hasOwnProperty(key)&&key!="OccurDate"&&key!="ReturnDate"&&key!="FromCity"&&key!="ToCity"&&key!="TripDays") {
+                                                           arr[key]-=params.row[key]
+                                                            
+                                                        }
+                                                    }
+                                                    this.postdata.IncoExpe.TotalAmount=arr['total'];
+                                                    this.postdata.IncoExpe.TotalAmountCN=digitUppercase(arr['total'])
+                                                }
+                                            })
+                                            
+                                        }
+                                    }
+                                },'删除')
+                            ])
+                        }
+                    }
+                },
 
             ],
-            costDetail:[
-                { "ID":"0","IncoExpeID":"0","Type":"101","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } , 
-		        { "ID":"0","IncoExpeID":"0","Type":"102","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-                { "ID":"0","IncoExpeID":"0","Type":"103","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-                { "ID":"0","IncoExpeID":"0","Type":"104","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-                { "ID":"0","IncoExpeID":"0","Type":"105","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-                { "ID":"0","IncoExpeID":"0","Type":"106","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-                { "ID":"0","IncoExpeID":"0","Type":"107","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-                { "ID":"0","IncoExpeID":"0","Type":"108","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-                { "total": 0 }
-           ],
+     
             dataCost:[
-                // {
-                //     OccurDate:'0',
-                //     ReturnDate :'',
-                //     FromCity  :'',
-                //     ToCity :'',
-                //     TripDays:'',
-                //     Amount:'',
-                //     '101':'',
-                //     '102':'',
-                //     '103':'',
-                //     '104':'',
-                //     '105':'',
-                //     '106':'',
-                //     '107':'',
-                //     '108':''
-
-                // }
+                {OccurDate:'', ReturnDate:'',FromCity:'合计',ToCity:'',TripDays:'','101':0,'102':0,'103':0,'104':0,'105':0,'106':0,'107':0,'108':0,total:0}
            
             ],
             postdata:{
@@ -284,15 +310,6 @@ export default {
                     TotalAmountCN: '零',//费用收入总金额的中文表述
                     InvoicePages: 0,//单据附件张数
                     Details: [
-                                                        // 类型    //出发日期   //返回日期          出发地      到达地      //  天数    //费用
-                        { "ID":"0","IncoExpeID":"0","Type":"101","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//机车船费
-                        { "ID":"0","IncoExpeID":"0","Type":"102","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//机场/码头/火车站往返费
-                        { "ID":"0","IncoExpeID":"0","Type":"103","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//市内交通
-                        { "ID":"0","IncoExpeID":"0","Type":"104","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//住宿费
-                        { "ID":"0","IncoExpeID":"0","Type":"105","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//伙食补助
-                        { "ID":"0","IncoExpeID":"0","Type":"106","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//交通补助
-                        { "ID":"0","IncoExpeID":"0","Type":"107","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//住宿补助
-                        { "ID":"0","IncoExpeID":"0","Type":"108","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,//其他
                     ]
                 }
             }
@@ -303,9 +320,26 @@ export default {
         this.phone=JSON.parse(localStorage.getItem("phone"));
          this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"));
         this.getProList(1);
-
     },
     methods:{
+        handleSubmit(){
+            this.dataCost.forEach((element,index)=>{
+                if(index!=this.dataCost.length-1){
+                    this.postdata.IncoExpe.Details.push(
+                        { "ID":"0","IncoExpeID":"0","Type":"101","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['101']} ,//机车船费
+                        { "ID":"0","IncoExpeID":"0","Type":"102","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['102'] } ,//机场/码头/火车站往返费
+                        { "ID":"0","IncoExpeID":"0","Type":"103","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['103'] } ,//市内交通
+                        { "ID":"0","IncoExpeID":"0","Type":"104","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['104'] } ,//住宿费
+                        { "ID":"0","IncoExpeID":"0","Type":"105","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['105'] } ,//伙食补助
+                        { "ID":"0","IncoExpeID":"0","Type":"106","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['106'] } ,//交通补助
+                        { "ID":"0","IncoExpeID":"0","Type":"107","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['107'] } ,//住宿补助
+                        { "ID":"0","IncoExpeID":"0","Type":"108","OccurDate":element.OccurDate,"ReturnDate":element.ReturnDate,"FromCity":element.FromCity,"ToCity":element.ToCity,"TripDays":element.TripDays,"Amount":element['108'] } ,//其他
+                    )
+                }
+            })
+            console.log(this.postdata);
+
+        },
         getProList(status){
             //获取项目列表
             getProjectList({"ProjectStatus":1,"USerID":JSON.parse(localStorage.getItem("userId"))}).then(res=>{
@@ -325,27 +359,68 @@ export default {
                 }
             })
         },
-        filterMethod (value, option) {
-            console.log(value,option)
-            return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+        addCost(){
+            this.flagMod=true;
+            this.flag=true;
+            this.dataCost.unshift({OccurDate:'', ReturnDate:'',FromCity:'',ToCity:'',TripDays:'','101':0,'102':0,'103':0,'104':0,'105':0,'106':0,'107':0,'108':0,total:0})
+        //     this.costDetail=[
+        //         { "ID":"0","IncoExpeID":"0","Type":"101","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":1,"Amount":0 } , 
+		//         { "ID":"0","IncoExpeID":"0","Type":"102","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
+        //         { "ID":"0","IncoExpeID":"0","Type":"103","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
+        //         { "ID":"0","IncoExpeID":"0","Type":"104","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
+        //         { "ID":"0","IncoExpeID":"0","Type":"105","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
+        //         { "ID":"0","IncoExpeID":"0","Type":"106","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
+        //         { "ID":"0","IncoExpeID":"0","Type":"107","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
+        //         { "ID":"0","IncoExpeID":"0","Type":"108","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
+        //         { "total": 0 }
+        //    ]
+        },
+        asyncCancel(){
+            if(this.flag){
+                this.dataCost.splice(0,1);
+                this.flag=false
+            }
+        },
+        sumCost(){
+            var num=0;
+            let obj= this.dataCost[this.edictIndex];
+            obj.total=0;
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)&&key!="OccurDate"&&key!="ReturnDate"&&key!="FromCity"&&key!="ToCity"&&key!="TripDays"&&key!="total") {
+                    obj[key]=parseFloat(obj[key])
+                   obj.total+=parseFloat(obj[key])||0
+                    
+                }
+            }
+     
+        },
+        subOccurDate(value){
+            this.dataCost[this.edictIndex].OccurDate=value;
+        },
+        subReturnDate(value){
+            this.dataCost[this.edictIndex].ReturnDate=value;
         },
         asyncOK(){
-            this.dataCost.push({
-                OccurDate:this.costDetail[0].OccurDate,
-                ReturnDate :this.costDetail[0].ReturnDate,
-                FromCity  :this.costDetail[0].FromCity,
-                ToCity :this.costDetail[0].ToCity,
-                TripDays:this.costDetail[0].TripDays,
-                Amount:this.costDetail[8].total,
-                '101':this.costDetail[0]['Amount'],
-                '102':this.costDetail[1]['Amount'],
-                '103':this.costDetail[2]['Amount'],
-                '104':this.costDetail[3]['Amount'],
-                '105':this.costDetail[4]['Amount'],
-                '106':this.costDetail[5]['Amount'],
-                '107':this.costDetail[6]['Amount'],
-                '108':this.costDetail[7]['Amount']
-            })
+            this.flag=false;
+            var lg=this.dataCost.length;
+            var arr=this.dataCost[lg-1];
+
+            for (const key in arr) {
+                if (arr.hasOwnProperty(key)&&key!="OccurDate"&&key!="ReturnDate"&&key!="FromCity"&&key!="ToCity"&&key!="TripDays") {
+                    arr[key]=0;
+                    this.dataCost.forEach((element,index)=>{
+                        if(index!=lg-1){
+                            arr[key]+=parseFloat(element[key])||0
+                        }
+                    })
+                    
+                }
+            }
+            this.postdata.IncoExpe.TotalAmount=arr['total'];
+            this.postdata.IncoExpe.TotalAmountCN=digitUppercase(arr['total'])
+
+        },getTapValue(tap,tapDet){
+            console.log(tap,tapDet)
         }
     }
 }

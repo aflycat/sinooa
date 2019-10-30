@@ -80,53 +80,32 @@ export const getIndustryList = (data) => {
 }
 
 
-
-export const getTableData = () => {
+//获取所有的角色
+export const getRoleList = (data) => {
     return axios.request({
-        url: 'get_table_data',
-        method: 'get'
+        url: 'http://120.78.154.66:8089/api/role/qryPage/',
+        data,
+        method: "post"
     })
 }
 
-export const getDragList = () => {
+//获取角色的权限
+// "RoleId":1
+export const getRolePermission = (data) => {
     return axios.request({
-        url: 'get_drag_list',
-        method: 'get'
-    })
-}
-
-export const errorReq = () => {
-    return axios.request({
-        url: 'error_url',
+        url: 'http://120.78.154.66:8089/api/permission/qry/',
+        data,
         method: 'post'
     })
 }
 
-export const saveErrorLogger = info => {
+
+//获取用户的详细信息
+// "UserId":""
+export const getUserDetail = (data) => {
     return axios.request({
-        url: 'save_error_logger',
-        data: info,
+        url: 'http://120.78.154.66:8089/api/user/qry/',
+        data,
         method: 'post'
-    })
-}
-
-export const uploadImg = formData => {
-    return axios.request({
-        url: 'image/upload',
-        data: formData
-    })
-}
-
-export const getOrgData = () => {
-    return axios.request({
-        url: 'get_org_data',
-        method: 'get'
-    })
-}
-
-export const getTreeSelectData = () => {
-    return axios.request({
-        url: 'get_tree_select_data',
-        method: 'get'
     })
 }

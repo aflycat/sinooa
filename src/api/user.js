@@ -82,3 +82,94 @@ export const projectAddFile = (data) => {
         method: 'post'
     })
 }
+
+//添加角色
+// "RoleName":"测试"
+export const addRole = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/role/add/",
+            data,
+            method: 'post'
+        })
+    }
+    // //修改角色
+    // "RoleId":71,
+    // "RoleName":"ABC"
+export const modRole = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/role/mod/',
+        data,
+        method: 'post'
+    })
+}
+
+//删除角色
+// "RoleId":72
+export const delRole = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/role/del/',
+            data,
+            method: 'post'
+        })
+    }
+    //编辑角色权限
+    // "RoleId":71,
+    // "DataPermission":1,
+    // "MenuPermissionList":[{"MenuId":2,"SubMenuId":1,"CanRead":true,"CanWrite":false,"CanReview":false}]
+export const modRolePermission = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/permission/mod/',
+            data,
+            method: 'post'
+        })
+    }
+    //添加用户
+    // "UserName":"","LoginId":"","Password":"","CompanyId":,"DepartmentId":,"Sex":"","Degree":"",
+    // "Speciality":"","Phone":"","Email":"","Zip":"","Address":"","Roles":,"Status":,"PayHour":,
+    // "PayBase":,"PayAttendacne":,"PayHrcost":
+export const addUser = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/user/add/',
+            data,
+            methods: 'post'
+        })
+    }
+    //编辑用户
+    // "UserId":"","UserName":"","LoginId":"","Password":"","CompanyId":,"DepartmentId":,
+    // "Sex":"","Degree":"","Speciality":"","Phone":"","Email":"","Zip":"",
+    // "Address":"","Roles":,"Status":,"PayHour":,"PayBase":,"PayAttendace":,"PayHrcost":    
+export const modUser = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/user/mod/',
+            data,
+            methods: 'post'
+        })
+    }
+    //删除用户
+    // "UserId":""
+export const deleteUser = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/user/del/',
+            data,
+            methods: 'post'
+        })
+    }
+    //修改密码
+    // "UserId":"","OldPassword":"","NewPassword":""   
+export const modPassword = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/user/modPasswd/',
+            data,
+            methods: 'post'
+        })
+    }
+    //退出登录
+    // "LoginId":"",
+    // "Token":""
+    // export const logout = (data) => {
+    //     return axios.request({
+    //         url: '',
+    //         data,
+    //         method: 'post'
+    //     })
+    // }
