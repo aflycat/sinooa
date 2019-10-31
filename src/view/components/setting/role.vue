@@ -100,7 +100,7 @@ export default {
             getRoleList({PageIndex:this.PageIndex ,PageSize:this.PageSize}).then(res=>{
                 this.loading=false;
                 if(res.data.code==0){
-                    this.pageTotal=res.data.pageSize*res.data.pageTotal;
+                    this.pageTotal=this.PageSize*res.data.pageTotal;
                     res.data.roleList.forEach(element => {
                         this.data_mem.push({
                             roleId:element.roleId,

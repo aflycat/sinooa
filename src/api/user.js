@@ -131,7 +131,7 @@ export const addUser = (data) => {
         return axios.request({
             url: 'http://120.78.154.66:8089/api/user/add/',
             data,
-            methods: 'post'
+            method: 'post'
         })
     }
     //编辑用户
@@ -142,16 +142,17 @@ export const modUser = (data) => {
         return axios.request({
             url: 'http://120.78.154.66:8089/api/user/mod/',
             data,
-            methods: 'post'
+            method: 'post'
         })
     }
     //删除用户
     // "UserId":""
 export const deleteUser = (data) => {
+        console.log(data)
         return axios.request({
             url: 'http://120.78.154.66:8089/api/user/del/',
             data,
-            methods: 'post'
+            method: 'post'
         })
     }
     //修改密码
@@ -160,7 +161,7 @@ export const modPassword = (data) => {
         return axios.request({
             url: 'http://120.78.154.66:8089/api/user/modPasswd/',
             data,
-            methods: 'post'
+            method: 'post'
         })
     }
     //退出登录

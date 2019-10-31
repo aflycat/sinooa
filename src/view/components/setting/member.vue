@@ -9,20 +9,31 @@
             </Row>
              <Card class="itemCard">
                 <p slot="title">人员列表</p>
-                <Table :columns="columns_mem" :data="data_mem" class="memTable"></Table>
+                <Table :loading="loading" :columns="columns_mem" :data="data_mem"  class="memTable"></Table>
+                 <Page style="margin-top:15px;" :page-size-opts="[5,10,20,30]" :total="pageTotal" @on-change="changePage" @on-page-size-change="changePageSise" show-elevator show-sizer />
                  <Row >
                     <Col span="24" style="background:#fff;margin:15px 0;padding:15px 0;">
                         <Button type="primary">导出</Button>
                     </Col>
                 </Row>    
             </Card >       
-         <mem-basic ref="memBasic"></mem-basic>
+         <mem-basic :userId="userId" ref="memBasic"></mem-basic>
+         <Modal v-model="passWmodal" title="重置密码" @on-ok="changePass">
+             <Form :label-width="80">
+                    <FormItem label="密码">
+                        <Input v-model="passWord" placeholder="请输入密码"></Input>
+                    </FormItem>
+            </Form>
+         </Modal>
+
 
 
     </div>
 </template>
 <script>
-import {getuserList,deleteUser} from "@/api/data"
+import {getuserList} from "@/api/data"
+import {deleteUser,modPassword} from "@/api/user"
+
 import memBasic from "@/view/components/template/mem_basic"
 export default {
     components:{
@@ -32,45 +43,32 @@ export default {
         return{
             name:'',
             phone:'',
-            data_mem:[
-                {user:0,username:"祝福",dep:"运营",sedep:"前端",phone:"17620455702",states:"正常"},
-                {user:0,username:"祝福",dep:"运营",sedep:"前端",phone:"17620455702",states:"冻结"},
-                {user:0,username:"祝福",dep:"运营",sedep:"前端",phone:"17620455702",states:"未审批"}
-            ],
+            data_mem:[ ],
+            userId:'',
             columns_mem:[
                 {type: 'selection',width: 60, align: 'center'},
-                {title: '姓名', align: 'center',key:'user'},
-                {title: '登录账号', key: 'username'},
-                {title: '部门', key: 'dep'},
-                {title: '邮箱', key: 'sedep'},
+                {title: '姓名', align: 'center',key:'userName'},
+                {title: '登录账号', key: 'loginId'},
+                {title: '部门', key: 'departmentName'},
+                {title: '邮箱', key: 'email'},
                 {title: '电话', key: 'phone'},
-                {title: '用户状态', key: 'states', filters:[
-                        {
-                            label: '正常',
-                            value: '正常'
-                        },
-                        {
-                            label: '未审批',
-                            value: '未审批'
-                        },
-                        {
-                            label: '冻结',
-                            value: '冻结'
-                        }
+                {title: '用户状态', key: 'status', filters:[
+                        {label: '正常', value: '1'},
+                        {label: '未审批', value: '0' },
+                        {label: '冻结', value: '-1'}
                     ],
                     filterMultiple: true,
                     filterMethod (value, row) {
-                        console.log(value)  
-                         return row.states.indexOf(value) > -1;
+                        return row.status==parseInt(value);
                     },
                     render:(h,params)=>{
-                        if(params.row.states=="正常"){
+                        if(params.row.status=='1'){
                             return h('span',{
                                 style:{
                                     color:'#2d8cf0'
                                 }
                             },'正常')
-                        }else if(params.row.states=="未审批"){
+                        }else if(params.row.status=="0"){
                              return h('span',{
                                 style:{
                                     color:'#ff9900'
@@ -106,7 +104,7 @@ export default {
                             h('DropdownItem',{
                                 nativeOn:{
                                     'click':(name)=>{
-                                        console.log(params)
+                                        console.log(params.row.userId)
 
                                     }
                                 }
@@ -114,8 +112,9 @@ export default {
                             h('DropdownItem',{
                                 nativeOn:{
                                     'click':(name)=>{
-                                        console.log(params)
-
+                                        // console.log(params)
+                                        this.userId=params.row.userId;
+                                        this.passWmodal=true;
                                     }
                                 }
                             },'重置密码'),
@@ -124,78 +123,96 @@ export default {
                                     color:'rgb(237, 64, 20)'
                                 },
                                 nativeOn:{
-                                    'click':(name)=>{
-                                        console.log(params)
+                                    'click':()=>{
+                                        this.$Modal.confirm({
+                                            title:'删除',
+                                            content:"确定删除用户"+params.row.userName+"?",
+                                            cancelText:'取消',
+                                            okText:'确定',
+                                            onOk:()=>{
+                                                this.deleteUsers(params.row.userId,params.index)
+                                            }
+                                        })
 
                                     }
                                 }
                             },'删除')
                         ])
                     ])
-
-                       
-
-                    // return h('div',[
-                    //     h('span',{
-                    //         style:{
-                    //             color:'#3498db',
-                    //             cursor:'pointer',
-                    //             marginRight:'8px'
-
-                    //         }
-                    //     },'编辑'),
-                    //      h('span',{
-                    //         style:{
-                    //             color:'#5cadff',
-                    //             cursor:'pointer',
-                    //             marginRight:'8px'
-
-                    //         },on:{
-                    //             click:()=>{
-                    //                 const title = '重置密码';
-                    //                 const content = '<p>确定重置当前账号的密码？</p>';   
-                    //                 this.$Modal.warning({
-                    //                     title: title,
-                    //                     content: content,
-                    //                     onOk(){
-                    //                         console.log('确定')
-                    //                     }
-                    //                 });
-                    //             }
-                    //         }
-                    //     },'重置密码'),
-                    //      h('span',{
-                    //         style:{
-                    //             color:'#ed4014',
-                    //             cursor:'pointer'
-                    //         },on:{
-                    //             click:()=>{
-                    //                 const title = '删除账号';
-                    //                 const content = '<p>确定删除当前账号？</p>';   
-                    //                 this.$Modal.warning({
-                    //                     title: title,
-                    //                     content: content,
-                    //                     onOk(){
-                    //                         console.log('确定')
-                    //                     }
-                    //                 });
-                    //             }
-                    //         }
-                    //     },'删除')
-                    // ])
                 }},
               
 
             ],
-           
+            PageIndex:1,
+            PageSize:10,
+            pageTotal:0,
+            loading:true,
+            passWmodal:false,
+            passWord:''
             
         }
     },
+    mounted(){
+        this.getUserList()
+    },
+   
     methods:{
-         filterMethod (value, option) {
-             console.log(value,option)
-                return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
-            },
+        getUserList(){
+            this.data_mem=[];
+            getuserList({PageIndex:this.PageIndex,PageSize:this.PageSize}).then(res=>{
+                if(res.data.code==0){
+                    this.pageTotal=this.PageSize*res.data.pageTotal;
+                    res.data.userList.forEach(element => {
+                        this.data_mem.push({
+                            userName:element.userName,
+                            loginId:element.loginId,
+                            departmentName:element.departmentName,
+                            email:element.email,
+                            phone:element.phone,
+                            status: element.status,
+                            userId:element.userId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:'人员列表数据加载失败：'+res.data.message
+                    })
+                }
+                this.loading=false;
+            })  
+        },
+        deleteUsers(userId,index){
+            deleteUser({UserId:userId}).then(res=>{
+                if(res.data.code==0){
+                    this.$Notice.success({
+                        title:'用户删除成功'
+                    })
+                    this.data_mem.splice(index,1)
+                }else{
+                    this.$Message.error({
+                        content:'用户删除失败：'+res.data.message
+                    })
+                }
+            })
+        },
+        changePass(){
+            modPassword({
+                UserId:this.userId,
+                OldPassword:'',
+                NewPassword:this.passWord
+            }).then(res=>{
+                console.log(res)
+            })
+        },
+        changePage(value){
+            this.PageIndex=value;
+            console.log(value)
+           this.getUserList()
+        },
+        changePageSise(value){
+            this.PageSize=value;
+            this.getUserList()
+        },
         showMemberModal(){
             this.$refs["memBasic"].showModel(true)
         }
