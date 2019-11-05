@@ -21,7 +21,7 @@
                         <li>已阅</li><Divider type="vertical" />
                         <li>删除</li>
                     </ul> -->
-                    <Button type="text">已阅</Button ><Divider type="vertical" />
+                    <!-- <Button type="text">已阅</Button ><Divider type="vertical" /> -->
                     <!-- <Button type="text" >删除</Button ><Divider type="vertical" /> -->
                     <!-- <Button type="text" >驳回</Button ><Divider type="vertical" /> -->
                                                        <!-- 任务id，任务类型，待处理步骤id -->
@@ -53,6 +53,18 @@ export default {
         return{
            taskList:[]
         }
+    },
+    methods:{
+         lookTask(taskID,taskTypeID,taskFlowID){
+              this.$router.push({
+                   name:'deal_detail',
+                   query:{
+                        taskID,
+                        taskTypeID,
+                        taskFlowID
+                   }
+              })
+         }
     }
 }
 </script>

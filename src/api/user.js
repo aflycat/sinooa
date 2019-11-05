@@ -128,6 +128,7 @@ export const modRolePermission = (data) => {
     // "Speciality":"","Phone":"","Email":"","Zip":"","Address":"","Roles":,"Status":,"PayHour":,
     // "PayBase":,"PayAttendacne":,"PayHrcost":
 export const addUser = (data) => {
+        console.log(data)
         return axios.request({
             url: 'http://120.78.154.66:8089/api/user/add/',
             data,

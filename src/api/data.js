@@ -72,13 +72,33 @@ export const getCityList = (data) => {
 
 //获取所属行业
 export const getIndustryList = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/industry/qryPage/",
+            data,
+            method: "post"
+        })
+    }
+    //获取所有的公司
+    // "PageIndex":1,
+    // "PageSize":10
+export const getCompanyList = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/company/qryPage/',
+            data,
+            method: 'post'
+        })
+    }
+    //获取该公司下的部门
+    // "CompanyId": "1",
+    // 	"PageIndex":1,
+    // 	"PageSize":10
+export const getDepartment = (data) => {
     return axios.request({
-        url: "http://120.78.154.66:8089/api/industry/qryPage/",
+        url: 'http://120.78.154.66:8089/api/department/qryPage/',
         data,
-        method: "post"
+        method: 'post'
     })
 }
-
 
 //获取所有的角色
 export const getRoleList = (data) => {

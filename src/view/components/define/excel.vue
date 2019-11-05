@@ -1,6 +1,20 @@
 <template>
     <div class="excel">
-        <Row :gutter="16">
+        <div style="background:#fff;padding:15px 15px;margin-bottom:15px;">
+             <Steps :current="current" style="margin:15px 0;">
+                <Step title="自定义表单" ></Step>
+                <Step title="自定义流程" ></Step>
+                <Step title="提交" ></Step>
+            </Steps>
+            <p>
+                <Button type="primary" :disabled="current==0" @click="previousStep"  style="margin-right:15px;">上一步</Button>
+
+                <Button type="primary" :disabled="current==2" @click="nextStep">下一步</Button>
+            </p>
+            
+        </div>
+       
+        <Row :gutter="16" v-if="current==0">
             <Col span="3">
                 <Card>
                     <p slot="title">组件</p>
@@ -57,12 +71,13 @@
                     </Row>
                 </Card>
             </Col>
-            <p>{{postdata}}</p>
+            
             <Col span="16">
                  <Card style="overflow:auto;">
                     <p slot="title">表格详情</p>
                     <Form >
                         <FormItem label="表单表头" :label-width="80">
+
                             <Input v-model="title"  placeholder="请输入表单表头"></Input>
                         </FormItem>
                     </Form>
@@ -70,12 +85,7 @@
                     
                         <form-component :class="checkIndex==index?'check':' '" @getIndex="getIndex"  v-for="(item,index) in tableData" :index="index" :obj="item" ></form-component>
 
-                  
-                    <div style="clear:both;">
-                    <Button type="primary" style="margin-top:20px;" @click="submit()">提交</Button>
 
-                    </div>
-                    <!-- <Divider dashed/> -->
                 </Card>
             </Col>
             <Col span="5">
@@ -87,10 +97,38 @@
 
 
         </Row>
+        <Row :gutter="16" v-if="current==1">
+            <Card>
+                <p slot="title">流程设置</p> 
+                    <Table :columns="columnsProcess" :data="dataProcess" ></Table>
+                    <Button  style="margin-top: 24px" type="success" @click="showProcess()">新增流程</Button>
+                    <Button v-if="dataProcess.length!=0" style="margin-top: 24px;margin-left:8px;" type="primary" >存为模板</Button>
+            </Card>
+        </Row>
+         <Row :gutter="16" v-if="current==2">
+             <Card  class="itemCard" style="overflow:auto;">
+                <p slot="title">表格详情</p>
+                <Form >
+                    <FormItem label="表单表头" :label-width="80">
+                        <Input v-model="title"  placeholder="请输入表单表头"></Input>
+                    </FormItem>
+                </Form>
+                <Divider dashed/>
+                <form-component   v-for="(item,index) in tableData" :index="index" :obj="item" :key="index"></form-component>
+                </Card>
+             <Card  class="itemCard">
+                <p slot="title">流程设置</p> 
+                <Table :columns="columnsProcessSub" :data="dataProcess" ></Table>
+                <Button type="primary" style="margin-top:20px;" @click="submit()">提交</Button>
+            </Card>
+            
+        </Row>
+        <process-basic ref="processBasic"></process-basic>
     </div>
 </template>
 <script>
 import {component} from './conmonent'
+import processBasic from "@/view/components/template/process_basic"
 import formComponent from "@/view/components/define/component.vue"
 import formAttr from "@/view/components/define/attr.vue"
 
@@ -100,6 +138,7 @@ export default {
     },
     components:{
         formComponent,
+         processBasic,
         formAttr
     },
     data(){
@@ -107,8 +146,28 @@ export default {
             checkIndex:-1,
             AttrData:null,
             indexAttr:0,
+            current:0,
             title:'这个是表头',
             postdata:{},
+            columnsProcess:[
+                {title:"序号",key:"name"},
+                {title:"任务流描述",key:"name"},
+                {title:"处理要求",key:"req" },
+                {title:"时间",key:"time"},
+                {title:"处理人",key:"man"},
+                {title:"处理组",key:"team",},
+                {title:"操作",key:"deal"}
+            ],
+            columnsProcessSub:[
+                {title:"序号",key:"name"},
+                {title:"任务流描述",key:"name"},
+                {title:"处理要求",key:"req" },
+                {title:"时间",key:"time"},
+                {title:"处理人",key:"man"},
+                {title:"处理组",key:"team",},
+              
+            ],
+             dataProcess:[],
             tableData:[
                 // {
                 //     type: 'input',
@@ -231,6 +290,12 @@ export default {
                 tableData:this.tableData
             }
             
+        },nextStep(){
+            this.current==2?this.current=this.current:this.current++
+        },previousStep(){
+            this.current==0?this.current=this.current:this.current--
+        },showProcess(){
+             this.$refs["processBasic"].showModal(true);
         }
     }
 }

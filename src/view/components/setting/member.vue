@@ -17,7 +17,7 @@
                     </Col>
                 </Row>    
             </Card >       
-         <mem-basic :userId="userId" ref="memBasic"></mem-basic>
+         <mem-basic :isEdict="isEdict" @loadUserlistAgain="getUserList" :userId="userId" ref="memBasic"></mem-basic>
          <Modal v-model="passWmodal" title="重置密码" @on-ok="changePass">
              <Form :label-width="80">
                     <FormItem label="密码">
@@ -45,6 +45,7 @@ export default {
             phone:'',
             data_mem:[ ],
             userId:'',
+            isEdict:false,
             columns_mem:[
                 {type: 'selection',width: 60, align: 'center'},
                 {title: '姓名', align: 'center',key:'userName'},
@@ -105,16 +106,20 @@ export default {
                                 nativeOn:{
                                     'click':(name)=>{
                                         console.log(params.row.userId)
-
+                                        this.isEdict=true;
+                                         this.userId=params.row.userId;
+                                        this.$refs["memBasic"].showModel(true)
+                                        console.log(this)
                                     }
                                 }
                             },'编辑' ),
                             h('DropdownItem',{
                                 nativeOn:{
-                                    'click':(name)=>{
+                                    'click':()=>{
                                         // console.log(params)
                                         this.userId=params.row.userId;
                                         this.passWmodal=true;
+                                       
                                     }
                                 }
                             },'重置密码'),
@@ -214,6 +219,7 @@ export default {
             this.getUserList()
         },
         showMemberModal(){
+            this.isEdict=false;
             this.$refs["memBasic"].showModel(true)
         }
     }

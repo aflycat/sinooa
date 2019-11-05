@@ -12,11 +12,37 @@
                         <Input v-model="postdata.LoginId"  placeholder="登录名"></Input>
                     </FormItem>
                 </Col>
+                 <Col span="12">
+                    <FormItem label="密码">
+                        <Input v-model="postdata.Password"  placeholder="密码"></Input>
+                    </FormItem>
+                </Col>
+                 <Col span="12"  v-if="!isEdict">
+                    <FormItem label="确认密码">
+                        <Input  v-model="PasswordAgain"  placeholder="密码"></Input>
+                    </FormItem>
+                </Col>
+                <Col span="12">
+                    <FormItem label="所属公司">
+                        <Select placeholder="选择所属公司" @on-change="getDepartment" v-model="postdata.CompanyId">
+                          <Option v-for="item in companyList" :value="item.value" :key="item.value">{{item.label}}</Option>
+                        </Select>
+                    </FormItem>
+                </Col>
+                <Col span="12">
+                    <FormItem label="所属部门">
+                        <Select placeholder="选择所属部门"   v-model="postdata.DepartmentId">
+                          <Option v-for="item in departmentList" :value="item.value" :key="item.value">{{item.label}}</Option>
+                            
+                        </Select>
+                    </FormItem>
+                </Col>
                <Col span="12">
                     <FormItem label="邮箱">
                         <Input  v-model="postdata.Email" placeholder="邮箱"></Input>
                     </FormItem>
                 </Col>
+
                  <Col span="12">
                     <FormItem label="性别">
                         <Select placeholder="选择性别"  v-model="postdata.Sex">
@@ -127,24 +153,18 @@
             </Row>
                
         </Form>
-        <div slot="footer">
-            <Button  size="large" >取消</Button>
-            <!-- <Button type="warning"  size="large" >更多信息</Button> -->
-            <Button :loading="loading" type="primary" size="large" >
-                 <span v-if="!loading">提交</span>
-                <span v-else>提交中...</span>
-            </Button>
-        </div>
+       
     </Modal>
 </template>
 <script>
 import {addUser,modUser} from "@/api/user"
-import {getRoleList} from "@/api/data"
+import {getRoleList,getCompanyList,getDepartment,getUserDetail} from "@/api/data"
 
 export default {
     name:"memBasic",
     props:{
-        userId:String
+        userId:String,
+        isEdict:Boolean
     },
 
     data(){
@@ -153,6 +173,9 @@ export default {
            roleList:[],
            loading:false,
            roleCheck:[],
+           PasswordAgain:'',
+           companyList:[],
+           departmentList:[],
            postdata:{
                 UserName:'',//用户姓名
                 LoginId:'',//登录名
@@ -176,7 +199,14 @@ export default {
         }
     },
     mounted(){
-        this.getRoleLists()
+        this.getRoleLists();
+        this.getCompanyList();
+    },
+    watch:{
+        userId(value){
+           
+            this.getUserInfor(value)
+        }
     },
     methods:{
         getRoleLists(){
@@ -198,14 +228,136 @@ export default {
 
             
         },
+        getCompanyList(){
+            getCompanyList({"PageIndex":1,"PageSize":1000}).then(res=>{
+                if(res.data.code==0){
+                    res.data.companyList.forEach(element=>{
+                        this.companyList.push({
+                            value:element.companyId,
+                            label:element.companyName
+                        })
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"公司数据加载失败："+res.data.mesage
+                    })
+                }
+            })
+        },
+        getDepartment(value){
+
+            this.postdata.DepartmentId='';
+            this.departmentList=[]
+
+            getDepartment({"PageIndex":1,"PageSize":1000,"CompanyId":value}).then(res=>{
+                if(res.data.code==0){
+                    console.log(res)
+                    res.data.departmentList.forEach(element=>{
+                        this.departmentList.push({
+                            value:element.departmentId,
+                            label:element.departmentName
+                        })
+                    })
+                }else{
+                     this.$Message.error({
+                        content:"部门数据加载失败："+res.data.mesage
+                    })
+                }
+            })
+        },
         handleOk(){
-            
+            console.log(this.postdata)
+            if(this.isEdict){
+                this.edictUser()
+            }else{
+                this.addNewUser()
+            }
         },
         handleCancel(){
 
         },
         showModel(flag){
             this.flags=flag;
+        },
+        addNewUser(){
+            addUser(this.postdata).then(res=>{
+                console.log(res)
+                if(res.data.code==0){
+                    this.$Notice.success({
+                        title:'用户创建成功'
+                    })
+                    this.$emit('loadUserlistAgain')
+                }else{
+                    this.$Message.error({
+                        content:'新增用户失败：'+res.data.message
+                    })
+                }
+            })
+        },
+        getUserInfor(value){
+            getUserDetail({UserId:value}).then(res=>{
+                console.log(res)
+                if(res.data.code==0){
+                    
+                    this.postdata={
+                        UserId:res.data.userId,
+                        UserName:res.data.userName,//用户姓名
+                        LoginId:res.data.loginId,//登录名
+                        Password:res.data.password,//密码，复杂度要求：大写字母、小写字母、数字、特殊符号任选二类
+                        CompanyId:res.data.companyId,//所属公司
+                        DepartmentId:res.data.departmentId,//所属部门
+                        Email:res.data.email,//满足email格式要求
+                        Sex:res.data.sex,//性别，下拉框，保密|男|女
+                        Degree:res.data.degree,//学历，下拉框，保密|学士|硕士|博士|
+                        Speciality:res.data.speciality,//专业
+                        Phone:res.data.phone,//电话
+                        Zip:res.data.zip,//邮编
+                        Address:res.data.address,//通讯地址
+                        Roles:res.data.roles,//角色，可多选,每个元素是RoleId
+                        PayHour:res.data.payHour,//工时标准
+                        PayBase:res.data.payBase,//基本工资`
+                        PayAttendace:res.data.payAttendance,//考勤补贴
+                        PayHrcost:res.data.payHrcost,//人力成本
+                        Status:res.data.status//状态
+                    }
+                    this.departmentList=[]
+                    getDepartment({"PageIndex":1,"PageSize":1000,"CompanyId":res.data.companyId}).then(res=>{
+                        if(res.data.code==0){
+                            res.data.departmentList.forEach(element=>{
+                                this.departmentList.push({
+                                    value:element.departmentId,
+                                    label:element.departmentName
+                                })
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:"部门数据加载失败："+res.data.mesage
+                            })
+                        }
+                    })
+                }else{
+                    this.$Message.error({
+                        content:'用户信息获取失败：'+res.data.message
+                    })
+                }
+            })
+                
+            
+        },
+        edictUser(){
+            modUser(this.postdata).then(res=>{
+                console.log(res);
+                if(res.data.code==0){
+                    this.$Notice.success({
+                        title:'用户信息修改成功'
+                    })
+                    this.$emit('loadUserlistAgain')
+                }else{
+                    this.$Message.error({
+                        content:'用户信息修改失败：'+res.data.message
+                    })
+                }
+            })
         }
     }
 

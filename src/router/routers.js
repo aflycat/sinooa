@@ -177,6 +177,16 @@ export default [{
                 },
                 component: () =>
                     import ("@/view/components/leave/leave.vue")
+            },
+            {
+                path: "deal_detail",
+                name: "deal_detail",
+                meta: {
+                    title: "代办任务详情",
+                    hideInMenu: true
+                },
+                component: () =>
+                    import ("@/view/components/nead_deal/nead_deal_detail.vue")
             }
 
         ]

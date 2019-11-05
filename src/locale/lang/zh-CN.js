@@ -28,6 +28,7 @@ export default {
     other: "其他事宜",
     fund: "基金管理",
     execute: "基金执行事务",
+    deal_detail: "待办任务详情",
     fund_partner: "基金合伙人会议",
     fund_development: "基金开发",
     fund_approval: "基金立项",
