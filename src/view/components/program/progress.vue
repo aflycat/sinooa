@@ -83,7 +83,7 @@
 <script>
 import store from "@/store"
 import {getprogectType,getprogectRole,getuserList,getCityList,getIndustryList,getProjectList,getProjectDetail} from "@/api/data"
-
+import {TaskTypeID} from "@/libs/data"
 
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import proInform from "@/view/components/template/pro_inform"
@@ -103,7 +103,7 @@ export default {
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
             submitData:{
-                    TaskTypeID:6,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
+                    TaskTypeID:TaskTypeID.itemProcess,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
                     TaskName:'',//任务名（UI中的请示事项要点）
                     TaskSummary:'',//任务概要（UI中的请示事项具体内容）
                     TaskOwner:'',//任务申请人ID，与User表的UserID对应，取自当前登录用户

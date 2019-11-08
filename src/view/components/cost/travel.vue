@@ -204,7 +204,7 @@
 import {getProjectList} from "@/api/data"
 import {digitUppercase} from "@/libs/tools"
 import changeTap from "@/view/components/template/change_tap.vue"
-
+import {TaskTypeID} from "@/libs/data"
 export default {
     components:{
         changeTap
@@ -294,7 +294,7 @@ export default {
            
             ],
             postdata:{
-                TaskTypeId: 13,
+                TaskTypeId: TaskTypeID.TravelExpensesReport,
                 TaskName: '',//任务名（UI中的报销单据要点）
                 TaskSummary: '',//任务概要（UI中的备注）
                 TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户

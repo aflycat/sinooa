@@ -51,6 +51,7 @@
 import {operationTaskAdd} from '@/api/user'
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import changeTap from "@/view/components/template/change_tap.vue"
+import {TaskTypeID} from "@/libs/data"
 
 export default {
     components:{
@@ -63,7 +64,7 @@ export default {
             formdata:{
                 TaskName:'',
                 TaskSummary:'',
-                TaskTypeID:20,
+                TaskTypeID:TaskTypeID.supervisors,
                 TaskOWner:'',
                 phone:''
             },

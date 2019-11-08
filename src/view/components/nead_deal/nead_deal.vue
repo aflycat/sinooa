@@ -3,7 +3,7 @@
         <Card class="itemCard">
            <p slot="title">任务列表</p>
             <!-- <Page style="margin-bottom:20px;" :total="1000"  show-elevator show-sizer /> -->
-           <Row type="flex" justify="center" align="middle" v-for="item in taskList">
+           <Row type="flex" justify="center" align="middle" v-for="item in taskList" :key="item.taskNumber">
                <Col span="8">
                     <h4>{{item.taskName}}</h4>
                     <p>{{item.taskNumber}}</p>
@@ -36,7 +36,7 @@
     </div>
 </template>
 <script>
-import {getDealTask} from "@/api/user"
+import {getDealTask} from "@/api/data"
 export default {
      mounted(){
           let taskOwner=JSON.parse(localStorage.getItem("userId"));

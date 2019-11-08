@@ -8,7 +8,7 @@ import changeTap from "./change_tap.vue"
 import weeklyCom from "./weekly.vue"
 import hoursStandard from "./work_hours_stanard.vue"
 import proInform from "./pro_inform.vue" //项目进展加载项目信息和基金信息模块
-
+import returnStep from "./returnStep.vue" //返回修改节点
 
 export default fundDecision
 export default fundPartner
@@ -20,3 +20,4 @@ export default changeTap
 export default weeklyCom
 export default hoursStandard
 export default proInform
+export default returnStep

@@ -56,7 +56,7 @@ import store from '@/store'
 import {operationTaskAdd,uploadFile} from "@/api/user"
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import changeTap from "@/view/components/template/change_tap.vue"
-
+import {TaskTypeID} from "@/libs/data"
 export default {
     name:'manager',
     components:{
@@ -69,25 +69,21 @@ export default {
         this.formdata.phone=JSON.parse(localStorage.getItem("phone"));
         this.formdata.TaskOWner=JSON.parse(localStorage.getItem("userId"));
     },
-
     data(){
         return{
             loading:false,
             formdata:{
                 TaskName:'',
                 TaskSummary:'',
-                TaskTypeID:16,
+                TaskTypeID:TaskTypeID.general,
                 TaskOWner:'',
                 phone:"",
                 
             },
-            
             name:'',
             fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
-
-            
             showFile:false,
             ruleValidate:{
                TaskName:[

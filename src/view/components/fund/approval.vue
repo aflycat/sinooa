@@ -233,7 +233,7 @@
                         </Col>
                          <Col span="8">
                             <FormItem label="实缴规模" prop="ClientTotalAssets">
-                                <Input  type="number" placeholder="请输入总资产">
+                                <Input  type="number" placeholder="请输入实缴规模">
                                   <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -241,21 +241,21 @@
 
                          <Col span="8">
                             <FormItem label="退资规模" prop="ClientNetAssets">
-                                <Input  type="number" placeholder="请输入净资产">
+                                <Input  type="number" placeholder="请输入退资规模">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
                         </Col>
                         <Col span="12">
                             <FormItem label="管理费计提标准" prop="ClientIncome">
-                                <Input type="number" placeholder="请输入营业收入">
+                                <Input type="number" placeholder="请输入管理费计提标准">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>
                         </Col>
                          <Col span="12">
                             <FormItem label="业绩报酬计提标准" prop="ClientProfit">
-                                <Input type="number" placeholder="请输入营业利润">
+                                <Input type="number" placeholder="请输入业绩报酬计提标准">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -391,6 +391,7 @@
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import changeTap from "@/view/components/template/change_tap.vue"
+import {TaskTypeID} from "@/libs/data"
 
 export default {
     components:{
@@ -444,7 +445,7 @@ export default {
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
             postdata:{
-                    TaskTypeID:3,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
+                    TaskTypeID:TaskTypeID.fundProjects,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
                     TaskName:'',//任务名（UI中的请示事项要点）
                     TaskSummary:'',//任务概要（UI中的请示事项具体内容）
                     TaskOwner:'',//任务申请人ID，与User表的UserID对应，取自当前登录用户

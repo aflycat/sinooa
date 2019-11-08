@@ -86,6 +86,7 @@ import {getProjectList,getworkWeekHistory} from "@/api/data"
 import {workWeekSubmit} from "@/api/user"
 import weeklyCom from "@/view/components/template/weekly.vue"
 import hoursStandard from "@/view/components/template/work_hours_stanard.vue"
+import {TaskTypeID} from "@/libs/data"
 
 export default {
     components:{
@@ -367,7 +368,7 @@ export default {
                 NextPlan: "",//下周计划
                 StartTime: "",//开始时间
                 State: 1,//1草稿2已提交3已审核
-                TaskTypeId: 23,//任务id
+                TaskTypeId: TaskTypeID.workReport,//任务id
                 ThisEffect: "",//本周成果
                 Title: "",//标题
                 UserId: "",//用户id

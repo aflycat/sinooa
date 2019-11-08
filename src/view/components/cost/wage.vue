@@ -56,6 +56,8 @@
     </div>
 </template>
 <script>
+import {TaskTypeID} from "@/libs/data"
+
 export default {
     data(){
         return{
@@ -179,7 +181,7 @@ export default {
                 {PayeeName:'合计',PayBase:0,Social_e:0,Social_c:0,Tax:0,Absence:0,PayReal:0,FieldCost:0,PayCash:0,PayHrcost:0}
             ],
             postdata:{
-                TaskTypeId: '',
+                TaskTypeId: TaskTypeID.WageExpenses,
                 TaskName: '',//任务名（UI中的报销单据要点）
                 TaskSummary: '',//任务概要（UI中的备注）
                 TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户

@@ -123,8 +123,34 @@ export const getRolePermission = (data) => {
 //获取用户的详细信息
 // "UserId":""
 export const getUserDetail = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/user/qry/',
+            data,
+            method: 'post'
+        })
+    }
+    //获取代办任务
+export const getDealTask = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/taskflow/dealquery/',
+            data,
+            method: 'post'
+        })
+    }
+    //获取任务详情
+    // "TaskID":"295"
+export const getTaskDetail = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/task/query/',
+            data,
+            method: 'post'
+        })
+    }
+    //待办任务获取任务详情
+    //	"TaskID":"96"
+export const getDealTaskDetail = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/user/qry/',
+        url: 'http://120.78.154.66:8089/api/projecttask/query/',
         data,
         method: 'post'
     })

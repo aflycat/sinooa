@@ -55,6 +55,7 @@
 <script>
 import {operationTaskAdd} from "@/api/user"
 import UploadFiles from "@/view/components/upload_file/upload_file"
+import {TaskTypeID} from "@/libs/data"
 import changeTap from "@/view/components/template/change_tap.vue"
 
 
@@ -73,7 +74,7 @@ export default {
             formdata:{
                 TaskName:'',
                 TaskSummary:'',
-                TaskTypeID:19,
+                TaskTypeID:TaskTypeID.directorate,
                 phone:'',
                 TaskOWner:''
             },

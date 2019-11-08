@@ -31,20 +31,13 @@ export const logout = (token) => {
     }
     //公司运营提交接口
 export const operationTaskAdd = (data) => {
-        return axios.request({
-            url: "http://120.78.154.66:8089/api/task/add/",
-            data,
-            method: 'post'
-        })
-    }
-    //获取代办任务
-export const getDealTask = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/taskflow/dealquery/',
+        url: "http://120.78.154.66:8089/api/task/add/",
         data,
         method: 'post'
     })
 }
+
 
 
 //文件上传
@@ -175,3 +168,39 @@ export const modPassword = (data) => {
     //         method: 'post'
     //     })
     // }
+
+//审批任务-同意
+// "TaskID":"92",
+// "TaskFlowID":"708",
+// "FlowComment":"同意，用户2"
+export const agreeTaskFlow = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/taskflow/agree/",
+        data,
+        method: 'post'
+    })
+}
+
+//审批任务-拒绝
+// "TaskID":"15",
+// 	"TaskFlowID":"130",
+// 	"FlowComment":"不同意，用户1"
+export const disAgrreTaskFlow = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/taskflow/disagree/",
+            data,
+            method: 'post'
+        })
+    }
+    //审批任务-驳回
+    // "TaskID":"11",
+    // "TaskFlowID":"97",
+    // "FlowComment":"返回，用户3",
+    // "ReturnFlowID":"0"
+export const returnTaskFlow = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/taskflow/return/",
+        data,
+        method: 'post'
+    })
+}

@@ -15,7 +15,7 @@
             <Col span="3">
               <router-link to="/normal/nead_deal">
                 <Card  class="narmalBtn">
-                  <Badge :count="5" type="error" style="position:static;">
+                  <Badge v-if="count!=0" :count="count" type="error" style="position:static;">
                       <a href="#" class="demo-badge"></a>
                   </Badge>
                     <Icon type="md-notifications" size="36" color="rgb(149, 222, 100)"/>
@@ -44,7 +44,7 @@
             
               <router-link to="/normal/draft_search">
                 <Card class="narmalBtn">
-                  <Badge :count="6" type="error" style="position:static;">
+                  <Badge v-if="draftNum!=0" :count="draftNum" type="error" style="position:static;">
                       <a href="#" class="demo-badge"></a>
                   </Badge>
                   <Icon type="ios-folder-open"  size="36" color="rgb(255, 214, 102)"/>
@@ -88,73 +88,36 @@
           <p slot="title">统计信息</p>
       </Card>
     </Row>
-    <!-- 统计信息 -->
-    <!-- <Row :gutter="20" style="margin-top: 10px;">
-      <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
-        <Card shadow>
-          <chart-pie style="height: 300px;" :value="pieData" text="用户访问来源"></chart-pie>
-        </Card>
-      </i-col>
-      <i-col :md="24" :lg="16" style="margin-bottom: 20px;">
-        <Card shadow>
-          <chart-bar style="height: 300px;" :value="barData" text="每周用户活跃量"/>
-        </Card>
-      </i-col>
-    </Row> -->
-    <!-- 用户 -->
-    <!-- <Row>
-      <Card shadow>
-        <example style="height: 310px;"/>
-      </Card>
-    </Row> -->
-    <!-- 图标 -->
+   
   </div>
 </template>
 
 <script>
-import InforCard from '_c/info-card'
-import CountTo from '_c/count-to'
-import { ChartPie, ChartBar } from '_c/charts'
-import Example from './example.vue'
+import {getDealTask} from "@/api/data"
 export default {
   name: 'home',
-  components: {
-    InforCard,
-    CountTo,
-    ChartPie,
-    ChartBar,
-    Example
-  },
   data () {
     return {
-      inforCardData: [
-        { title: '新增用户', icon: 'md-person-add', count: 803, color: '#2d8cf0' },
-        { title: '累计点击', icon: 'md-locate', count: 232, color: '#19be6b' },
-        { title: '新增问答', icon: 'md-help-circle', count: 142, color: '#ff9900' },
-        { title: '分享统计', icon: 'md-share', count: 657, color: '#ed3f14' },
-        { title: '新增互动', icon: 'md-chatbubbles', count: 12, color: '#E46CBB' },
-        { title: '新增页面', icon: 'md-map', count: 14, color: '#9A66E4' }
-      ],
-      pieData: [
-        { value: 335, name: '直接访问' },
-        { value: 310, name: '邮件营销' },
-        { value: 234, name: '联盟广告' },
-        { value: 135, name: '视频广告' },
-        { value: 1548, name: '搜索引擎' }
-      ],
-      barData: {
-        Mon: 13253,
-        Tue: 34235,
-        Wed: 26321,
-        Thu: 12340,
-        Fri: 24643,
-        Sat: 1322,
-        Sun: 1324
-      }
+      userId:'',
+      count:0,
+      draftNum:0
     }
   },
   mounted () {
-    //
+    this.userId=JSON.parse(localStorage.getItem('userId'))
+    this.getDealTaskNum();
+  },methods:{
+    getDealTaskNum(){
+      getDealTask({FlowOwner:this.userId}).then(res=>{
+        if(res.data.code==2101){
+          this.count=res.data.dealTaskList.length
+        }else{
+          this.$Message.error({
+            content:'待办任务查询失败：'+res.data.message
+          })
+        }
+      })
+    }
   }
 }
 </script>
