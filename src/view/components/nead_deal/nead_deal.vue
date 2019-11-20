@@ -3,7 +3,7 @@
         <Card class="itemCard">
            <p slot="title">任务列表</p>
             <!-- <Page style="margin-bottom:20px;" :total="1000"  show-elevator show-sizer /> -->
-           <Row type="flex" justify="center" align="middle" v-for="item in taskList" :key="item.taskNumber">
+           <Row type="flex" justify="center" align="middle" v-for="(item,index) in taskList" :key="index">
                <Col span="8">
                     <h4>{{item.taskName}}</h4>
                     <p>{{item.taskNumber}}</p>

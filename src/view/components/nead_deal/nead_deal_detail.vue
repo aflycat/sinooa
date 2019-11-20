@@ -1,8 +1,13 @@
 <template>
     <div class="neadDealDetail">
-        <opra-tem :taskFlowID="taskFlowID.toString()" v-if="typeStr=='opra'" :taskID="taskID.toString()"></opra-tem>
-        <fund-tem :taskFlowID="taskFlowID.toString()" v-if="typeStr=='fund'" :taskID="taskID.toString()"></fund-tem>
-        <prog-tem :taskFlowID="taskFlowID.toString()" v-if="typeStr=='prog'" :taskID="taskID.toString()"></prog-tem>
+        <opra-tem :taskFlowID="taskFlowID.toString()"      v-if="typeStr=='opra'" :taskID="taskID.toString()"></opra-tem>
+        <fundedict-tem :taskFlowID="taskFlowID.toString()" v-if="typeStr=='fundedic'" :taskID="taskID.toString()"></fundedict-tem>
+        <fundshow-tem :taskFlowID="taskFlowID.toString()"  v-if="typeStr=='fundshow'" :taskID="taskID.toString()"></fundshow-tem>
+
+        <progedict-tem :taskFlowID="taskFlowID.toString()" v-if="typeStr=='progedict'" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></progedict-tem>
+        <progshow-tem :taskFlowID="taskFlowID.toString()"  v-if="typeStr=='progshow'" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></progshow-tem>
+        
+
         <!-- <defin-excel></defin-excel> -->
         
 
@@ -11,17 +16,20 @@
 <script>
 import {getTaskDetail} from "@/api/data"
 import opraTem from "@/view/components/template_show/opra"
-import fundTem from "@/view/components/template_show/fund"
-import progTem from "@/view/components/template_show/prog"
+import fundedictTem from "@/view/components/template_show/fund_edict"
+import fundshowTem from "@/view/components/template_show/fund_show"
+import progedictTem from "@/view/components/template_show/prog_edict"
+import progshowTem from "@/view/components/template_show/prog_show"
+
 import definExcel from "@/view/components/template_show/defin_excel"
-
-
 import {TaskTypeID} from "@/libs/data"
 export default {
     components:{
         opraTem,
-        fundTem,
-        progTem,
+        fundedictTem,
+        progedictTem,
+        progshowTem,
+        fundshowTem,
         definExcel
     },
     data(){
@@ -40,10 +48,7 @@ export default {
                   TaskTypeID.supervisors
                 //   TaskTypeID.自定义
               ],
-              'prog':[
-                   TaskTypeID.itemDevelop,
-                   TaskTypeID.itemProjectApproval,
-                   TaskTypeID.itemChange,
+              'progshow':[
                    TaskTypeID.itemProcess,
                    TaskTypeID.itemInvestment,
                    TaskTypeID.itemSummary,
@@ -51,13 +56,20 @@ export default {
                    TaskTypeID.itemAgreement,
                 //    TaskTypeID.itemAgreement其他事宜
               ],
-              'fund':[
-                  TaskTypeID.fundDevelop,
-                  TaskTypeID.fundProjects,
-                  TaskTypeID.fundChanges,
+              'progedict':[
+                   TaskTypeID.itemDevelop,
+                   TaskTypeID.itemProjectApproval,
+                   TaskTypeID.itemChange,
+              ],
+              'fundshow':[
                   TaskTypeID.fundAffairs,
                   TaskTypeID.fundVote,
                   TaskTypeID.fundPartnership
+              ],
+              'fundedic':[
+                  TaskTypeID.fundDevelop,
+                  TaskTypeID.fundProjects,
+                  TaskTypeID.fundChanges,
               ]
 
           }
@@ -72,6 +84,7 @@ export default {
     },
     watch:{
         '$route'(){
+            console.log(1)
             this.getRouterParams()
             this.getShowFlag();
         }
@@ -85,12 +98,17 @@ export default {
         },
         
         getShowFlag(){
+
             if(this.typeIdObj.opra.indexOf(this.taskTypeID)!=-1){
                 this.typeStr='opra'
-            }else if(this.typeIdObj.prog.indexOf(this.taskTypeID)!=-1){
-                this.typeStr='prog'
+            }else if(this.typeIdObj.progshow.indexOf(this.taskTypeID)!=-1){
+                this.typeStr='progshow'
+            }else if(this.typeIdObj.progedict.indexOf(this.taskTypeID)!=-1){
+                this.typeStr='progedict'
+            }else if(this.typeIdObj.fundshow.indexOf(this.taskTypeID)!=-1){
+                this.typeStr='fundshow'   
             }else{
-                this.typeStr='fund'
+                this.typeStr='fundedic'
             }
         }
     }

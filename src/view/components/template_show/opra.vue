@@ -9,14 +9,15 @@
                             {{getdata.taskNumber||''}}
                         </FormItem>
                     </Col>
-                    <Col span="12">
+                    <Col span="24">
                         <FormItem label="事项要点：">
-                            {{getdata.taskName||''}}
+                             <Input v-model="getdata.taskName" placeholder='请输入事项要点'></Input>
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="事项标签：">
                             <!-- {{getdata.taskNumber||''}} -->
+
                         </FormItem>
                     </Col>
                     <Col span="12">
@@ -31,16 +32,16 @@
                     </Col>
                     <Col span="24">
                         <FormItem label="报送内容：">
-                            {{getdata.taskSummary||''}}
+                             <Input v-model="getdata.taskSummary" type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入具体内容"></Input>
                         </FormItem>
                     </Col>
-                    <Col span="24">
-                        <FormItem label="报送文件：">
-                          
+                    <Col span="24" v-if="getdata.taskFiles.length>0" >
+                        <FormItem label="报送文件：" >
                             <p  v-for="(item,index) in getdata.taskFiles" :key='index'>
-                                <a href="#" style="color:#2d8cf0;">
+                                <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
                                     {{item.oldFileName}}
-                                </a>
+                                </a> 
+                                 <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
                             </p>
                         </FormItem>
                     </Col>
@@ -120,6 +121,7 @@
 </template>
 <script>
 import {getTaskDetail} from "@/api/data"
+import {deleteFile} from "@/api/user"
 import returnStep from "@/view/components/template/return_step"
 import UploadFiles from "@/view/components/upload_file/upload_file"
 
@@ -132,7 +134,7 @@ export default {
         taskID:String,
         taskFlowID:String
     },
-    name:'opraTem',
+    name:'progedictTem',
     data(){
         return{
             loading:false,
@@ -142,7 +144,9 @@ export default {
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
             postdata:{},
-            getdata:{},
+            getdata:{
+                taskFiles:[]
+            },
             taskFlows:[],
             FlowComment:''
         }
@@ -185,6 +189,27 @@ export default {
             this.$refs["uploadModal"].showModal(true);
         },showReturnModal(){
             this.$refs['stepModal'].showModal(true)
+        },deleteOriginFile(fileId,fileName,index){
+            this.$Modal.warning({
+                title:'删除',
+                content:'是否删除问价：'+fileName,
+                onOk:()=>{
+                    deleteFile({TaskFileID:fileId}).then(res=>{
+                        if(res.data.code==2203){
+                            this.getdata.taskFiles.splice(index,1)
+                            this.$Notice.success({
+                                title:"删除成功"
+                            })
+                        }else{
+                            this.$Message.error({
+                                title:"删除失败："+res.data.message
+                            })
+                        }
+                    })
+                }
+
+
+            })
         }
 
         

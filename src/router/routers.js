@@ -562,6 +562,16 @@ export default [{
                 },
                 component: () =>
                     import ("@/view/components/change/change_tap.vue")
+            },
+            {
+                path: "change_file",
+                name: "change_file",
+                meta: {
+                    icon: "md-filing",
+                    title: "文件目录"
+                },
+                component: () =>
+                    import ("@/view/components/change/change_file.vue")
             }
 
         ]

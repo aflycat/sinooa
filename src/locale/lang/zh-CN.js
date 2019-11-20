@@ -33,6 +33,7 @@ export default {
     fund_development: "基金开发",
     fund_approval: "基金立项",
     fund_change: "基金变动",
+    change_file: "文件目录",
     fund_add: "人员录入",
     cost: "消费报销",
     travel: "差旅费报销",

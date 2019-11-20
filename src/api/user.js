@@ -42,8 +42,17 @@ export const operationTaskAdd = (data) => {
 
 //文件上传
 export const uploadFile = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/taskfile/add/",
+            data,
+            method: 'post'
+        })
+    }
+    //删除文件
+    //"TaskFileID":"12"
+export const deleteFile = (data) => {
     return axios.request({
-        url: "http://120.78.154.66:8089/api/taskfile/add/",
+        url: 'http://120.78.154.66:8089/api/taskfile/del/',
         data,
         method: 'post'
     })
