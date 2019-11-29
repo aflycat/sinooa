@@ -149,8 +149,105 @@ export const getTaskDetail = (data) => {
     //待办任务获取任务详情
     //	"TaskID":"96"
 export const getDealTaskDetail = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/projecttask/query/',
+            data,
+            method: 'post'
+        })
+    }
+    //TaskID: 337
+    //获取费用报销信息信息
+export const getIncoexpeTask = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/incoexpetask/query',
+            data,
+            method: 'post'
+        })
+    }
+    //获取所有的流程目录
+    //FatherTypeID: 0
+export const getAllListquery = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/tasktype/listquery',
+            data,
+            method: 'post'
+        })
+    }
+    //获取某个流程的具体信息
+    //TaskTypeID: 6
+export const getListDetail = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/tasktype/query',
+            data,
+            method: 'post'
+        })
+    }
+    //删除某个流程
+    //	"TaskTypeID":"31"
+export const delList = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/projecttask/query/',
+        url: 'http://120.78.154.66:8089/api/tasktype/del',
+        data,
+        method: 'post'
+    })
+}
+
+//删除这个流程下的某个步骤
+
+
+
+//修改这个流程下的某个步骤
+// {
+// 	"TaskTypeID":"31",
+// 	"FatherTypeID":"2",
+// 	"TypeName":"项目预立项报告1",
+// 	"NumberPrefix":"\"KHDM\"00-1",
+// 	"ApiAdd":"api/projecttask/pmtadd1",
+// 	"ApiAddtofile":"api/projecttask/pmtaddtofile1",
+// 	"ApiQuery":"api/projecttask/query1",
+// 	"ApiModagree":"api/projecttask/pmtmodagree1",
+// 	"UI":"DevelopComponent1",
+// 	"CurYear":"0",
+// 	"CurNumber":"0",
+// 	"TypeStatus":"1",
+// 	"FlowTemplates":[
+// 		{"ID":"0", "TaskTypeID":"31", "FlowID":"1", "FlowSummary":"项目主办审批", "FlowRequire":"1", "FlowTimeLimit":"2", "FlowOwner":"", "FlowGroup":"2"},
+// 		{"ID":"0", "TaskTypeID":"31", "FlowID":"2", "FlowSummary":"项目经理审批", "FlowRequire":"101", "FlowTimeLimit":"2", "FlowOwner":"", "FlowGroup":"1"},
+// 		{"ID":"0", "TaskTypeID":"31", "FlowID":"3", "FlowSummary":"公司经理审批", "FlowRequire":"1001", "FlowTimeLimit":"1", "FlowOwner":"b826ed4a-4ac6-46d8-937c-afa2839866b3", "FlowGroup":"0"},
+// 		{"ID":"0", "TaskTypeID":"31", "FlowID":"3", "FlowSummary":"公司经理审批", "FlowRequire":"1001", "FlowTimeLimit":"1", "FlowOwner":"b826ed4a-4ac6-46d8-937c-afa2839866b4", "FlowGroup":"0"},
+// 		{"ID":"0", "TaskTypeID":"31", "FlowID":"4", "FlowSummary":"抄送项目成员", "FlowRequire":"10001", "FlowTimeLimit":"1", "FlowOwner":"", "FlowGroup":"3"}
+// 	]
+// }
+export const modList = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/tasktype/mod/',
+        data,
+        method: 'post'
+    })
+}
+
+//增加这个流程下的步骤
+// {
+// 	"TaskTypeID":"0",
+// 	"FatherTypeID":"2",
+// 	"TypeName":"项目预立项报告",
+// 	"NumberPrefix":"\"KHDM\"00-",
+// 	"ApiAdd":"api/projecttask/pmtadd",
+// 	"ApiAddtofile":"api/projecttask/pmtaddtofile",
+// 	"ApiQuery":"api/projecttask/query",
+// 	"ApiModagree":"api/projecttask/pmtmodagree",
+// 	"UI":"DevelopComponent",
+// 	"FlowTemplates":[
+// 		{"ID":"0", "TaskTypeID":"0", "FlowID":"1", "FlowSummary":"项目主办审批", "FlowRequire":"1", "FlowTimeLimit":"2", "FlowOwner":"", "FlowGroup":"2"},
+// 		{"ID":"0", "TaskTypeID":"0", "FlowID":"2", "FlowSummary":"项目经理审批", "FlowRequire":"101", "FlowTimeLimit":"2", "FlowOwner":"", "FlowGroup":"1"},
+// 		{"ID":"0", "TaskTypeID":"0", "FlowID":"3", "FlowSummary":"公司经理审批", "FlowRequire":"1001", "FlowTimeLimit":"1", "FlowOwner":"b826ed4a-4ac6-46d8-937c-afa2839866b3", "FlowGroup":"0"},
+// 		{"ID":"0", "TaskTypeID":"0", "FlowID":"3", "FlowSummary":"公司经理审批", "FlowRequire":"1001", "FlowTimeLimit":"1", "FlowOwner":"b826ed4a-4ac6-46d8-937c-afa2839866b4", "FlowGroup":"0"},
+// 		{"ID":"0", "TaskTypeID":"0", "FlowID":"4", "FlowSummary":"抄送项目成员", "FlowRequire":"10001", "FlowTimeLimit":"1", "FlowOwner":"", "FlowGroup":"3"}
+// 	]
+// }
+export const addListChild = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/tasktype/add/',
         data,
         method: 'post'
     })

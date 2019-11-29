@@ -379,10 +379,7 @@
                                 <span v-if="!loading">同意</span>
                                 <span v-else>提交中...</span>
                             </Button> 
-                            <Button  style="margin-right: 8px" type="warning">
-                               修改
-                                
-                            </Button>  
+                           <Button @click="showReturnModal"  style="margin-right: 8px" type="warning">修改</Button>
                             <Button :loading="loading2"  style="margin-right: 8px" type="error">
                                 <span v-if="!loading">驳回</span>
                                 <span v-else>提交中...</span>
@@ -477,9 +474,7 @@ export default {
                     Members:[]//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
                 }
             },
-            getdata:{
-                taskFiles:[]
-            },
+           
             cityData:[],
             industryObj:{},
             proTypeObj:{},
@@ -588,6 +583,8 @@ export default {
         },showUploadFile(){
             //显示modal
             this.$refs["uploadModal"].showModal(true);
+        },showReturnModal(){
+            this.$refs['stepModal'].showModal(true)
         },loadMember(obj){
             obj.map(item=>{
                 switch (item.memberType){
@@ -683,11 +680,11 @@ export default {
         },deleteOriginFile(fileId,fileName,index){
             this.$Modal.warning({
                 title:'删除',
-                content:'是否删除问价：'+fileName,
+                content:'是否删除文件：'+fileName,
                 onOk:()=>{
                     deleteFile({TaskFileID:fileId}).then(res=>{
                         if(res.data.code==2203){
-                            this.getdata.taskFiles.splice(index,1)
+                            this.postdata.TaskFiles.splice(index,1)
                             this.$Notice.success({
                                 title:"删除成功"
                             })

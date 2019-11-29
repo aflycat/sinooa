@@ -54,6 +54,7 @@ export default {
     information: "个人信息",
     process: "流程设置",
     role: "角色管理",
+    default_excel: '自定义模板',
     member: "人员管理",
     components: "组件",
     define_process: "动态模板流程",

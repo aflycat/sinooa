@@ -591,8 +591,7 @@ export default {
             })
         },
         getprogectType(){
-            //  TypeObj:{},
-            // RoleObj:{},
+
             getprogectType({"PageIndex":1,"PageSize":1000}).then(res=>{
                  if(res.data.code==0){
                     res.data.projectTypeList.forEach(element => {

@@ -605,6 +605,15 @@ export default [{
                 },
                 component: () =>
                     import ("@/view/components/setting/process.vue")
+            }, {
+                path: "default_excel",
+                name: "default_excel",
+                meta: {
+                    icon: "ios-podium",
+                    title: "自定义模板"
+                },
+                component: () =>
+                    import ("@/view/components/setting/default_excel.vue")
             },
             {
                 path: "role",
