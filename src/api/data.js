@@ -164,8 +164,18 @@ export const getIncoexpeTask = (data) => {
             method: 'post'
         })
     }
-    //获取所有的流程目录
-    //FatherTypeID: 0
+    //获取工资发放数据
+export const getPayDetail = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/paytask/query',
+        data,
+        method: 'post'
+    })
+}
+
+
+//获取所有的流程目录
+//FatherTypeID: 0
 export const getAllListquery = (data) => {
         return axios.request({
             url: 'http://120.78.154.66:8089/api/tasktype/listquery',
