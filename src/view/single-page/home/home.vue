@@ -35,6 +35,7 @@
               <router-link to="/normal/enclosure_search">
                 <Card class="narmalBtn">
                   <!-- <Icon type="md-pricetags" /> -->
+                  
                   <Icon type="md-attach" size="36" color="rgb(179, 127, 235)"/>
                   <p style="color:#515a6e;">附件查询</p>
                 </Card>

@@ -44,11 +44,25 @@ export default {
     wage: "工资费用发放",
     borrow: "个人借款",
     cast: "基金投决会会议",
+
+    platformset: "权属平台",
+    platform_app: "平台申请",
+    platform_list: "平台列表",
+    platform_change: "平台修改",
+
+    department_set: "部门设置",
+    department_app: "部门申请",
+    department_change: "部门修改",
+
+    department_list: "部门列表",
+
     change_manager: "变动管理",
     change_program: "项目变动",
     change_role: "角色变动",
     change_admin: "权限变动",
     change_tap: "页签变动",
+    change_platform: "权属平台",
+    change_department: "部门管理",
     change_schedule: "进度计划",
     setting: "设置",
     information: "个人信息",

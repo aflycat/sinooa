@@ -166,13 +166,104 @@ export const getIncoexpeTask = (data) => {
     }
     //获取工资发放数据
 export const getPayDetail = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/paytask/query',
+            data,
+            method: 'post'
+        })
+    }
+    //获取所有的部门信息
+export const getAllDepartment = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/depttask/deptlistquery",
+            data,
+            method: "post"
+
+        })
+    }
+    //获取某个部门的信息
+export const getDepartmentDetail = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/depttask/deptquery",
+            data,
+            method: "post"
+
+        })
+    }
+    //部门信息提交不提交文件
+export const upDepartment = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/depttask/dmtadd",
+            data,
+            method: "post"
+
+        })
+    }
+    //部门信息提交并提交文件
+export const getDepartmentFile = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/depttask/dmtaddtofile",
+            data,
+            method: "post"
+
+        })
+    }
+    //审批部门申请并同意
+export const setDepartment = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/paytask/query',
+        url: "http://120.78.154.66:8089/api/depttask/dmtmodagree",
         data,
-        method: 'post'
+        method: "post"
+
     })
 }
 
+
+//获取某个平台的信息
+export const getPlatform = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/plattask/platquery",
+            data,
+            method: "post"
+
+        })
+    }
+    //获取所有的平台信息
+export const geAllPlatformDetail = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/plattask/platlistquery",
+            data,
+            method: "post"
+
+        })
+    }
+    //平台信息新增和修改不提交文件
+export const upPlatform = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/plattask/pmtadd",
+            data,
+            method: "post"
+
+        })
+    }
+    //平台信息新增和修改提交文件
+export const upPlatformFile = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/plattask/pmtaddtofile",
+            data,
+            method: "post"
+
+        })
+    }
+    //审批平台信息并同意
+export const setPlatform = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/plattask/pmtmodagree",
+        data,
+        method: "post"
+
+    })
+}
 
 //获取所有的流程目录
 //FatherTypeID: 0
@@ -201,6 +292,11 @@ export const delList = (data) => {
         method: 'post'
     })
 }
+
+
+
+
+
 
 //删除这个流程下的某个步骤
 

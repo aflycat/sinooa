@@ -52,7 +52,6 @@ export default {
             } else {
 
             }
-            console.log(token)
             state.token = token
             setToken(token)
         },
@@ -139,8 +138,7 @@ export default {
             console.log(state)
             return new Promise((resolve, reject) => {
                 try {
-                    getUserInfo(state.userId).then(res => {
-                        console.log(res)
+                    getUserInfo(localStorage.getItem('userId')).then(res => {
                         const data = res.data
                         commit('setAvatar', ' https://file.iviewui.com/dist/a0e88e83800f138b94d2414621bd9704.png')
                         commit('setUserName', data.userName)

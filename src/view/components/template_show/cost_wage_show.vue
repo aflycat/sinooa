@@ -81,14 +81,13 @@
                     <Col span="24">
                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
                                 <p class="fileName" v-for="(item,index) in fileName" :key="index">
-                                    <Row >
+                                    <Row>
                                         <Col span="20">
                                             <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
                                             <span style="color:#808695;font-size:12px;">{{item.file}}</span>
                                         </Col>
                                         <Col span="4" style="color:#ed4014;cursor:pointer;" >
-                                        <span @click="deleteFile(index)">删除</span> 
-                                        
+                                            <span @click="deleteFile(index)">删除</span> 
                                         </Col>
                                     </Row>
                                 </p>
@@ -129,7 +128,6 @@ export default {
        taskFlowID:String,
         taskID:String,
         taskTypeID:String
-
     },
     data(){
         return{

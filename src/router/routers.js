@@ -506,6 +506,88 @@ export default [{
         ]
     },
     {
+        path: "/platform",
+        name: "platformset",
+        meta: {
+            icon: "md-flag",
+            title: "权属平台管理"
+        },
+        component: Main,
+        children: [{
+                path: 'platfoem_app',
+                name: "platform_app",
+                meta: {
+                    icon: "md-add",
+                    title: "平台申请"
+                },
+                component: () =>
+                    import ("@/view/components/platform/application.vue")
+
+            }, {
+                path: 'platform_change',
+                name: "platform_change",
+                meta: {
+                    icon: "md-sync",
+                    title: "平台修改"
+                },
+                component: () =>
+                    import ("@/view/components/platform/change.vue")
+
+            },
+            {
+                path: "platform_list",
+                name: "platform_list",
+                meta: {
+                    icon: "ios-apps",
+                    title: "平台列表"
+                },
+                component: () =>
+                    import ("@/view/components/platform/list.vue")
+            }
+        ]
+    }, {
+        path: "/department",
+        name: "department_set",
+        meta: {
+            icon: "ios-contacts",
+            title: "部门管理",
+
+        },
+        component: Main,
+        children: [{
+                path: "department_app",
+                name: "department_app",
+                meta: {
+                    icon: "md-add",
+                    title: "部门申请"
+                },
+                component: () =>
+                    import ("@/view/components/department/application.vue")
+            }, {
+                path: 'department_change',
+                name: "department_change",
+                meta: {
+                    icon: "md-sync",
+                    title: "部门修改"
+                },
+                component: () =>
+                    import ("@/view/components/department/change.vue")
+
+            },
+            {
+                path: "department_list",
+                name: "department_list",
+                meta: {
+                    icon: "ios-apps-outline",
+                    title: "部门列表"
+                },
+                component: () =>
+                    import ("@/view/components/department/list.vue")
+
+            }
+        ]
+    },
+    {
         path: "/change",
         name: "change_manager",
         meta: {
@@ -572,7 +654,27 @@ export default [{
                 },
                 component: () =>
                     import ("@/view/components/change/change_file.vue")
-            }
+            },
+            // {
+            //     path: "change_platform",
+            //     name: "change_platform",
+            //     meta: {
+            //         icon: "md-flag",
+            //         title: "权属平台"
+            //     },
+            //     component: () =>
+            //         import ("@/view/components/change/change_platform.vue")
+            // },
+            // {
+            //     path: "change_department",
+            //     name: "change_department",
+            //     meta: {
+            //         icon: "logo-codepen",
+            //         title: "部门管理"
+            //     },
+            //     component: () =>
+            //         import ("@/view/components/change/change_department.vue")
+            // }
 
         ]
     },
