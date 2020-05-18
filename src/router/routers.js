@@ -191,71 +191,7 @@ export default [{
 
         ]
     },
-    {
-        path: "/company",
-        name: "Company_operation",
-        meta: {
-            title: "公司运营",
-            icon: "md-planet"
-        },
-        component: Main,
-        children: [{
-            path: "generral_manager",
-            name: "generral_manager",
-            meta: {
-                icon: "ios-person",
-                title: "总经理会事宜报告"
-            },
-            component: () =>
-                import ("@/view/components/operation/manager.vue")
-        }, {
-            path: "partner",
-            name: "partner",
-            meta: {
-                icon: "md-people",
-                title: "合伙人会事宜报告"
-            },
-            component: () =>
-                import ("@/view/components/operation/parnter.vue")
-        }, {
-            path: "shareholder",
-            name: "shareholder",
-            meta: {
-                icon: "ios-man",
-                title: "股东会事宜报告"
-            },
-            component: () =>
-                import ("@/view/components/operation/shareholder.vue")
-        }, {
-            path: "director",
-            name: "director",
-            meta: {
-                icon: "ios-people",
-                title: "董事会事宜报告"
-            },
-            component: () =>
-                import ("@/view/components/operation/director.vue")
-        }, {
-            path: "supervisor",
-            name: "supervisor",
-            meta: {
-                icon: "md-person",
-                title: "监事会事宜报告"
-            },
-            component: () =>
-                import ("@/view/components/operation/supervisor.vue")
-        }, {
-            path: "custom",
-            name: "custom",
-            meta: {
-                icon: "md-git-merge",
-                title: "自设流程事宜报告"
-            },
-            component: () =>
-                import ("@/view/components/operation/custom.vue")
-        }]
 
-    },
     {
         path: "/program",
         name: "program",
@@ -265,87 +201,112 @@ export default [{
         },
         component: Main,
         children: [{
-            path: "development",
-            name: "development",
-            meta: {
-                icon: "md-code-download",
-                title: "项目开发"
+                path: "development",
+                name: "development",
+                meta: {
+                    icon: "md-code-download",
+                    title: "项目开发"
+                },
+                component: () =>
+                    import ("@/view/components/program/development.vue")
+            }, {
+                path: "approval",
+                name: "approval",
+                meta: {
+                    icon: "md-code-working",
+                    title: "项目立项"
+                },
+                component: () =>
+                    import ("@/view/components/program/approval.vue")
+            }, {
+                path: "change",
+                name: "change",
+                meta: {
+                    icon: "md-fastforward",
+                    title: "项目变动"
+                },
+                component: () =>
+                    import ("@/view/components/program/change.vue")
+            }, {
+                path: "progress",
+                name: "progress",
+                meta: {
+                    icon: "ios-map",
+                    title: "项目进展"
+                },
+                component: () =>
+                    import ("@/view/components/program/progress.vue")
             },
-            component: () =>
-                import ("@/view/components/program/development.vue")
-        }, {
-            path: "approval",
-            name: "approval",
-            meta: {
-                icon: "md-code-working",
-                title: "项目立项"
+            {
+                path: "summary",
+                name: "summary",
+                meta: {
+                    icon: "md-pricetag",
+                    title: "项目总结"
+                },
+                component: () =>
+                    import ("@/view/components/program/summary.vue")
             },
-            component: () =>
-                import ("@/view/components/program/approval.vue")
-        }, {
-            path: "change",
-            name: "change",
-            meta: {
-                icon: "md-fastforward",
-                title: "项目变动"
+            {
+                path: "file",
+                name: "file",
+                meta: {
+                    icon: "ios-folder",
+                    title: "专业文件"
+                },
+                component: () =>
+                    import ("@/view/components/program/file.vue")
+            }, {
+                path: "agreement",
+                name: "agreement",
+                meta: {
+                    icon: "md-clipboard",
+                    title: "业务协议"
+                },
+                component: () =>
+                    import ("@/view/components/program/agreement.vue")
+            }, {
+                path: "other",
+                name: "other",
+                meta: {
+                    icon: "ios-link",
+                    title: "其他事宜"
+                },
+                component: () =>
+                    import ("@/view/components/program/other.vue")
+            }, {
+                path: "programlist",
+                name: "programlist",
+                meta: {
+                    icon: "md-pricetag",
+                    title: "项目列表"
+                },
+                component: () =>
+                    import ("@/view/components/program/prolist.vue")
+            }, {
+                path: "customlist",
+                name: "customlist",
+                meta: {
+                    icon: "md-pricetag",
+                    title: "客户列表"
+                },
+                component: () =>
+                    import ("@/view/components/program/customlist.vue")
             },
-            component: () =>
-                import ("@/view/components/program/change.vue")
-        }, {
-            path: "progress",
-            name: "progress",
-            meta: {
-                icon: "ios-map",
-                title: "项目进展"
-            },
-            component: () =>
-                import ("@/view/components/program/progress.vue")
-        }, {
-            path: "investment",
-            name: "investment",
-            meta: {
-                icon: "ios-medical",
-                title: "项目投资"
-            },
-            component: () =>
-                import ("@/view/components/program/investment.vue")
-        }, {
-            path: "summary",
-            name: "summary",
-            meta: {
-                icon: "md-pricetag",
-                title: "项目总结"
-            },
-            component: () =>
-                import ("@/view/components/program/summary.vue")
-        }, {
-            path: "file",
-            name: "file",
-            meta: {
-                icon: "ios-folder",
-                title: "专业文件"
-            },
-            component: () =>
-                import ("@/view/components/program/file.vue")
-        }, {
-            path: "agreement",
-            name: "agreement",
-            meta: {
-                icon: "md-clipboard",
-                title: "业务协议"
-            },
-            component: () =>
-                import ("@/view/components/program/agreement.vue")
-        }, {
-            path: "other",
-            name: "other",
-            meta: {
-                icon: "ios-link",
-                title: "其他事宜"
-            },
-            component: () =>
-                import ("@/view/components/program/other.vue")
-        }]
+            {
+                path: "dynamic_template",
+                name: "dynamic_template",
+                meta: {
+                    icon: "md-bulb",
+                    title: "动态模板"
+                },
+                component: () =>
+                    import ("@/view/components/program/dynamicTemplate.vue")
+            }
+
+
+        ]
+
 
     },
     {
@@ -412,6 +373,25 @@ export default [{
                 },
                 component: () =>
                     import ("@/view/components/fund/fund_partner.vue")
+            },
+            {
+                path: "fund_investment",
+                name: "fund_investment",
+                meta: {
+                    icon: "md-person-add",
+                    title: "基金投资"
+                },
+                component: () =>
+                    import ("@/view/components/fund/investment.vue")
+            }, {
+                path: "fund_exit",
+                name: "fund_exit",
+                meta: {
+                    icon: "md-person-add",
+                    title: "基金退出"
+                },
+                component: () =>
+                    import ("@/view/components/fund/exit.vue")
             },
             {
                 path: "fund_add",
@@ -521,6 +501,7 @@ export default [{
                     title: "平台申请"
                 },
                 component: () =>
+                    // import ("@/view/components/template_show/platform_show.vue")
                     import ("@/view/components/platform/application.vue")
 
             }, {
@@ -543,7 +524,62 @@ export default [{
                 },
                 component: () =>
                     import ("@/view/components/platform/list.vue")
-            }
+            }, {
+                path: "generral_manager",
+                name: "generral_manager",
+                meta: {
+                    icon: "ios-person",
+                    title: "总经理会事宜报告"
+                },
+                component: () =>
+                    import ("@/view/components/operation/manager.vue")
+            }, {
+                path: "partner",
+                name: "partner",
+                meta: {
+                    icon: "md-people",
+                    title: "合伙人会事宜报告"
+                },
+                component: () =>
+                    import ("@/view/components/operation/parnter.vue")
+            }, {
+                path: "shareholder",
+                name: "shareholder",
+                meta: {
+                    icon: "ios-man",
+                    title: "股东会事宜报告"
+                },
+                component: () =>
+                    import ("@/view/components/operation/shareholder.vue")
+            }, {
+                path: "director",
+                name: "director",
+                meta: {
+                    icon: "ios-people",
+                    title: "董事会事宜报告"
+                },
+                component: () =>
+                    import ("@/view/components/operation/director.vue")
+            }, {
+                path: "supervisor",
+                name: "supervisor",
+                meta: {
+                    icon: "md-person",
+                    title: "监事会事宜报告"
+                },
+                component: () =>
+                    import ("@/view/components/operation/supervisor.vue")
+            },
+            //  {
+            //     path: "custom",
+            //     name: "custom",
+            //     meta: {
+            //         icon: "md-git-merge",
+            //         title: "自设流程事宜报告"
+            //     },
+            //     component: () =>
+            //         import ("@/view/components/operation/custom.vue")
+            // }
         ]
     }, {
         path: "/department",
@@ -562,6 +598,8 @@ export default [{
                     title: "部门申请"
                 },
                 component: () =>
+                    // import ("@/view/components/template_show/department_show.vue")
+
                     import ("@/view/components/department/application.vue")
             }, {
                 path: 'department_change',
@@ -707,7 +745,8 @@ export default [{
                 },
                 component: () =>
                     import ("@/view/components/setting/process.vue")
-            }, {
+            },
+            {
                 path: "default_excel",
                 name: "default_excel",
                 meta: {
@@ -717,6 +756,7 @@ export default [{
                 component: () =>
                     import ("@/view/components/setting/default_excel.vue")
             },
+
             {
                 path: "role",
                 name: "role",
@@ -869,85 +909,85 @@ export default [{
     //         }
     //     ]
     // },
-    {
-        path: "/update",
-        name: "update",
-        meta: {
-            icon: "md-cloud-upload",
-            title: "数据上传"
-        },
-        component: Main,
-        children: [{
-                path: "update_table_page",
-                name: "update_table_page",
-                meta: {
-                    icon: "ios-document",
-                    title: "上传Csv"
-                },
-                component: () =>
-                    import ("@/view/update/update-table.vue")
-            },
-            {
-                path: "update_paste_page",
-                name: "update_paste_page",
-                meta: {
-                    icon: "md-clipboard",
-                    title: "粘贴表格数据"
-                },
-                component: () =>
-                    import ("@/view/update/update-paste.vue")
-            }
-        ]
-    },
-    {
-        path: "/excel",
-        name: "excel",
-        meta: {
-            icon: "ios-stats",
-            title: "EXCEL导入导出"
-        },
-        component: Main,
-        children: [{
-                path: "upload-excel",
-                name: "upload-excel",
-                meta: {
-                    icon: "md-add",
-                    title: "导入EXCEL"
-                },
-                component: () =>
-                    import ("@/view/excel/upload-excel.vue")
-            },
-            {
-                path: "export-excel",
-                name: "export-excel",
-                meta: {
-                    icon: "md-download",
-                    title: "导出EXCEL"
-                },
-                component: () =>
-                    import ("@/view/excel/export-excel.vue")
-            }
-        ]
-    },
-    {
-        path: "/define_process",
-        name: "define_process",
-        meta: {
-            icon: "ios-stats",
-            title: "动态模板流程"
-        },
-        component: Main,
-        children: [{
-            path: "define_excel",
-            name: "define_excel",
-            meta: {
-                icon: "ios-grid",
-                title: "自定义表单"
-            },
-            component: () =>
-                import ("@/view/components/define/excel.vue")
-        }]
-    },
+    // {
+    //     path: "/update",
+    //     name: "update",
+    //     meta: {
+    //         icon: "md-cloud-upload",
+    //         title: "数据上传"
+    //     },
+    //     component: Main,
+    //     children: [{
+    //             path: "update_table_page",
+    //             name: "update_table_page",
+    //             meta: {
+    //                 icon: "ios-document",
+    //                 title: "上传Csv"
+    //             },
+    //             component: () =>
+    //                 import ("@/view/update/update-table.vue")
+    //         },
+    //         {
+    //             path: "update_paste_page",
+    //             name: "update_paste_page",
+    //             meta: {
+    //                 icon: "md-clipboard",
+    //                 title: "粘贴表格数据"
+    //             },
+    //             component: () =>
+    //                 import ("@/view/update/update-paste.vue")
+    //         }
+    //     ]
+    // },
+    // {
+    //     path: "/excel",
+    //     name: "excel",
+    //     meta: {
+    //         icon: "ios-stats",
+    //         title: "EXCEL导入导出"
+    //     },
+    //     component: Main,
+    //     children: [{
+    //             path: "upload-excel",
+    //             name: "upload-excel",
+    //             meta: {
+    //                 icon: "md-add",
+    //                 title: "导入EXCEL"
+    //             },
+    //             component: () =>
+    //                 import ("@/view/excel/upload-excel.vue")
+    //         },
+    //         {
+    //             path: "export-excel",
+    //             name: "export-excel",
+    //             meta: {
+    //                 icon: "md-download",
+    //                 title: "导出EXCEL"
+    //             },
+    //             component: () =>
+    //                 import ("@/view/excel/export-excel.vue")
+    //         }
+    //     ]
+    // },
+    // {
+    //     path: "/define_process",
+    //     name: "define_process",
+    //     meta: {
+    //         icon: "ios-stats",
+    //         title: "动态模板流程"
+    //     },
+    //     component: Main,
+    //     children: [{
+    //         path: "define_excel",
+    //         name: "define_excel",
+    //         meta: {
+    //             icon: "ios-grid",
+    //             title: "自定义表单"
+    //         },
+    //         component: () =>
+    //             import ("@/view/components/define/excel.vue")
+    //     }]
+    // },
     // {
     //     path: "/tools_methods",
     //     name: "tools_methods",
@@ -1003,25 +1043,25 @@ export default [{
                 import ("@/view/error-store/error-store.vue")
         }]
     },
-    {
-        path: "/error_logger",
-        name: "error_logger",
-        meta: {
-            hideInBread: true,
-            hideInMenu: true
-        },
-        component: Main,
-        children: [{
-            path: "error_logger_page",
-            name: "error_logger_page",
-            meta: {
-                icon: "ios-bug",
-                title: "错误收集"
-            },
-            component: () =>
-                import ("@/view/single-page/error-logger.vue")
-        }]
-    },
+    // {
+    //     path: "/error_logger",
+    //     name: "error_logger",
+    //     meta: {
+    //         hideInBread: true,
+    //         hideInMenu: true
+    //     },
+    //     component: Main,
+    //     children: [{
+    //         path: "error_logger_page",
+    //         name: "error_logger_page",
+    //         meta: {
+    //             icon: "ios-bug",
+    //             title: "错误收集"
+    //         },
+    //         component: () =>
+    //             import ("@/view/single-page/error-logger.vue")
+    //     }]
+    // },
     // {
     //     path: "/directive",
     //     name: "directive",
@@ -1104,38 +1144,38 @@ export default [{
     //         }
     //     ]
     // },
-    {
-        path: "/argu",
-        name: "argu",
-        meta: {
-            hideInMenu: true
-        },
-        component: Main,
-        children: [{
-                path: "params/:id",
-                name: "params",
-                meta: {
-                    icon: "md-flower",
-                    title: route => `{{ params }}-${route.params.id}`,
-                    notCache: true,
-                    beforeCloseName: "before_close_normal"
-                },
-                component: () =>
-                    import ("@/view/argu-page/params.vue")
-            },
-            {
-                path: "query",
-                name: "query",
-                meta: {
-                    icon: "md-flower",
-                    title: route => `{{ query }}-${route.query.id}`,
-                    notCache: true
-                },
-                component: () =>
-                    import ("@/view/argu-page/query.vue")
-            }
-        ]
-    },
+    // {
+    //     path: "/argu",
+    //     name: "argu",
+    //     meta: {
+    //         hideInMenu: true
+    //     },
+    //     component: Main,
+    //     children: [{
+    //             path: "params/:id",
+    //             name: "params",
+    //             meta: {
+    //                 icon: "md-flower",
+    //                 title: route => `{{ params }}-${route.params.id}`,
+    //                 notCache: true,
+    //                 beforeCloseName: "before_close_normal"
+    //             },
+    //             component: () =>
+    //                 import ("@/view/argu-page/params.vue")
+    //         },
+    //         {
+    //             path: "query",
+    //             name: "query",
+    //             meta: {
+    //                 icon: "md-flower",
+    //                 title: route => `{{ query }}-${route.query.id}`,
+    //                 notCache: true
+    //             },
+    //             component: () =>
+    //                 import ("@/view/argu-page/query.vue")
+    //         }
+    //     ]
+    // },
     // {
     //     path: "/401",
     //     name: "error_401",

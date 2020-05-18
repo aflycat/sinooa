@@ -6,34 +6,28 @@
                 <Row>
                      <Col span="24">
                         <FormItem label="任务编号：">
-                            {{postdata.TaskNumber}}
+                            <b> {{postdata.TaskNumber}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24">
                         <FormItem label="事项要点：">
-                             <Input v-model="postdata.TaskName" placeholder='请输入事项要点'></Input>
+                            <b>{{postdata.TaskName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
-                        <FormItem label="事项标签：">
-                            <!-- {{getdata.taskNumber||''}} -->
-
-                        </FormItem>
-                    </Col>
+                   
                     <Col span="12">
                         <FormItem label="报送人：">
-                            {{postdata.TaskOwnerName}}
+                            <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="联系电话：">
-                           {{ postdata.TaskOwnerPhone}}
+                           <b>{{ postdata.TaskOwnerPhone}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24">
                         <FormItem label="报送内容：">
-
-                             <Input v-model="postdata.TaskSummary" type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入具体内容"></Input>
+                           <b> {{postdata.TaskSummary}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24" v-if="postdata.TaskFiles.length>0" >
@@ -49,286 +43,190 @@
                 </Row>
                  </Form>    
         </Card>
-        <Card  class="itemCard">
+           
+            <Card  class="itemCard">
                 <p slot="title">基金基本信息</p>
-                <Form :label-width="110">
+                <Form :label-width="120">
                     <Row>
-  
+                        <Col span="8">
+                            <FormItem label="权属平台：" >
+                                <b> {{platformList[postdata.Fund.PlatformID]}}</b>
+
+                              
+                            </FormItem>
+                        </Col>
                          <Col span="8">
                             <FormItem label="基金全称：">
-                                 {{postdata.Client.ClientName}}
+                                 <b>{{ postdata.TaskOwnerPhone}}</b>
                             </FormItem>   
                         </Col>
                           <Col span="8">
                             <FormItem label="基金简称：">
-                                 {{postdata.Client.ClientShortName}}
+                                <b>{{ postdata.TaskOwnerPhone}}</b>
                             </FormItem>   
                         </Col>
-                         <Col span="8">
-                            <FormItem label="所在省市：">
-                                {{cityData[postdata.Client.ClientName]}}
-                            </FormItem>
+                        <Col span="8">
+                            <FormItem label="基金类型：">
+                                {{postdata.Fund.RegType}}
+                              
+                            </FormItem>   
                         </Col>
-                         <Col span="8">
-                            <FormItem label="注册地址：">
-                               {{postdata.Client.ClientAddress}}
+                        <Col span="8">
+                            <FormItem label="注册地址：" prop="ClientOpenDate">
+                                <b>{{ postdata.Fund.Address}}</b>
                             </FormItem>   
                         </Col>
                           <Col span="8">
-                            <FormItem label="注册日期：" >
-                                <!-- {{postdata.client.clientOpenDate.replace("T"," ").substr(0,16)}} -->
+                            <FormItem label="注册日期：" prop="ClientOpenDate">
+                                <b>{{ postdata.Fund.RegDate.substr(0,10)}}</b>
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem label="成立日期：" >
-                                  {{postdata.Client.ClientOpenDate.replace("T"," ").substr(0,10)}}
-                            </FormItem>   
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="备案日期：" ></FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="终止日期：" ></FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="备案编码：" ></FormItem>   
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="存续期限：" ></FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="经营范围：" >
-                                 {{postdata.Client.ClientScope}}
-                            </FormItem>   
-                        </Col>
-                        
-                         <Col span="8">
-                            <FormItem label="客户代码：" >
-                                 {{postdata.Client.ClientCode}}
+                            <FormItem label="成立日期：" prop="ClientOpenDate">
                                 
+                                <b>{{ postdata.Fund.OpenDate.substr(0,10)}}</b>
                             </FormItem>   
                         </Col>
-                      
-                      
+                         <Col span="8">
+                            <FormItem label="备案日期：" prop="ClientOpenDate">
+                                 <b>{{ postdata.Fund.RecordDate.substr(0,10)}}</b>
+                            </FormItem>   
+                        </Col>
                         <Col span="8">
-                            <FormItem label="联系人员：" >
-                                    {{postdata.Client.ClientContact}}
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="联系电邮：" >
-                                     {{postdata.Client.ClientContactEmail}}
-                            </FormItem>   
-                        </Col>
-
-                         <Col span="8">
-                            <FormItem label="联系电话：" >
-                                {{postdata.Client.ClientContactPhone}}
+                            <FormItem label="终止日期：" prop="ClientOpenDate">
+                                <b>{{ postdata.Fund.EndDate.substr(0,10)}}</b>
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem label="联系传真：" >
-                                 {{postdata.Client.ClientContactFax}}
+                            <FormItem label="基金代码：" >
+                                <b>{{ postdata.Fund.FundCode}}</b>
                             </FormItem>   
                         </Col>
-                       <Col span="8">
-                            <FormItem label="投资项目数量：" >
-                               <!-- {{postdata.client.}}个 -->
-                            </FormItem>
-                        </Col>
                          <Col span="8">
-                            <FormItem label="退出项目数量："  >
-                                <!-- {{postdata.client.}}个 -->
-                            </FormItem>
+                            <FormItem label="协会登记编码：" >
+                                <b>{{ postdata.Fund.RegSCode}}</b>
+                            </FormItem>   
+                        </Col>
+                        <Col span="8">
+                            <FormItem label="社会统一代码：" >
+                                 <b>{{ postdata.Fund.CodsCode}}</b>
+                            </FormItem>   
                         </Col>
                     </Row>
 
                 </Form>
             </Card>
-               
+            <Card  class="itemCard">
+                <p slot="title">基金存续期限</p>
+                     <Form :label-width="100">
+                        <Row>
+                            <Col span="8">
+                                <FormItem label="存续开始：" prop="ClientOpenDate">
+                                    <b>{{ postdata.Fund.LiveStartDate.substr(0,10)}}</b>
+                                </FormItem>  
+                             </Col>
+                             <Col span="8">
+                                <FormItem label="存续结束：" prop="ClientOpenDate">
+                                     <b>{{ postdata.Fund.LiveEndDate.substr(0,10)}}</b>
+                                </FormItem>  
+                             </Col>
+                         </Row>
+                     </Form>
+                    
+                <Table :columns="progress" :data="progressData"></Table>    
+            </Card>  
             <Card  class="itemCard">
                 <p slot="title">基金成员信息</p>
-                 <Form :label-width="160">
+                 <Form :label-width="150">
+                    <Card  v-for="(item,index) in postdata.Members" :key='index' style="margin-bottom:15px;">
                         <Row>
-                         <Col span="12">
-                            <FormItem label="基金合伙人：" >
-                               {{fundPartber.toString()}} 
-                            </FormItem>
-                        </Col>
-                        <Col span="12">
-                            <FormItem label="投决会委员：" >
-                                 {{fundDecNer.toString()}} 
-                            </FormItem>
-                        </Col>
-                         <Col span="12">
-                            <FormItem label="基金成员：" >
-                                {{fundMemer.toString()}} 
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="合伙人数量：" >
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="普通合伙人数量：" >
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="有限合伙人数量：" >
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="管理人："  >
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="普通合伙人：" >
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="执行事务合伙人：" >
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="执行事务合伙人委派代表：" >
-                            </FormItem>
-                        </Col>
-                    </Row>
+                            <Col span="8">
+                                <FormItem label="成员类型：" >
+                                    {{memTypyList[item.MemberType]}}
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="成员名字：" >
+                                     <b>{{item.MemberName}}</b>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="投资人类型：" >
+                                    <b>{{item.InvestorType}}</b>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="认缴金额：">
+                                    <b>{{item.OrderMoney}}</b>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="实缴金额：" >
+                                    <b>{{item.PaidMoney}}</b>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="份额类型：" >
+                                    <b>{{item.ShareType}}</b>
+                                    
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="管理费计提标准：" >
+                                    <b>{{item.ManageFeeRate}}</b>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="业绩报酬计提标准：" >
+                                    <b>{{item.RewardRate}}</b>
+                                </FormItem>  
+                            </Col>
+                          
+                            
+                        </Row>
+                    </Card>
                  </Form>
                   
 
             </Card>
             <Card  class="itemCard">
-                <p slot="title">基金财务信息</p>
-                <Form :label-width="120">
-                    <Row>
-                        <Col span="8">
-                            <FormItem label="认缴规模："  >
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="实缴规模："  >
-                            </FormItem>   
-                        </Col>
-
-                         <Col span="8">
-                            <FormItem label="退资规模：" >
-                            </FormItem>   
-                        </Col>
-                        <Col span="12">
-                            <FormItem label="管理费计提标准：" >
-                            </FormItem>
-                        </Col>
-                         <Col span="12">
-                            <FormItem label="业绩报酬计提标准：" >
-                            </FormItem>   
-                        </Col>
-                    </Row>
-
-                </Form>
-            </Card>
-            <Card  class="itemCard">
-                <p slot="title">项目信息</p>
-                  <Form :label-width="80">
-                    <Row>
-                        
-                        <Col span="8">
-                            <FormItem label="项目品种：" >
-                                {{TypeObj[postdata.Project.ProjectType] }}
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="项目角色：" >
-                                {{RoleObj[postdata.Project.ProjectRole] }}
-                            </FormItem>   
-                        </Col>
-
-                         <Col span="8">
-                            <FormItem label="项目经理：" >
-                               {{ManagerVlaue}}
-                            </FormItem>  
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="项目主办：" >
-                                 {{OwnerVlaue}}
-                            </FormItem>
-                        </Col>
-                         
-                          <Col span="16">
-                            <FormItem label="项目成员：" >
-                                 {{MemberData.toString()}}
-                            </FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="项目来源：" >
-                                {{postdata.Project.ProjectSource}}
-                            </FormItem>   
-                        </Col>
-                        <Col span="24">
-                            <FormItem label="项目内容：" >
-                               {{postdata.Project.ProjectSummary}}
-                            </FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="开始日期：" >
-                                {{postdata.Project.ProjectStartDate.replace("T"," ").substr(0,10)}}
-                            
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="结束日期：" >
-                                {{postdata.Project.ProjectEndDate.replace("T"," ").substr(0,10)}}
-
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="工时费用：">
-                                {{postdata.Project.ProjectEstimatedHourCost||0}}万元
-                                 
-                            </FormItem>   
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="直接费用：">
-                                {{postdata.Project.ProjectEstimatedFeeCost||0}}万元
-                                
-                            </FormItem>   
-                        </Col>
-                    </Row>
-
-                </Form>   
-
-            </Card>
-             <Card  class="itemCard">
             <p slot="title">审批进度</p>
-            <Form :label-width="80">
-                 <Timeline>
-                    <template v-for="(item,index) in postdata.TaskFlows">
+                <Form :label-width="80">
+                    <Timeline>
+                        <template v-for="(item,index) in postdata.TaskFlows">
 
-                        <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
-                            <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
-                                {{item.flowSummary}}  <Divider type="vertical" />
-                                {{item.flowOwnerName}} <Divider type="vertical" />
-                                 {{item.flowEmail}}
-                            </p>
-
-                            <p class="content">{{item.flowComment||''}}</p>
-                        </TimelineItem>
-                    </template>
-                </Timeline>
-            </Form>    
+                            <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
+                                <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
+                                    {{item.flowSummary}}  <Divider type="vertical" />
+                                    {{item.flowOwnerName}} <Divider type="vertical" />
+                                    {{item.flowEmail}}
+                                </p>
+                                <p class="content">{{item.flowComment||''}}</p>
+                            </TimelineItem>
+                        </template>
+                    </Timeline>
+                </Form>    
         </Card>
             <Card  class="itemCard">
-            <p slot="title">审批意见</p>
-            <Form :label-width="80">
-                  <Row>
+                <p slot="title">审批意见</p>
+                <Form :label-width="80">
                     <Col span="24">
-                        <FormItem label="审批意见">
-                            <Input  type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入具体内容"></Input>
+                        <FormItem label="快捷输入">
+                            <RadioGroup  @on-change="easzyInput">
+                                <Radio label="同意"></Radio>
+                                <Radio label="基本同意"></Radio>
+                                <Radio label="收阅执行"></Radio>
+                                <Radio label="不同意"></Radio>
+                            </RadioGroup>
                         </FormItem>
                     </Col>
-                    <Col span="24">
+                   <Col span="24">
+                        <FormItem label="审批意见">
+                            <Input v-model="FlowComment" type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入具体内容"></Input>
+                        </FormItem>
+                    </Col>
                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                                <p class="fileName" v-for="(item,index) in fileName" :key="index">
+                                <p class="fileName" v-for="(item,index) in fileName" :key='index'>
                                     <Row >
                                         <Col span="20">
                                             <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
@@ -341,265 +239,367 @@
                                     </Row>
                                 </p>
                     </FormItem>
-                    </Col>
-                    <Col span="24">
-                        <FormItem label=" ">
-                            <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                            <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmit()">
-                                <span v-if="!loading">同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-                            <Button @click="showReturnModal"  style="margin-right: 8px" type="warning">修改</Button>  
+                     <FormItem>
+                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>    
+                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
+                            <span v-if="!loading">同意</span>
+                            <span v-else>提交中...</span>
+                        </Button> 
+                            <Button @click="showReturnModal"   style="margin-right: 8px" type="warning">修改</Button>  
+                          
+                        <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
+                            <span v-if="!loading">不同意</span>
+                            <span v-else>提交中...</span>
+                        </Button>                    
 
-                            <Button :loading="loading2"  style="margin-right: 8px" type="error">
-                                <span v-if="!loading">驳回</span>
-                                <span v-else>提交中...</span>
-                                
-                            </Button> 
-                        </FormItem>
-                    </Col>
-                </Row>
-            </Form>    
-        </Card>
+                    </FormItem>
+                </Form>   
+
+            </Card>
+         
         <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
-        <return-step ref='stepModal' :taskFlowID="taskFlowID" :taskFlows="taskFlows" :FlowComment="FlowComment" :taskID="taskID"></return-step>
-      
+
     </div>
 </template>
 <script>
-import {getDealTaskDetail,getCityList,getIndustryList,getprogectType,getprogectRole,getuserList} from "@/api/data"
-import {deleteFile} from "@/api/user"
 import UploadFiles from "@/view/components/upload_file/upload_file"
-import returnStep from "@/view/components/template/return_step"
+import {TaskTypeID} from "@/libs/data"
+import {getPlatform,getuserList,addNewFundTask,getDealTaskDetailFund} from "@/api/data"
 export default {
-    components:{
+     components:{
         UploadFiles,
-        returnStep
     },
-    name:'fundedictTem',
     props:{
         taskID:String,
         taskFlowID:String,
-        taskTypeID:String
     },
     data(){
         return{
             loading:false,
-            loading1:false,
             loading2:false,
+            name:'',
+            phone:'',
+            ScheduleID:'',
+            ScheduleName:'',
+            platformList:{},
+            Summary:'',
+            EstStartDate:'',
+            EstEndDate:'',
+            RealStartDate:'',
+            RealEndDate:'',
+            processModal:false,
+            edictProcessIndex:0,
+            FlowComment:'',
+            memTypyList:{
+                31:'内部管理人',
+                32:'外部管理人',
+                33:'托管人',
+                34:'投资顾问',
+                35:'内部机构投资人',
+                36:'外部机构投资人',
+                37:'自然人投资人',
+                38:'基金产品投资人',
+                39:'基金经理',
+                40:'基金主办',
+                41:'基金成员',
+                42:'基金投决会'
+
+            },
+            progress:[
+                {title:'序号',key:'ScheduleID',width:100},
+                {title:'进度名',key:'ScheduleName'},
+                {title:'预计开始时间',key:'EstStartDate'},
+                {title:'预计结束时间',key:'EstEndDate'},
+                {title:'实际开始时间',key:'RealStartDate'},
+                {title:'实际结束时间',key:'RealEndDate'},
+                {title:'说明',key:'Summary'},
+            ],
+            progressData:[],
+            platformList:[],
+            limitData:[],
+            MemberList:[],
             fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
-            FlowComment:'',
-            taskFlows:[],
-            ManagerData:[],    
-            postdata:{
-                TaskFiles:[],
-                TaskTypeID:'',//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
-                TaskName:'',//任务名（UI中的请示事项要点）
-                TaskSummary:'',//任务概要（UI中的请示事项具体内容）
-                TaskOwner:'',//任务申请人ID，与User表的UserID对应，取自当前登录用户
-                TaskFlows:[],
-               
-               Client:{
-                    ClientID:0,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
-                    ClientName:'',//公司全称
-                    ClientRegion:'',//所在省市，下拉表，从后台字典表中获取
-                    ClientShortName:'',//公司简称
-                    ClientCode:'',//客户代码，不同客户使用该唯一的代码区分
-                    ClientScope:'',//经营范围
-                    ClientIndustry:'',//所属行业，下拉表，从后台字典表中获取
-                    ClientLegalPerson:'',//法人代表
-                    ClientManager:'',//总经理
-                    ClientRegisteredCapital:0,//注册资本
-                    ClientOpenDate:'',//成立日期
-                    ClientAddress:'',//注册地址
-                    ClientZip:'',//邮政编码
-                    ClientContact:'',//联系人员
-                    ClientContactEmail:'',//联系电邮
-                    ClientContactPhone:'',//联系电话
-                    ClientContactFax:'',//联系传真
-                    ClientTotalAssets:0,//总资产
-                    ClientNetAssets:0,//净资产
-                    ClientIncome:0,//营业收入
-                    ClientProfit:0,//营业利润
-                    ClientNetProfit:0,//净利润
-                    ClientFinancialYear:0,//财务年度
-                    ClientFinancialQuarter:0,//财务季度
-                    ClientStatus:1//状态，1表示最新信息，0表示历史信息
-                },
-                Project:{
-                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
-                    ClientID:0,//客户ID 
-                    ClientCode:'',//客户代码，不同项目使用“客户代码 + 项目品种 + 项目角色”唯一区分
-                    ProjectType:'',//项目品种，下拉表，从后台字典表中获取
-                    ProjectRole:'',//项目角色，下拉表，从后台字典表中获取
-                    ProjectSummary:'',//项目概要
-                    ProjectSource:'',//项目来源
-                    ProjectStartDate:'',//项目开始日期
-                    ProjectEndDate:'',//项目结束日期
-                    ProjectEstimatedFeeCost:0,//预计直接费用
-                    ProjectEstimatedHourCost:0,//预计工时费用
-                    ProjectStatus:1,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                    Members:[]//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                }
-            },
-            cityData:[],
-            industryObj:{},
-           TypeObj:{},
-           RoleObj:{},
-            ManagerVlaue:"",
-            OwnerVlaue:"",
-            proMember:[],
-            fundPartber:[],
-            fundDecNer:[],
-
-            fundPartber:[],
-            fundDecNer:[],
-            MemberData:[],
-            fundMemer:[]
             
+            postdata:{
+                    TaskTypeID:TaskTypeID.fundDevelop,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
+                    TaskName:'',//任务名（UI中的请示事项要点）
+                    TaskSummary:'',//任务概要（UI中的请示事项具体内容）
+                    TaskOwner:'',//任务申请人ID，与User表的UserID对应，取自当前登录用户
+                    TaskFlows:[],
+                    TaskFiles:[],
+                    Fund:{
+                        FundID:'',
+                        PlatformID:'',//
+                        FundName:'',//
+                        ShortName:'',///
+                        FundCode:'',//基金代码
+                        CodsCode:'',//社会统一
+                        RegSCode:'',//协会登记
+                        RegType:'',//基金类型
+                        Address:'',//注册地址
+                        RegDate:'',//注册日期
+                        OpenDate:'',//成立日期
+                        RecordDate:'',//备案日期
+                        EndDate:'',//终止日期
+                        LiveStartDate:'',//存续开始日期
+                        LiveEndDate:'',//存续结束日期
+                        FundStatus:1
+                    },
+                    Members:[],
+                    Schedules:[]
+            }
         }
-    },mounted(){
-        this.gettaskDetail();
-        this.getCityList()
-        this.getprogectType()
-        this.getprogectRole()
-        // this.getUserList()
+    },
+    mounted(){
+        this.name=JSON.parse(localStorage.getItem('userName'));
+        this.postdata.TaskOwner=JSON.parse(localStorage.getItem('userId'));
+        this.phone=JSON.parse(localStorage.getItem('phone'))
+        this.getuserList();
+        this.getPlatform();
+        this.getDealTaskDetailFund();
     },
     methods:{
-        gettaskDetail(){
-             getDealTaskDetail({TaskID:this.taskID}).then(res=>{
-                 console.log(res)
-                 this.taskFlows=res.data.taskFlows;//任务审步骤
-                this.postdata={
-                        TaskTypeID:res.data.taskTypeID,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
-                        TaskName:res.data.taskName,//任务名（UI中的请示事项要点）
-                        TaskSummary:res.data.taskSummary,//任务概要（UI中的请示事项具体内容）
-                        TaskOwner:res.data.taskOwner,//任务申请人ID，与User表的UserID对应，取自当前登录用户
+      
+        getDealTaskDetailFund(){
+            getDealTaskDetailFund({TaskID:this.taskID}).then(res=>{
+                if(res.data.code==2403){
+                    this.postdata={
+                        TaskID:res.data.taskID,
+                        TaskName:res.data.taskName,
+                        TaskSummary:res.data.taskSummary,
                         TaskNumber:res.data.taskNumber,
                         TaskOwnerName:res.data.taskOwnerName,
                         TaskOwnerPhone:res.data.taskOwnerPhone,
-                        TaskFiles:res.data.taskFiles,
+                        TaskFlowID:this.taskFlowID,
+                        FlowComment:'',
                         TaskFlows:res.data.taskFlows,
-                        Client:{
-                            ClientID:res.data.client.clientID,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
-                            ClientName:res.data.client.clientName,//公司全称
-                            ClientRegion:res.data.client.clientRegion,//所在省市，下拉表，从后台字典表中获取
-                            ClientShortName:res.data.client.clientShortName,//公司简称
-                            ClientCode:res.data.client.clientCode,//客户代码，不同客户使用该唯一的代码区分
-                            ClientScope:res.data.client.clientScope,//经营范围
-                            ClientIndustry:res.data.client.clientIndustry,//所属行业，下拉表，从后台字典表中获取
-                            ClientLegalPerson:res.data.client.clientLegalPerson,//法人代表
-                            ClientManager:res.data.client.clientManager,//总经理
-                            ClientRegisteredCapital:res.data.client.clientRegisteredCapital,//注册资本
-                            ClientOpenDate:res.data.client.clientOpenDate,//成立日期
-                            ClientAddress:res.data.client.clientAddress,//注册地址
-                            ClientZip:res.data.client.clientZip,//邮政编码
-                            ClientContact:res.data.client.clientContact,//联系人员
-                            ClientContactEmail:res.data.client.clientContactEmail,//联系电邮
-                            ClientContactPhone:res.data.client.clientContactPhone,//联系电话
-                            ClientContactFax:res.data.client.clientContactFax,//联系传真
-                            ClientTotalAssets:res.data.client.clientTotalAssets,//总资产
-                            ClientNetAssets:res.data.client.clientNetAssets,//净资产
-                            ClientIncome:res.data.client.clientIncome,//营业收入
-                            ClientProfit:res.data.client.clientProfit,//营业利润
-                            ClientNetProfit:res.data.client.clientNetProfit,//净利润
-                            ClientFinancialYear:res.data.client.clientFinancialYear,//财务年度
-                            ClientFinancialQuarter:res.data.client.clientFinancialQuarter,//财务季度
-                            ClientStatus:1//状态，1表示最新信息，0表示历史信息
+                        TaskFiles:res.data.taskFiles,
+                        Fund:{
+                            FundID:res.data.taskTypeID==TaskTypeID.fundChanges?res.data.taskTypeID:0,
+                            PlatformID:res.data.fund.platformID,
+                            FundName:res.data.fund.fundName,
+                            ShortName:res.data.fund.shortName,
+                            FundCode:res.data.fund.fundCode,
+                            CodsCode:res.data.fund.codsCode,
+                            RegSCode:res.data.fund.regSCode,
+                            RegType:res.data.fund.regType,
+                            Address:res.data.fund.address,
+                            RegDate:res.data.fund.regDate,
+                            OpenDate:res.data.fund.openDate,
+                            RecordDate:res.data.fund.recordDate,
+                            EndDate:res.data.fund.endDate,
+                            LiveStartDate:res.data.fund.liveStartDate,
+                            LiveEndDate:res.data.fund.liveEndDate,
+                            FundStatus:res.data.fund.fundStatus,
+                            Members:[],
+                            Schedules:[]
                         },
-                        Project:{
-                            ProjectID:res.data.project.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
-                            ClientID:res.data.client.clientID,//客户ID 
-                            ClientCode:res.data.project.clientCode,//客户代码，不同项目使用“客户代码 + 项目品种 + 项目角色”唯一区分
-                            ProjectType:res.data.project.projectType,//项目品种，下拉表，从后台字典表中获取
-                            ProjectRole:res.data.project.projectRole,//项目角色，下拉表，从后台字典表中获取
-                            ProjectSummary:res.data.project.projectSummary,//项目概要
-                            ProjectSource:res.data.project.projectSource,//项目来源
-                            ProjectStartDate:res.data.project.projectStartDate,//项目开始日期
-                            ProjectEndDate:res.data.project.projectEndDate,//项目结束日期
-                            ProjectEstimatedFeeCost:res.data.project.projectEstimatedFeeCost,//预计直接费用
-                            ProjectEstimatedHourCost:res.data.project.projectEstimatedHourCost,//预计工时费用
-                            ProjectStatus:1,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                        //     Members:[]
-                        }
-
+                        Members:[],
+                        Schedules:[]                       
                     }
-                    this.loadMember(res.data.project.members)
+
+                    this.loadMembers(res.data.fund.members);
+                    this.loadProcess(res.data.fund.schedules)
+
+                }else{
+                    this.$Message.error({
+                        content:'任务详情获取失败:'+res.data.message
+                    })
+                }
+            })
+
+        },
+        loadMembers(dat){
+            this.postdata.Members=[];
+            dat.forEach(element=>{
+                this.postdata.Members.push({
+                    ID:0,
+                    FundID:this.postdata.Fund.FundID,
+                    MemberID:element.memberID,
+                    MemberName:element.memberName,
+                    MemberType:element.memberType,
+                    InvestorType:element.investorType,
+                    OrderMoney:element.orderMoney,
+                    PaidMoney:element.paidMoney,
+                    ShareType:element.shareType,
+                    ManageFeeRate:element.manageFeeRate,
+                    RewardRate:element.rewardRate,
+                    Status:element.status
+                })
+            })
+        },
+        loadProcess(dat){
+            this.progressData=[];
+            dat.forEach(element=>{
+                this.progressData.push({
+                    ID:0,
+                    FundID:this.postdata.Fund.FundID,
+                    ScheduleID:element.scheduleID,
+                    ScheduleName:element.scheduleName,
+                    Summary:element.summary,
+                    EstStartDate:element.estStartDate.substr(0,10),
+                    EstEndDate:element.estEndDate.substr(0,10),
+                    RealStartDate:element.realStartDate.substr(0,10),
+                    RealEndDate:element.realEndDate.substr(0,10),
+                    Status:element.status,
+                })
+            })
+           
+        },
+        handleSubmit(){
+           
+            this.postdata.Fund.Members=this.postdata.Members;
+            this.postdata.Fund.Schedules=this.progressData;
+            console.log(this.postdata);
+
+
+        },
+         setFundMemName(index,dat){
+            this.postdata.Members[index].MemberName=dat.label;
+        },
+        addNewFundMember(){
+            this.postdata.Members.push({
+                ID:0,
+                FundID:this.postdata.Fund.FundID,
+                MemberID:'',
+                MemberName:'',
+                MemberType:'',
+                InvestorType:'',
+                OrderMoney:'',
+                PaidMoney:'',
+                ShareType:'',
+                ManageFeeRate:'',
+                RewardRate:'',
+                Status:1
+            })
+         },
+         deleteFundMember(index){
+             this.$Modal.confirm({
+                 title:'删除',
+                 content:'是否删除：'+this.postdata.Members[index].MemberName+'?',
+                 onOk:()=>{
+                     this.postdata.Members.splice(index,1)
+                 }
              })
-        },loadMember(obj){
-            obj.map(item=>{
-                switch (item.memberType){
-                    case 1:
-                        //项目经理
-                        this.ManagerVlaue=item.memberName;
-                    break;
-                     case 2:
-                         //项目主办
-                        this.OwnerVlaue=item.memberName;
-                    break;
-                     case 3:
-                         //项目成员
-                        this.MemberData.push(item.memberName);
-                    break;
-                    case 4:
-                         //基金合伙人
-                        this.fundPartber.push(item.memberID)
-                    break;
-                     case 5:
-                         //基金投决会
-                        this.fundDecNer.push(item.memberID)
-            
-                    break;
-                     case 6:
-                         //基金成员
-                        this.fundMemer.push(item.memberID)
-                    break;
-                }              
+         },
+         getPlatform(){
+            getPlatform({'PlatStatus':1,'USerID':JSON.parse(localStorage.getItem("userId"))}).then(res=>{
+                if(res.data.code==2105){
+                    res.data.platList.forEach(element=>{
+                        this.platformList[element.platformID]=element.shortName
+                    })
+                    
+                }else{
+                     this.$Message.error({
+                        content:"权属平台信息加载失败:"+res.data.message
+                    })
+                }
             })
         },
-        getCityList(){
-            getCityList({"PageIndex":1,"PageSize":500}).then(res=>{
-                
+         getuserList(){
+            getuserList({"PageIndex":1,"PageSize":1000}).then(res=>{
                 if(res.data.code==0){
-                    res.data.regionList.forEach(element => {
-                        this.cityData[element.regionId]=element.regionName
+                    res.data.userList.forEach(element => {
+                        this.MemberList.push({
+                            label:element.userName,
+                            value:element.userId
+                        })
                     });
                 }else{
                     this.$Message.error({
-                        content:"公司所在省市信息加载失败:"+res.data.message
-                    })
-                }
-            })
-        },getprogectType(){
-            getprogectType({"PageIndex":1,"PageSize":1000}).then(res=>{
-                 if(res.data.code==0){
-                    res.data.projectTypeList.forEach(element => {
-                        this.TypeObj[ element.projectTypeId]=element.projectTypeName
-                        
-                    });
-                }else{
-                    this.$Message.error({
-                        content:"项目品种信息加载失败:"+res.data.message
+                        content:"成员信息加载失败:"+res.data.message
                     })
                 }
             })
         },
-        getprogectRole(){
-            getprogectRole({"PageIndex":1,"PageSize":1000}).then(res=>{
-                 if(res.data.code==0){
-                    res.data.projectRoleList.forEach(element => {
-                        this.RoleObj[element.projectRoleId]=element.projectRoleName
-                        
-                    });
+        showEdict(type,index,row){
+                this.processModal=true;
+                if(type==1){
+                    //新增
+                    this.ScheduleID='';
+                    this.ScheduleName='';
+                    this.Summary='';
+                    this.EstStartDate='';
+                    this.EstEndDate='';
+                    this.RealEndDate='';
+                    this.RealStartDate='';
+                    this.processDeal=true;
                 }else{
-                    this.$Message.error({
-                        content:"项目角色信息加载失败:"+res.data.message
-                    })
+                    //编辑
+                    this.edictProcessIndex=index;
+                    this.ScheduleID=row.ScheduleID;
+                    this.ScheduleName=row.ScheduleName;
+                    this.Summary=row.Summary;
+                    this.EstStartDate=row.EstStartDate;
+                    this.EstEndDate=row.EstEndDate;
+                    this.RealStartDate=row.RealStartDate;
+                    this.RealEndDate=row.RealEndDate;
+
+                    this.processDeal=false;
                 }
-            })
+            },setProcess(){
+                if(this.processDeal){
+                    //新增
+                    this.progressData.push({
+                        ScheduleID:this.ScheduleID,
+                        ScheduleName:this.ScheduleName,
+                        Summary:this.Summary,
+                        EstStartDate:this.EstStartDate,
+                        EstEndDate:this.EstEndDate,
+                        ID:0,
+                        FundID:this.postdata.Fund.FundID,
+                        RealStartDate:this.RealStartDate,
+                        RealEndDate:this.RealStartDate,
+                        Status:1
+                    })
+                }else{
+                    //编辑
+                    this.progressData[this.edictProcessIndex].ScheduleID=this.ScheduleID;
+                    this.progressData[this.edictProcessIndex].ScheduleName=this.ScheduleName;
+                    this.progressData[this.edictProcessIndex].Summary=this.Summary;
+                    this.progressData[this.edictProcessIndex].EstStartDate=this.EstStartDate;
+                    this.progressData[this.edictProcessIndex].EstEndDate=this.EstEndDate;
+
+                    this.progressData[this.edictProcessIndex].ID=this.ID;
+                    this.progressData[this.edictProcessIndex].FundID=this.postdata.Fund.FundID;
+                    this.progressData[this.edictProcessIndex].RealStartDate=this.RealStartDate;
+                    this.progressData[this.edictProcessIndex].RealEndDate=this.RealEndDate;
+                     this.progressData[this.edictProcessIndex].Status=this.Status;
+
+                }
+            },
+            processDelete(index){
+                // this.postdata.Project.Schedules
+                 this.$Modal.confirm({
+                    title:"删除",
+                    content:"是否删除该进度:"+this.progressData[index]["ScheduleName"]+"?",
+                    onOk:()=>{
+                        // this.postdata.Project.Schedules.splice(index,1);
+                        this.progressData.splice(index,1);
+                    }
+                })
+            },
+             setEstStartDate(value){
+                this.EstStartDate=value;
+            },
+            setEstEndDate(value){
+                this.EstEndDate=value; 
+            },
+            setRealStartDate(value){
+                this.RealStartDate=value; 
+            },
+            setRealEndDate(value){
+                this.RealEndDate=value; 
+            },
+        setDate(key,val){
+            // console.log(key,val)
+            this.postdata.Fund[key]=val
+        }, easzyInput(val){
+            this.FlowComment=val;
         },
+         
         deleteFile(index){
             this.fileName.splice(index,1);
             this.fileWrap.splice(index,1);
@@ -617,31 +617,7 @@ export default {
         },showUploadFile(){
             //显示modal
             this.$refs["uploadModal"].showModal(true);
-        },showReturnModal(){
-            this.$refs['stepModal'].showModal(true)
-        },deleteOriginFile(fileId,fileName,index){
-            this.$Modal.warning({
-                title:'删除',
-                content:'是否删除文件：'+fileName,
-                onOk:()=>{
-                    deleteFile({TaskFileID:fileId}).then(res=>{
-                        if(res.data.code==2203){
-                            this.postdata.TaskFiles.splice(index,1)
-                            this.$Notice.success({
-                                title:"删除成功"
-                            })
-                        }else{
-                            this.$Message.error({
-                                title:"删除失败："+res.data.message
-                            })
-                        }
-                    })
-                }
-
-
-            })
         }
-
     }
 }
 </script>

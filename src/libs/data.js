@@ -13,19 +13,26 @@
 	    itemSummary: 7, //项目总结
 	    itemProfile: 8, //项目文件
 	    itemAgreement: 9, //项目协议
-	    fundDevelop: 31, //基金开发
-	    fundProjects: 32, //基金立项
-	    fundChanges: 33, //基金变动
+	    itemOther: 10, //其他事宜
+	    fundDevelop: 45, //基金开发
+	    fundProjects: 46, //基金立项
+	    fundChanges: 47, //基金变动
 	    fundAffairs: 27, //基金事务
 	    fundVote: 28, //基金投决
 	    fundPartnership: 29, //基金合伙
+	    fundInvest: 54,
+	    funExit: 55,
 	    workReport: 23, //工时周报
 	    TravelExpensesReport: 13, //差旅费报
 	    HospitalityExpenses: 14, //招待费用
 	    GeneralExpenses: 15, //一般费用
 	    FieldExpenses: 24, //外勤费用
 	    ProjectIncome: 25, //项目收入
-	    WageExpenses: 30 //工资费用
+	    WageExpenses: 30, //工资费用
+	    DepartmentAdd: 40, //部门新增
+	    DepartmentChange: 41, //部门修改
+	    PlarformAdd: 37,
+	    PlatformChange: 38
 	}
 	export const TaskIDType = {
 	    16: "总经理会事宜报告",
@@ -66,3 +73,12 @@
 	    { 'value': '硕士', 'name': '硕士' },
 	    { 'value': '博士', 'name': '博士' }
 	];
+	export const targetType = [{
+	        'label': '投资于项目',
+	        'value': '1'
+	    },
+	    {
+	        'label': '投资于基金',
+	        'value': '2'
+	    }
+	]

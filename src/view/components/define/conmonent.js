@@ -92,5 +92,41 @@ export const component = {
         maxlength: null,
         readonly: false,
         disabled: false
+    },
+    platform: {
+        type: 'platform',
+        width: 100,
+        label: '所属平台',
+        readonly: false,
+        disabled: false
+    },
+    depart: {
+        type: 'depart',
+        width: 100,
+        label: '所属部门',
+        readonly: false,
+        disabled: false
+    },
+    fund: {
+        type: 'fund',
+        width: 100,
+        label: '所属基金',
+        readonly: false,
+        disabled: false
+    },
+    program: {
+        type: 'program',
+        width: 100,
+        label: '所属项目',
+        readonly: false,
+        disabled: false
+    },
+    member: {
+        type: 'member',
+        width: 100,
+        label: '人员选择',
+        readonly: false,
+        disabled: false,
+        multiple: false
     }
 }

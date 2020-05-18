@@ -62,7 +62,7 @@ export default {
           let taskOwner=JSON.parse(localStorage.getItem("userId"));
           getDealTask({FlowOwner:taskOwner}).then(res=>{
                console.log(res)
-               if(res.data.code==2101){
+               if(res.data.code==2021){
                     this.taskList=res.data.dealTaskList
                }else{
                     this.$Message.warning("数据加载失败："+res.data.message)

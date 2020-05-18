@@ -1,128 +1,122 @@
 <template>
     <div class="cost_wage_show">
-         <Card  class="itemCard">
+        <Card  class="itemCard">
             <p slot="title">任务明细</p>
             <Form :label-width="80">
                 <Row>
-                     <Col span="24">
+                     <Col span="12">
                         <FormItem label="任务编号：">
-                            {{postdata.TaskNumber}}
+                            <b> {{postdata.TaskNumber}}</b>
+                        </FormItem>
+                    </Col>
+                     <Col span="12">
+                        <FormItem label="发放月份：" >
+                           <b>{{postdata.PayDetails[0].payMonth.substr(0,7)}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24">
                         <FormItem label="事项要点：">
-                             {{postdata.TaskName}}
+                            <b>{{postdata.TaskName}}</b>
+                        </FormItem>
+                    </Col>
+                   
+                    <Col span="12">
+                        <FormItem label="报送人：">
+                            <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
                     <Col span="12">
-                        <FormItem label="事项标签：">
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="申请人：">
-                            {{postdata.TaskOwnerName}}
-                        </FormItem>
-                    </Col>
-                    <!-- <Col span="12">
                         <FormItem label="联系电话：">
-                             <Input v-model="postdata.TaskOwnerPhone" type="text"  placeholder="请输入联系电话："></Input>
+                           <b>{{ postdata.TaskOwnerPhone}}</b>
                         </FormItem>
-                    </Col> -->
-                     <Col span="24">
+                    </Col>
+                    <Col span="24">
                         <FormItem label="报送内容：">
-                             {{postdata.TaskSummary}}
+                           <b> {{postdata.TaskSummary}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24" v-if="postdata.TaskFiles.length>0" >
-                        <FormItem label="报送文件：" >
-                            <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
-                                <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
-                                    {{item.oldFileName}}
-                                </a> 
-                                 <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
-                            </p>
-                        </FormItem>
-                    </Col>
+                    
                 </Row>
-            </Form>    
+                 </Form>    
         </Card>
+       
         <Card class="itemCard">
             <p slot="title">人员列表</p>
-           
-            <Table stripe :row-class-name="lastClass" border ref="selection" :columns="wagecolumns" :data="wagedata"></Table>
+            <Table border stripe   height="600" ref="selection"  :columns="wagecolumns" :data="wagedata"></Table>
+            <p style="margin-top:20px;">
+                <Button type="primary" style="margin-right:15px;" @click="downloadWageTable()">导出</Button>
+            </p>
+            
         </Card>
-        <Card  class="itemCard">
+         <Card  class="itemCard">
             <p slot="title">审批进度</p>
-            <Form :label-width="80">
-                 <Timeline>
-                    <template v-for="(item,index) in postdata.TaskFlows">
+                <Form :label-width="80">
+                    <Timeline>
+                        <template v-for="(item,index) in postdata.TaskFlows">
 
-                        <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
-                            <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
-                                {{item.flowSummary}}  <Divider type="vertical" />
-                                {{item.flowOwnerName}} <Divider type="vertical" />
-                                 {{item.flowEmail}}
-                            </p>
-                            <h3 class="content">{{item.flowComment||''}}</h3>
-                        </TimelineItem>
-                    </template>
-                </Timeline>
-            </Form>    
-        </Card>
-        <Card  class="itemCard">
-            <p slot="title">审批意见</p>
-            <Form :label-width="80">
-                  <Row>
-                    <Col span="24">
-                        <FormItem label="审批意见">
-                            <Input  type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入具体内容"></Input>
-                        </FormItem>
-                    </Col>
-                    <Col span="24">
-                    <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                                <p class="fileName" v-for="(item,index) in fileName" :key="index">
-                                    <Row>
-                                        <Col span="20">
-                                            <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
-                                            <span style="color:#808695;font-size:12px;">{{item.file}}</span>
-                                        </Col>
-                                        <Col span="4" style="color:#ed4014;cursor:pointer;" >
-                                            <span @click="deleteFile(index)">删除</span> 
-                                        </Col>
-                                    </Row>
+                            <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
+                                <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
+                                    {{item.flowSummary}}  <Divider type="vertical" />
+                                    {{item.flowOwnerName}} <Divider type="vertical" />
+                                    {{item.flowEmail}}
                                 </p>
+                                <p class="content">{{item.flowComment||''}}</p>
+                            </TimelineItem>
+                        </template>
+                    </Timeline>
+                </Form>    
+        </Card>
+        
+            <Card  class="itemCard">
+                <p slot="title">审批意见</p>
+                <Form :label-width="80">
+                    <Row>
+                        <Col span="24">
+                            <FormItem label="快捷输入">
+                                <RadioGroup  @on-change="easzyInput">
+                                    <Radio label="同意"></Radio>
+                                    <Radio label="基本同意"></Radio>
+                                    <Radio label="收阅执行"></Radio>
+                                    <Radio label="不同意"></Radio>
+                                </RadioGroup>
+                            </FormItem>
+                        </Col>
+                        <Col span="24">
+                            <FormItem label="审批意见">
+                                <Input v-model="FlowComment" type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入具体内容"></Input>
+                            </FormItem>
+                        </Col>
+                    </Row>
+                     <FormItem>
+                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>    
+                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
+                            <span v-if="!loading">同意</span>
+                            <span v-else>提交中...</span>
+                        </Button> 
+                            <Button @click="showReturnModal"   style="margin-right: 8px" type="warning">修改</Button>  
+                          
+                        <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
+                            <span v-if="!loading">不同意</span>
+                            <span v-else>提交中...</span>
+                        </Button>                    
+
                     </FormItem>
-                    </Col>
-                    <Col span="24">
-                        <FormItem label=" ">
-                            <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                            <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmit()">
-                                <span v-if="!loading">同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-                            <Button :loading="loading2"  style="margin-right: 8px" type="error">
-                                <span v-if="!loading">驳回</span>
-                                <span v-else>提交中...</span>
-                                
-                            </Button> 
-                        </FormItem>
-                    </Col>
-                </Row>
-            </Form>    
-        </Card>  
-        <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
+                </Form>   
+
+            </Card>
+        <!-- <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files> -->
 
 
     </div>
 </template>
 <script>
-import uploadFiles from "@/view/components/upload_file/upload_file"
+// import uploadFiles from "@/view/components/upload_file/upload_file"
 import {deleteFile} from "@/api/user"
 import {getPayDetail} from "@/api/data"
 export default {
     name:'costWageShow',
     components:{
-       uploadFiles
+    //    uploadFiles
     },
     props:{
        taskFlowID:String,
@@ -133,49 +127,85 @@ export default {
         return{
             loading:false,
             loading1:false,
+            showReturnModal:false,
+            FlowComment:'',
             loading2:false,
-            fileName:[],
-            fileWrap:[],//用来保存要上传的文件，方便进行删除操作
-            fileForm:new FormData(),
              wagecolumns:[
-                {title: '姓名', align: 'center',key:'PayeeName',render:(h,param)=>{
-                    if(param.row.PayeeName=="合计"){
-                        return h('span',{
-                            style:{
-                                color:"#2d8cf0"
-                            }
-                        },param.row.PayeeName)
-                    }else{
-                        return h('span',param.row.PayeeName)
-                    }
-                }},
-                {title: '基本工资', key: 'PayBase'},
-                {title: '社保-个人', key: 'Social_e'},
-                {title: '社保-单位', key: 'Social_c'},
-                {title: '所得税', key: 'Tax'},
-                {title: '考勤扣款', key: 'Absence'},
-                {title: '实发工资', key: 'PayReal'},
-                {title: '外勤费用', key: 'FieldCost'},
-                {title: '现金工资', key: 'PayCash'},
-                {title: '人力成本', key: 'PayHrcost'}
-
+                 {title: '姓名', align: 'center',key:'PayeeName',fixed:'left',width:100},
+                {title: '基本工资', key: 'PayBase',fixed:'left',width:85},
+                {title: '考勤补贴', key: 'PayAttendance',fixed:'left',width:85},
+                {title: '养老-个人', key: 'Pension_e',width:85},
+                {title: '养老-单位', key: 'Pension_c',width:85}, 
+                {title: '住房-个人', key: 'Housing_e',width:85},
+                {title: '住房-单位', key: 'Housing_c',width:85}, 
+                {title: '医疗-个人', key: 'Medical_e',width:85},
+                {title: '医疗-单位', key: 'Medical_c',width:85}, 
+                {title: '工伤-个人', key: 'Injury_e',width:85},
+                {title: '工伤-单位', key: 'Injury_c',width:85}, 
+                {title: '失业-个人', key: 'Unemploy_e',width:85},
+                {title: '失业-单位', key: 'Unemploy_c',width:85},
+                {title: '生育-个人', key: 'Maternity_e',width:85},
+                {title: '生育-单位', key: 'Maternity_c',width:85},
+                {title: '所得税', key: 'Tax',width:85},
+                {title: '考勤扣款', key: 'Absence',width:85,fixed:'right'},
+                {title: '实发工资', key: 'PayReal',width:85,fixed:'right'},
+                {title: '外勤费用', key: 'FieldCost',width:85,fixed:'right'},
+                {title: '现金工资', key: 'PayCash',width:85,fixed:'right'},
+                {title: '人力成本', key: 'PayHrcost',width:85,fixed:'right'}
+                
             ],
             wagedata:[
-                {PayeeName:'合计',PayBase:0,Social_e:0,Social_c:0,Tax:0,Absence:0,PayReal:0,FieldCost:0,PayCash:0,PayHrcost:0}
+                {
+                    PayeeName:'合计',
+                    PayBase:0,
+                    PayAttendance:0,
+                    Pension_e:0,
+                    Pension_c:0,
+                    Housing_e:0,
+                    Housing_c:0,
+                    Medical_e:0,
+                    Medical_c:0,
+                    Injury_e:0,
+                    Injury_c:0,
+                    Unemploy_e:0,
+                    Unemploy_c:0,
+                    Maternity_e:0,
+                    Maternity_c:0,
+                    Tax:0,
+                    Absence:0,
+                    PayReal:0,
+                    FieldCost:0,
+                    PayCash:0,
+                    PayHrcost:0
+                }
             ],
             postdata:{
                 TaskFiles:[],
-
+                TaskTypeId:'',
+                TaskName: '',//任务名（UI中的报销单据要点）
+                TaskSummary: '',//任务概要（UI中的备注）
+                TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户
+                TaskFlows: '',
+                TaskFiles:'',
+                TaskNumber: '',
+                TaskOwnerName:'',
+                TaskOwnerPhone:'',
+                PayDetails:[]
             }
 
         }
     },mounted(){
         this.getTaskDetail()
     },methods:{
+        handleSubmitAgree(){
+
+        },
+        handleSubmitDisgree(){
+
+        },
         getTaskDetail(){
              getPayDetail({TaskID:this.taskID}).then(res=>{
                  if(res.data.code==2602){
-                 console.log(res)
                     this.postdata={
                         TaskTypeId: res.data.taskTypeID,
                         TaskName: res.data.taskName,//任务名（UI中的报销单据要点）
@@ -185,6 +215,7 @@ export default {
                         TaskFiles: res.data.taskFiles,
                         TaskNumber: res.data.taskNumber,
                         TaskOwnerName: res.data.taskOwnerName,
+                        TaskOwnerPhone:res.data.taskOwnerPhone,
                         PayDetails:res.data.payDetails
                     }
                     this.loadTableData(res.data.payDetails)
@@ -201,8 +232,19 @@ export default {
                 let obj={
                     PayeeName:element.payeeName,
                     PayBase:element.payBase,
-                    Social_e:0,
-                    Social_c:0,
+                    PayAttendance:element.payAttendance,
+                    Pension_e:element.pension_e,
+                    Pension_c:element.pension_c,
+                    Housing_e:element.housing_e,
+                    Housing_c:element.housing_c,
+                    Medical_e:element.medical_e,
+                    Medical_c:element.medical_c,
+                    Injury_e:element.injury_e,
+                    Injury_c:element.injury_c,
+                    Unemploy_e:element.unemploy_e,
+                    Unemploy_c:element.unemploy_c,
+                    Maternity_e:element.maternity_e,
+                    Maternity_c:element.maternity_c,
                     Tax:element.tax,
                     Absence:element.absence,
                     PayReal:element.payReal,
@@ -211,13 +253,10 @@ export default {
                     PayHrcost:element.payHrcost
                 }
                 this.wagedata.unshift(obj)
-              
-             
             });
 
             for (const key in temp) {
                 if (temp.hasOwnProperty(key)&&key!="PayeeName") {
-
                     this.wagedata.forEach((element,index)=>{
                         if(index!=this.wagedata.length-1){
                             temp[key]+=element[key]||0
@@ -226,64 +265,14 @@ export default {
                     
                 }
             }
-
-
-
-           
-                // temp[PayBase]+=element.payBase
-                // // temp[PayBase]+=element.payBase
-                // // temp[PayBase]+=element.payBase
-                // temp[Tax]+=element.tax||0;
-                // temp[Absence]+=element.absence||0;
-                // temp[PayReal]+=element.payReal||0;
-                // temp[FieldCost]+=element.fieldCost||0;
-                // temp[PayCash]+=element.payCash||0;
-                // temp[PayHrcost]+=element.payHrcost||0;
-
+      
         },
-        deleteFile(index){
-            this.fileName.splice(index,1);
-            this.fileWrap.splice(index,1);
-
-        },
-        handleUploadEvent(flag,filename,fileWrap){
-            this.fileModal=flag;
-            if(filename){
-                 this.fileName=filename;
-            }
-            if(fileWrap){
-                this.fileWrap=fileWrap;
-            }
-            this.showFile=true;
-        },deleteOriginFile(fileId,fileName,index){
-            this.$Modal.warning({
-                title:'删除',
-                content:'是否删除文件：'+fileName,
-                onOk:()=>{
-                    deleteFile({TaskFileID:fileId}).then(res=>{
-                        if(res.data.code==2203){
-                            this.postdata.TaskFiles.splice(index,1)
-                            this.$Notice.success({
-                                title:"删除成功"
-                            })
-                        }else{
-                            this.$Message.error({
-                                title:"删除失败："+res.data.message
-                            })
-                        }
-                    })
-                }
-
-
+        downloadWageTable(){
+            this.$refs.selection.exportCsv({
+                filename:"工资表格导出",
             })
-        },showUploadFile(){
-            //显示modal
-            this.$refs["uploadModal"].showModal(true);
-        },lastClass(row,index){
-            console.log(row,index)
-            if(row.PayeeName=="合计"){
-                return 'tableLast';
-            }
+        },easzyInput(val){
+            this.FlowComment=val;
         }
     }
 }

@@ -16,12 +16,6 @@
                                 <Input v-model="phone" placeholder="请输入报销人联系电话"></Input>
                             </FormItem>   
                         </Col>
-
-                         <Col span="8">
-                             <FormItem label="职级" prop="phone">
-                                <Input  placeholder="请输入报销人职级"></Input>
-                            </FormItem>   
-                        </Col>
                          <Col span="8">
                              <FormItem label="承担项目" prop="phone">
                                 <Select v-model="postdata.ProjectID" filterable  >
@@ -29,9 +23,9 @@
                                 </Select>
                             </FormItem>   
                         </Col>
-                         <Col span="16">
+                         <!-- <Col span="16">
                             <change-tap @getValue="getTapValue"></change-tap>
-                        </Col>
+                        </Col> -->
                     </Row>
                    
                 </Form>
@@ -42,7 +36,9 @@
                     <Row>
                         <Col span="8">
                             <FormItem label="收款人" prop="name">
-                                <Input v-model="postdata.IncoExpe.PayeeName"  placeholder="请输入收款人姓名"></Input>
+                                <Select @on-change="setPayeeName" v-model="postdata.IncoExpe.PayeeID" label-in-value placeholder="请输入收款人姓名">
+                                    <Option v-for="item in userList" :key="item.value" :value="item.value">{{item.label}}</Option>
+                                </Select>                               
                             </FormItem>
                         </Col>
                          <Col span="8">
@@ -68,44 +64,54 @@
             <Card class="itemCard" >
                 <p slot="title">费用列表</p>
                 <Table stripe :columns="columnsCost" :data="dataCost"></Table>
-                 
-                <p style="margin-top:20px;">
-                    <Button type="primary" style="margin-right:8px;" @click="addCost">增加</Button>
-                  
-                </p>
                 <Form :label-width="80" style="margin-top:10px;">
                     <Row>
                         <Col span="12">
                             <FormItem label="总计" prop="name">
-                                <Input readonly v-model="postdata.IncoExpe.TotalAmount"  placeholder="请输入合计"></Input>
+                                {{postdata.IncoExpe.TotalAmount}}
                             </FormItem>
                         </Col>
                         <Col span="12">
                             <FormItem label="总计" prop="name">
-                                <Input readonly v-model="postdata.IncoExpe.TotalAmountCN"  placeholder="请输入合计大写"></Input>
+                                 {{postdata.IncoExpe.TotalAmountCN}}
                             </FormItem>
                         </Col>
-                       
                     </Row>
-                   
                 </Form>
-                
-                <!-- <Table border ref="selection" :columns="travelColums" :data="travelData"></Table> -->
+                 <p >
+                    <Button type="primary" style="margin-right:8px;" @click="addCost">增加</Button>
+                </p>
+
             </Card>
             <Card  class="itemCard">
                 <p slot="title">请示信息</p>
                 <Form :label-width="80">
-                    <FormItem label="事项要点" prop="TaskName">
-                        <Input v-model="postdata.TaskName" placeholder="请输入事项要点"></Input>
+                    <FormItem label="事项要点" >
+                        <Input  placeholder="请输入事项要点" v-model="postdata.TaskName"></Input>
                     </FormItem>
-                    <FormItem label="具体内容" prop="TaskSummary">
-                        <Input v-model="postdata.TaskSummary" type="textarea" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
+                    <FormItem label="具体内容" >
+                        <Input  type="textarea" v-model="postdata.TaskSummary" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
                     </FormItem>
-                    <FormItem>
-                       
-                        <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')">
+                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
+                                <p class="fileName" v-for="(item,index) in fileName" :key="index">
+                                    <Row >
+                                        <Col span="20">
+                                            <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
+                                            <span style="color:#808695;font-size:12px;">{{item.file}}</span>
+                                        </Col>
+                                        <Col span="4" style="color:#ed4014;cursor:pointer;" >
+                                        <span @click="deleteFile(index)">删除</span> 
+                                        </Col>
+                                    </Row>
+                                </p>
+                    </FormItem>
+                     <FormItem>
+                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
+                       <Button type="primary" :loading="loading" @click="handleSubmit()">
+
                              <span v-if="!loading">提交</span>
                             <span v-else>提交中...</span>
+                            
                         </Button>
                        
                     </FormItem>
@@ -188,7 +194,7 @@
                           </Col>  
                           <Col span="12">
                             <FormItem label="合计">
-                                <Input  type="number" readonly v-model="dataCost[edictIndex].total" placeholder="自动计算合计"></Input>
+                                <Input  type="number" disabled v-model="dataCost[edictIndex].total" placeholder="自动计算合计"></Input>
                             </FormItem>
                           </Col>  
                     </Row>
@@ -197,20 +203,26 @@
 
 
         </Modal>
+            <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
         
     </div>
 </template>
 <script>
-import {getProjectList} from "@/api/data"
-import {digitUppercase} from "@/libs/tools"
-import changeTap from "@/view/components/template/change_tap.vue"
+import UploadFiles from "@/view/components/upload_file/upload_file"
+import {getProjectList,getAllUserList,setIncoexpeTask} from "@/api/data"
+import {digitUppercase,} from "@/libs/tools"
+// import changeTap from "@/view/components/template/change_tap.vue"
 import {TaskTypeID} from "@/libs/data"
 export default {
     components:{
-        changeTap
+        UploadFiles
+
     },
     data(){
         return{
+            fileName:[],
+            fileWrap:[],//用来保存要上传的文件，方便进行删除操作
+            fileForm:new FormData(),
             flagMod:false,
             loading:false,
             flag:false,
@@ -218,6 +230,7 @@ export default {
             phone:'',
             ProjectID:'',
             edictIndex:0,
+            userList:[],
             ProjectData:[],
             columnsCost:[
                 {title: '前往日期', key: 'OccurDate',width:100},
@@ -320,6 +333,7 @@ export default {
         this.phone=JSON.parse(localStorage.getItem("phone"));
          this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"));
         this.getProList(1);
+        this.getAllUserList()
     },
     methods:{
         handleSubmit(){
@@ -337,13 +351,24 @@ export default {
                     )
                 }
             })
-            console.log(this.postdata);
-
+            console.log(this.postdata)
+            //未提交文件接口
+            setIncoexpeTask(this.postdata).then(res=>{
+                if(res.data.code=2501){
+                    this.$Message.success({
+                        content:"提交成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"操作失败:"+res.data.message
+                    })
+                }
+            })
         },
         getProList(status){
             //获取项目列表
             getProjectList({"ProjectStatus":1,"USerID":JSON.parse(localStorage.getItem("userId"))}).then(res=>{
-                if(res.data.code==2306){
+                if(res.data.code==2307){
                     console.log(res)
                     res.data.projectList.forEach(element => {
                         this.ProjectData.push({
@@ -359,21 +384,27 @@ export default {
                 }
             })
         },
+        getAllUserList(){
+            getAllUserList({"Status":1}).then(res=>{
+                if(res.data.code==0){
+                    res.data.userList.forEach(element=>{
+                        this.userList.push({
+                            value:element.userId,
+                            label:element.userName
+                        })
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"收款人信息查询失败:"+res.data.message
+                    })
+                }
+            })
+        },
         addCost(){
             this.flagMod=true;
             this.flag=true;
             this.dataCost.unshift({OccurDate:'', ReturnDate:'',FromCity:'',ToCity:'',TripDays:'','101':0,'102':0,'103':0,'104':0,'105':0,'106':0,'107':0,'108':0,total:0})
-        //     this.costDetail=[
-        //         { "ID":"0","IncoExpeID":"0","Type":"101","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":1,"Amount":0 } , 
-		//         { "ID":"0","IncoExpeID":"0","Type":"102","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-        //         { "ID":"0","IncoExpeID":"0","Type":"103","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-        //         { "ID":"0","IncoExpeID":"0","Type":"104","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-        //         { "ID":"0","IncoExpeID":"0","Type":"105","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-        //         { "ID":"0","IncoExpeID":"0","Type":"106","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-        //         { "ID":"0","IncoExpeID":"0","Type":"107","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-        //         { "ID":"0","IncoExpeID":"0","Type":"108","OccurDate":"","ReturnDate":"","FromCity":"","ToCity":"","TripDays":0,"Amount":0 } ,
-        //         { "total": 0 }
-        //    ]
+     
         },
         asyncCancel(){
             if(this.flag){
@@ -419,8 +450,27 @@ export default {
             this.postdata.IncoExpe.TotalAmount=arr['total'];
             this.postdata.IncoExpe.TotalAmountCN=digitUppercase(arr['total'])
 
-        },getTapValue(tap,tapDet){
-            console.log(tap,tapDet)
+        },setPayeeName(val){
+            this.postdata.IncoExpe.PayeeID=val.value;
+            this.postdata.IncoExpe.PayeeName=val.label;
+        },
+        deleteFile(index){
+            this.fileName.splice(index,1);
+            this.fileWrap.splice(index,1);
+
+        },
+        handleUploadEvent(flag,filename,fileWrap){
+            this.fileModal=flag;
+            if(filename){
+                    this.fileName=filename;
+            }
+            if(fileWrap){
+                this.fileWrap=fileWrap;
+            }
+            this.showFile=true;
+        },showUploadFile(){
+            //显示modal
+            this.$refs["uploadModal"].showModal(true);
         }
     }
 }

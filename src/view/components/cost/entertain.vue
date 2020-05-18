@@ -16,12 +16,6 @@
                                 <Input v-model="phone" placeholder="请输入报销人联系电话"></Input>
                             </FormItem>   
                         </Col>
-
-                         <Col span="8">
-                             <FormItem label="职级" prop="phone">
-                                <Input placeholder="请输入报销人职级"></Input>
-                            </FormItem>   
-                        </Col>
                          <Col span="8">
                             <FormItem label="承担项目" prop="phone">
                                 <Select v-model="postdata.ProjectID" filterable  >
@@ -29,9 +23,7 @@
                                 </Select>
                             </FormItem>     
                         </Col>
-                        <Col span="16">
-                            <change-tap @getValue="getTapValue"></change-tap>
-                        </Col>
+                       
                     </Row>
                    
                 </Form>
@@ -42,7 +34,9 @@
                     <Row>
                         <Col span="8">
                             <FormItem label="收款人" prop="name">
-                                <Input  v-model="postdata.IncoExpe.PayeeName" placeholder="请输入收款人姓名"></Input>
+                                <Select @on-change="setPayeeName" v-model="postdata.IncoExpe.PayeeID" label-in-value placeholder="请输入收款人姓名">
+                                    <Option v-for="item in userList" :key="item.value" :value="item.value">{{item.label}}</Option>
+                                </Select>                               
                             </FormItem>
                         </Col>
                          <Col span="8">
@@ -97,65 +91,89 @@
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem label="合计" prop="phone">
-                                <Input v-model="postdata.IncoExpe.TotalAmount" readonly type="number" placeholder="请输入合计"></Input>
-                            </FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="总计(大写)	" prop="phone">
-                                <Input v-model="postdata.IncoExpe.TotalAmountCN" readonly placeholder="请输入总计(大写)"></Input>
-                            </FormItem>   
-                        </Col>
-                        <Col span="8">
                             <FormItem label="附件张数" prop="phone">
                                 <Input v-model="postdata.IncoExpe.InvoicePages"  type="number" placeholder="请输入附件张数"></Input>
                             </FormItem>   
                         </Col>
+                         <Col span="8">
+                            <FormItem label="合计" prop="phone">
+                                {{postdata.IncoExpe.TotalAmount}}
+                            </FormItem>   
+                        </Col>
+                        <Col span="8">
+                            <FormItem label="总计(大写)" >
+                                {{postdata.IncoExpe.TotalAmountCN}}
+                            </FormItem>   
+                        </Col>
+                       
                     </Row>
                    
                 </Form>
 
               
             </Card>
-            <Card  class="itemCard">
+           <Card  class="itemCard">
                 <p slot="title">请示信息</p>
                 <Form :label-width="80">
-                    <FormItem label="事项要点" prop="TaskName">
-                        <Input v-model="postdata.TaskName" placeholder="请输入事项要点"></Input>
+                    <FormItem label="事项要点" >
+                        <Input  placeholder="请输入事项要点" v-model="postdata.TaskName"></Input>
                     </FormItem>
-                    <FormItem label="具体内容" prop="TaskSummary">
-                        <Input v-model="postdata.TaskSummary" type="textarea" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
+                    <FormItem label="具体内容" >
+                        <Input  type="textarea" v-model="postdata.TaskSummary" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
+                    </FormItem>
+                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
+                                <p class="fileName" v-for="(item,index) in fileName" :key="index">
+                                    <Row >
+                                        <Col span="20">
+                                            <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
+                                            <span style="color:#808695;font-size:12px;">{{item.file}}</span>
+                                        </Col>
+                                        <Col span="4" style="color:#ed4014;cursor:pointer;" >
+                                        <span @click="deleteFile(index)">删除</span> 
+                                        </Col>
+                                    </Row>
+                                </p>
                     </FormItem>
                      <FormItem>
-                        
-                       <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')">
-                            <span v-if="!loading">提交</span>
+                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
+                       <Button type="primary" :loading="loading" @click="handleSubmit()">
+
+                             <span v-if="!loading">提交</span>
                             <span v-else>提交中...</span>
+                            
                         </Button>
                        
                     </FormItem>
                 </Form>   
 
             </Card>
+            <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
+
     </div>
 </template>
 <script>
-import changeTap from "@/view/components/template/change_tap.vue"
-import {getProjectList} from "@/api/data"
+import UploadFiles from "@/view/components/upload_file/upload_file"
+import {getProjectList,getAllUserList,setIncoexpeTask} from "@/api/data"
 import {digitUppercase} from "@/libs/tools"
 import {TaskTypeID} from "@/libs/data"
 export default {
     components:{
-        changeTap
+        UploadFiles
+
     },
     data(){
         return{
+              fileName:[],
+            fileWrap:[],//用来保存要上传的文件，方便进行删除操作
+            fileForm:new FormData(),
             name:'',
+            userList:[],
+
             phone:'',
             loading:false,
             ProjectData:[],
             postdata:{
-                    TaskTypeId:TaskTypeID.HospitalityExpenses ,
+                    TaskTypeID:TaskTypeID.HospitalityExpenses ,
                     TaskName: '',//任务名（UI中的报销单据要点）
                     TaskSummary: '',//任务概要（UI中的备注）
                     TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户
@@ -184,10 +202,22 @@ export default {
         this.phone=JSON.parse(localStorage.getItem("phone"));
          this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"));
         this.getProList(1);
+        this.getAllUserList();
     },
     methods:{
         handleSubmit(){
-            console.log(this.postdata)
+            setIncoexpeTask(this.postdata).then(res=>{
+                if(res.data.code==2501){
+                    this.$Message.success({
+                        content:"操作成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"操作失败:"+res.data.message
+                    })
+                }
+            })
+
         },
         subTotal(){
             this.postdata.IncoExpe.TotalAmount=0;
@@ -200,7 +230,7 @@ export default {
         getProList(status){
             //获取项目列表
             getProjectList({"ProjectStatus":1,"USerID":JSON.parse(localStorage.getItem("userId"))}).then(res=>{
-                if(res.data.code==2306){
+                if(res.data.code==2307){
                     res.data.projectList.forEach(element => {
                         this.ProjectData.push({
                             label:element.clientCode+'--'+element.projectType+'--'+element.projectRole,
@@ -214,10 +244,26 @@ export default {
                     })
                 }
             })
+        }, getAllUserList(){
+            getAllUserList({"Status":1}).then(res=>{
+                if(res.data.code==0){
+                    res.data.userList.forEach(element=>{
+                        this.userList.push({
+                            value:element.userId,
+                            label:element.userName
+                        })
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"收款人信息查询失败:"+res.data.message
+                    })
+                }
+            })
+        },setPayeeName(val){
+            this.postdata.IncoExpe.PayeeID=val.value;
+            this.postdata.IncoExpe.PayeeName=val.label;
         },
-        getTapValue(tap,tapDet){
-            console.log(tap,tapDet)
-        },
+        
         subNum(){
            
             this.postdata.IncoExpe.Details[1].EntertainPersons=this.postdata.IncoExpe.Details[0].EntertainPersons;   
@@ -237,6 +283,23 @@ export default {
             this.postdata.IncoExpe.Details[1].OccurDate=value;   
             this.postdata.IncoExpe.Details[2].OccurDate=value ;  
           
+        },deleteFile(index){
+            this.fileName.splice(index,1);
+            this.fileWrap.splice(index,1);
+
+        },
+        handleUploadEvent(flag,filename,fileWrap){
+            this.fileModal=flag;
+            if(filename){
+                    this.fileName=filename;
+            }
+            if(fileWrap){
+                this.fileWrap=fileWrap;
+            }
+            this.showFile=true;
+        },showUploadFile(){
+            //显示modal
+            this.$refs["uploadModal"].showModal(true);
         }
     }
 }

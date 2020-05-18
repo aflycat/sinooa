@@ -110,7 +110,7 @@ export default {
   },methods:{
     getDealTaskNum(){
       getDealTask({FlowOwner:this.userId}).then(res=>{
-        if(res.data.code==2101){
+        if(res.data.code==2021){
           this.count=res.data.dealTaskList.length
         }else{
           this.$Message.error({

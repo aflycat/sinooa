@@ -66,7 +66,41 @@
                                 <Icon custom="iconfont icon-shuzishurukuang" />
                                 <p>数字</p>
                             </div>
-                           
+                        </Col>
+                         <Col span="12" >
+                            <div class="comItem"  @click="addCom('member')">
+                                <Icon type="md-person" />
+                                <p>人员选择</p>
+                            </div>
+                        </Col>
+                        <Col span="12" >
+                            <div class="comItem"  @click="addCom('platform')">
+                                <Icon type="md-flag" />
+                                <p>权属平台</p>
+                            </div>
+                        </Col>
+                        <Col span="12" >
+                            <div class="comItem" @click="addCom('depart')">
+                                <Icon type="ios-contacts" />
+                                <p>部门</p>
+                            </div>
+                        </Col>
+                        <Col span="12" >
+                            <div class="comItem"  @click="addCom('fund')">
+                                <Icon type="logo-buffer" />
+                                <p>基金</p>
+                            </div>
+                        </Col>
+                        <Col span="12" >
+                            <div class="comItem"  @click="addCom('program')">
+                                <Icon type="md-code" />
+                                <p>项目</p>
+                            </div>
+                        </Col>
+                        <Col span="12" >
+                            <div class="comItem" >
+                              
+                            </div>
                         </Col>
                     </Row>
                 </Card>
@@ -74,16 +108,15 @@
             
             <Col span="16">
                  <Card style="overflow:auto;">
-                    <p slot="title">表格详情</p>
+                    <p slot="title">流程详情</p>
                     <Form >
-                        <FormItem label="表单表头" :label-width="80">
+                        <FormItem label="流程标题" :label-width="80">
 
-                            <Input v-model="title"  placeholder="请输入表单表头"></Input>
+                            <Input v-model="title"  placeholder="请输入流程标题"></Input>
                         </FormItem>
                     </Form>
                     <Divider dashed/>
-                    
-                        <form-component :class="checkIndex==index?'check':' '" @getIndex="getIndex"  v-for="(item,index) in tableData" :index="index" :obj="item" ></form-component>
+                    <form-component :class="checkIndex==index?'check':' '" @getIndex="getIndex"  v-for="(item,index) in tableData" :index="index" :obj="item" :key='index'></form-component>
 
 
                 </Card>
@@ -100,21 +133,26 @@
         <Row :gutter="16" v-if="current==1">
             <Card>
                 <p slot="title">流程设置</p> 
-                    <Table :columns="columnsProcess" :data="dataProcess" ></Table>
-                    <Button  style="margin-top: 24px" type="success" @click="showProcess()">新增流程</Button>
-                    <Button v-if="dataProcess.length!=0" style="margin-top: 24px;margin-left:8px;" type="primary" >存为模板</Button>
+                    <Table :columns="columnsProcess" :data="dataProcess"  >
+                         <template slot-scope="{ row, index }" slot="action">
+                            <span style="margin-right:8px;color:#2d8cf0;cursor:pointer;" @click='showProcess(row,index)'>编辑</span>
+                            <span style="color:#ed4014;cursor:pointer;"  @click='deleteProcess(row,index)'>删除</span>
+                        </template>
+                    </Table>
+                    <Button  style="margin-top: 24px" type="success" @click="showProcess('',-1)">新增流程</Button>
+                    <!-- <Button v-if="dataProcess.length!=0" style="margin-top: 24px;margin-left:8px;" type="primary" >存为模板</Button> -->
             </Card>
         </Row>
          <Row :gutter="16" v-if="current==2">
-             <Card  class="itemCard" style="overflow:auto;">
-                <p slot="title">表格详情</p>
-                <Form >
-                    <FormItem label="表单表头" :label-width="80">
-                        <Input v-model="title"  placeholder="请输入表单表头"></Input>
-                    </FormItem>
-                </Form>
-                <Divider dashed/>
-                <form-component   v-for="(item,index) in tableData" :index="index" :obj="item" :key="index"></form-component>
+                <Card  class="itemCard" style="overflow:auto;">
+                    <p slot="title">表格详情</p>
+                    <Form >
+                        <FormItem label="流程名称" :label-width="80">
+                            <b>{{title}}</b>
+                        </FormItem>
+                    </Form>
+                    <Divider dashed/>
+                    <component-show   v-for="(item,index) in tableData" :index="index" :obj="item" :key="index"></component-show >
                 </Card>
              <Card  class="itemCard">
                 <p slot="title">流程设置</p> 
@@ -123,14 +161,17 @@
             </Card>
             
         </Row>
-        <process-basic ref="processBasic"></process-basic>
+        
+        <process-basic @recive-objData='getProcessData' :key='componentKey' ref="processBasic"></process-basic>
     </div>
 </template>
 <script>
 import {component} from './conmonent'
 import processBasic from "@/view/components/template/process_basic"
 import formComponent from "@/view/components/define/component.vue"
+import componentShow from "@/view/components/define/componentShow.vue"
 import formAttr from "@/view/components/define/attr.vue"
+import {addNewDefine} from "@/api/data"
 
 export default {
     mounted(){
@@ -138,8 +179,14 @@ export default {
     },
     components:{
         formComponent,
-         processBasic,
+        componentShow,
+        processBasic,
         formAttr
+    },
+    watch:{ 
+        dataProcess(){
+            this.componentKey+=1;
+        }
     },
     data(){
         return{
@@ -147,130 +194,53 @@ export default {
             AttrData:null,
             indexAttr:0,
             current:0,
-            title:'这个是表头',
+            componentKey:0,
+            title:'',
             postdata:{},
             columnsProcess:[
-                {title:"序号",key:"name"},
-                {title:"任务流描述",key:"name"},
-                {title:"处理要求",key:"req" },
-                {title:"时间",key:"time"},
-                {title:"处理人",key:"man"},
-                {title:"处理组",key:"team",},
-                {title:"操作",key:"deal"}
+                {title:"序号",key:"FlowID"},
+                {title:"任务流描述",key:"FlowSummary"},
+                {title:"处理要求",key:"FlowRequireName" },
+                {title:"时间",key:"FlowTimeLimit"},
+                {title:"处理人",key:"FlowOwnerName"},
+                {title:"处理组",key:"FlowGroupName",},
+                {title:"操作",key:"deal",slot: 'action'}
+            ],
+            dataProcess:[
+
             ],
             columnsProcessSub:[
-                {title:"序号",key:"name"},
-                {title:"任务流描述",key:"name"},
-                {title:"处理要求",key:"req" },
-                {title:"时间",key:"time"},
-                {title:"处理人",key:"man"},
-                {title:"处理组",key:"team",},
+                {title:"序号",key:"FlowID"},
+                {title:"任务流描述",key:"FlowSummary"},
+                {title:"处理要求",key:"FlowRequireName" },
+                {title:"时间",key:"FlowTimeLimit"},
+                {title:"处理人",key:"FlowOwnerName"},
+                {title:"处理组",key:"FlowGroupName",},
               
             ],
-             dataProcess:[],
-            tableData:[
-                // {
-                //     type: 'input',
-                //     label: '标题',
-                //     placholder:'请输入内容',
-                //     props: 'text',
-                //     value: '',
-                //     width: 100,
-                //     maxlength:null,
-                //     readonly:false,
-                //     disabled:false
-                // },
-                // {
-                //     type: 'textarea',
-                //     label: '标题',
-                //     props: 'textarea',
-                //     placholder:'请输入内容',
-                //     value: '',
-                //     width: 50,
-                //     rows: 5,
-                //     maxlength:null,
-                // },
-                // {
-                //     type: 'email',
-                //     props: 'email',
-                //     label: '标题',
-                //     value: '',
-                //     width:50,
-                //     maxlength:null,
-                //     readonly:false,
-                //     disabled:false
-                // },
-                // {
-                //     type: 'number',
-                //     props: 'number',
-                //     label: '标题',
-                //     value: '',
-                //     width: 100,
-                //     maxlength: null,
-                //     readonly: false,
-                //     disabled: false
-                // },
-                // {
-                //     type: 'radio',
-                //     label: '标题',
-                //     width: '100',
-                //     value:'选项1',
-                //     items: [{
-                //             label: '选项1',
-                            
-                //         },
-                //         {
-                //             label: '选项2',
-                           
-                //         }
-                //     ]
-                // },
-                //  {
-                //     type: 'checkbox',
-                //     label: '标题',
-                //     width: 50,
-                //     value:['选项2'],
-                //     items: [{
-                //             label: '选项1',
-                //             value:'0'
-                //         },
-                //         {
-                //             label: '选项2',
-                //             value:'1'
-                //         }
-                //     ]
-                // },
-                // {
-                //     type: 'select',
-                //     label: '标题',
-                //     width: 50,
-                //     multiple: true,
-                //     value:[],
-                //     items: [{
-                //             label: '选项1',
-                //             value:'0'
-                           
-                //         },
-                //         {
-                //             label: '选项2',
-                //             value:'1'
-                            
-                //         }
-                //     ]
-                // },
-                // {
-                //     type: 'timepicker',
-                //     label: '标题',
-                //     width: 100,
-                //     value:'',
-                //     placeholder:'选择日期',
-                //     value: '2019-07',
-                //     minCompany: 'month'
-                // }
-            ]
+            tableData:[]
         }
     },
     methods:{
+        
+        getProcessData(dat,flag){
+            if(flag){
+                //新增
+                 this.dataProcess.push(dat)
+            }else{
+                
+                this.dataProcess[dat.EdictIndex]['FlowGroup']=dat.FlowGroup;
+                this.dataProcess[dat.EdictIndex]['FlowGroupName']=dat.FlowGroupName
+                this.dataProcess[dat.EdictIndex]['FlowID']=dat.FlowID
+                this.dataProcess[dat.EdictIndex]['FlowOwner']=dat.FlowOwner
+                this.dataProcess[dat.EdictIndex]['FlowOwnerName']=dat.FlowOwnerName
+                this.dataProcess[dat.EdictIndex]['FlowRequire']=dat.FlowRequire
+                this.dataProcess[dat.EdictIndex]['FlowRequireName']=dat.FlowRequireName
+                this.dataProcess[dat.EdictIndex]['FlowSummary']=dat.FlowSummary
+                this.dataProcess[dat.EdictIndex]['FlowTimeLimit']=dat.FlowTimeLimit
+            }
+           
+        },
         addCom(type){
             this.tableData.push(JSON.parse(JSON.stringify(component[type])));
         },getIndex(index){
@@ -283,19 +253,60 @@ export default {
              this.checkIndex=-1;
              this.AttrData=null;
         },submit(){
-            console.log(this.title);
-            console.log(this.tableData)
+            //提交新增自定义流程
+            // this.postdata={
+            //     title:this.title,
+            //     tableData:this.tableData
+            // }
+            
             this.postdata={
-                title:this.title,
-                tableData:this.tableData
+                TaskTypeID:0,
+                FatherTypeID:49,
+                TypeName:this.title,
+                NumberPrefix:'暂无',
+                ApiAdd:'暂无',
+                ApiAddtofile:'暂无',
+                ApiQuery:'暂无',
+                ApiModagree:'暂无',
+                UI:'暂无',
+                Metadata:JSON.stringify(this.tableData),
+                CurYear:0,
+                CurNumber:0,
+                TypeStatus:1,
+                FlowTemplates:this.dataProcess
             }
+
+            addNewDefine(this.postdata).then(res=>{
+                if(res.data.code==2002){
+                     this.$Message.success({
+                        content:'操作成功'
+                    })    
+                }else{
+                    this.$Message.error({
+                        content:'数据提交失败:'+res.data.message
+                    })
+                }
+            })
+
             
         },nextStep(){
             this.current==2?this.current=this.current:this.current++
         },previousStep(){
             this.current==0?this.current=this.current:this.current--
-        },showProcess(){
-             this.$refs["processBasic"].showModal(true);
+        },deleteProcess(row,index){
+            //删除该流程下的步骤
+            this.$Modal.warning({
+                title: '删除',
+                content:'是否删除该流程步骤？',
+
+                onOk:()=>{
+                    this.dataProcess.splice(index,1)
+                }
+
+            })
+        },
+        showProcess(dat,type){
+             this.$refs["processBasic"].showModal(dat,type);
         }
     }
 }

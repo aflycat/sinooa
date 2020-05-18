@@ -6,24 +6,27 @@
         <progedict-tem :taskFlowID="taskFlowID.toString()" v-if="typeStr=='progedict'" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></progedict-tem>
         <progshow-tem :taskFlowID="taskFlowID.toString()"  v-if="typeStr=='progshow'" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></progshow-tem>    
 
-        <cost-field :taskFlowID="taskFlowID.toString()"      v-if="typeStr=='field'&&flowRequire<=100"     :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-field>
+        <cost-field :taskFlowID="taskFlowID.toString()"      v-if="typeStr=='field'&&flowRequire>100"     :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-field>
         <cost-entertain :taskFlowID="taskFlowID.toString()"  v-if="typeStr=='entertain'&&flowRequire<=100" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-entertain>
         <cost-wage :taskFlowID="taskFlowID.toString()"       v-if="typeStr=='wage'&&flowRequire<=100"      :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-wage>
         <cost-program :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='program'&&flowRequire<=100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-program>
         <cost-train :taskFlowID="taskFlowID.toString()"      v-if="typeStr=='train'&&flowRequire<=100"     :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-train>
         <cost-general :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='general'&&flowRequire<=100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-general>
 
+        <dep-show :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='depart'&&flowRequire>100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></dep-show>
+        <plat-show :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='platform'&&flowRequire<=100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></plat-show>
 
-        <cost-field-show :taskFlowID="taskFlowID.toString()"      v-if="typeStr=='field'&&flowRequire>100"     :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-field-show>
+
+        <cost-field-show :taskFlowID="taskFlowID.toString()"      v-if="typeStr=='field'&&flowRequire<=100"     :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-field-show>
         <cost-entertain-show :taskFlowID="taskFlowID.toString()"  v-if="typeStr=='entertain'&&flowRequire>100" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-entertain-show>
         <cost-wage-show :taskFlowID="taskFlowID.toString()"       v-if="typeStr=='wage'&&flowRequire>100"      :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-wage-show>
         <cost-program-show :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='program'&&flowRequire>100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-program-show>
         <cost-train-show :taskFlowID="taskFlowID.toString()"      v-if="typeStr=='train'&&flowRequire>100"     :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-train-show>
         <cost-general-show :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='general'&&flowRequire>100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></cost-general-show>
 
-        <!-- <defin-excel></defin-excel> -->
+        <dep-edict :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='depart'&&flowRequire<=100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></dep-edict>
+        <plat-show :taskFlowID="taskFlowID.toString()"    v-if="typeStr=='platform'&&flowRequire>100"   :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"></plat-show>
 
-        
 
     </div>
 </template>
@@ -49,6 +52,13 @@ import costProgramShow from "@/view/components/template_show/cost_program_show"
 import costTrainShow from "@/view/components/template_show/cost_train_show" 
 import costGeneralShow from "@/view/components/template_show/cost_general_show"
 
+import depShow from "@/view/components/template_show/department_show"
+import depEdict from "@/view/components/template_show/department_edict"
+
+import platShow from "@/view/components/template_show/platform_show"
+import platEdict from "@/view/components/template_show/platform_edict"
+
+
 import definExcel from "@/view/components/template_show/defin_excel"
 import {TaskTypeID} from "@/libs/data"
 export default {
@@ -70,8 +80,11 @@ export default {
         costEntertainShow,
         costProgramShow,
         costTrainShow,
-        costGeneralShow
-
+        costGeneralShow,
+        depShow,
+        depEdict,
+        platShow,
+        platEdict
     },
     data(){
         return{
@@ -90,7 +103,8 @@ export default {
                   TaskTypeID.supervisors
                 //   TaskTypeID.自定义
               ],
-              'progshow':[
+              'progbefroe':[
+
                    TaskTypeID.itemProcess,
                    TaskTypeID.itemInvestment,
                    TaskTypeID.itemSummary,
@@ -99,6 +113,7 @@ export default {
                 //    TaskTypeID.itemAgreement其他事宜
               ],
               'progedict':[
+                  //开发，立项，变动
                    TaskTypeID.itemDevelop,
                    TaskTypeID.itemProjectApproval,
                    TaskTypeID.itemChange,
@@ -130,6 +145,14 @@ export default {
               ],
               'general':[
                   TaskTypeID.GeneralExpenses
+              ],
+              'depart':[
+                   TaskTypeID.DepartmentAdd,
+                   TaskTypeID.DepartmentChange
+              ],
+              'platform':[
+                TaskTypeID.PlarformAdd,
+                TaskTypeID.PlatformChange
               ]
 
           }
@@ -158,12 +181,19 @@ export default {
         getShowFlag(){
             if(this.typeIdObj.opra.indexOf(this.taskTypeID)!=-1){
                 this.typeStr='opra'
-            }else if(this.typeIdObj.progshow.indexOf(this.taskTypeID)!=-1){
-                this.typeStr='progshow'
+            }else if(this.typeIdObj.progbefroe.indexOf(this.taskTypeID)!=-1){
+                // this.typeStr='progshow'
             }else if(this.typeIdObj.progedict.indexOf(this.taskTypeID)!=-1){
-                this.typeStr='progedict'
+                //开发，立项，变动
+                if(this.flowRequire==0){
+                    this.typeStr='progedict'
+                }else{
+                    this.typeStr='progshow'
+                }
+
             }else if(this.typeIdObj.fundshow.indexOf(this.taskTypeID)!=-1){
                 this.typeStr='fundshow'   
+
             }else if(this.typeIdObj.field.indexOf(this.taskTypeID)!=-1){
                 this.typeStr='field'   
             }else if(this.typeIdObj.entertain.indexOf(this.taskTypeID)!=-1){
@@ -176,8 +206,12 @@ export default {
                 this.typeStr='train'   
             }else if(this.typeIdObj.general.indexOf(this.taskTypeID)!=-1){
                 this.typeStr='general'   
+            }else if(this.typeIdObj.depart.indexOf(this.taskTypeID)!=-1){
+                this.typeStr='depart'
+            }else if(this.typeIdObj.platform.indexOf(this.taskTypeID)!=-1){
+                this.typeStr='platform'
             }else{
-                this.typeStr='fundedic'
+                this.typeStr='fundshow'
             }
         },
         edictFlag(){

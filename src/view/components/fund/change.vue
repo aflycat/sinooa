@@ -3,23 +3,19 @@
 <template>
 <!-- 基金变动 -->
     <div class="change">
-            <Card class="itemCard">
+           <Card class="itemCard">
                 <p slot="title">报送人信息</p>
                 <Form :label-width="80">
                     <Row>
                         <Col span="8">
                             <FormItem label="报送人" prop="name">
-                                <Input disabled v-model="name" placeholder="请输入报送人姓名"></Input>
+                                {{name}}
                             </FormItem>
                         </Col>
                          <Col span="8">
                             <FormItem label="联系电话" prop="phone">
-                                <Input v-model="phone" placeholder="请输入报送人联系电话"></Input>
+                                {{phone}}
                             </FormItem>   
-                        </Col>
-
-                         <Col span="8">
-
                         </Col>
                     </Row>
                    
@@ -27,14 +23,14 @@
             </Card>
            </Card>
               <Card class="itemCard">
-                <p slot="title">项目选择</p>
+                <p slot="title">基金选择</p>
                 <Form :label-width="80">
                     <Row>
                            <Col span="8">
-                            <FormItem label="项目简称" prop="ProjectType">
-                                <AutoComplete v-model="ProjectVlaue" :data="ProjectData" :filter-method="filterMethod" placeholder="请选择项目"></AutoComplete>
-
-                                <!-- <Input v-model="postdata.Project.ProjectType" placeholder="请选择项目品种"></Input> -->
+                            <FormItem label="基金选择" prop="ProjectType">
+                                 <Select v-model="fundID"  filterable   @on-change='getFundDetail' placeholder="请选择基金">
+                                    <Option v-for="(item,index) in fundList" :value="item.fundID" :key="index">{{ item.shortName }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
                       </Row>
@@ -45,313 +41,201 @@
                 <p slot="title">基金基本信息</p>
                 <Form :label-width="110">
                     <Row>
-  
                          <Col span="8">
-                            <FormItem label="基金全称" prop="ClientName">
-                                <Input v-model="postdata.Client.ClientName" placeholder="请输入基金全称"></Input>
-                            </FormItem>   
-                        </Col>
-                          <Col span="8">
-                            <FormItem label="基金简称" prop="ClientShortName">
-                                <Input v-model="postdata.Client.ClientShortName" placeholder="请输入基金简称"></Input>
-                            </FormItem>   
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="所在省市" prop="ClientRegion">
-                                <AutoComplete v-model="cityVlaue" :data="cityData" :filter-method="filterMethod" placeholder="请选择所在省市"></AutoComplete>
-                                <!-- <Input v-model="postdata.Client.ClientRegion" placeholder="请输入所在城市"></Input> -->
-
+                            <FormItem label="权属平台" >
+                                <Select v-model="postdata.Fund.PlatformID"  filterable   placeholder="请选择权属平台">
+                                    <Option v-for="(item,index) in platformList" :value="item.platformID" :key="index">{{ item.shortName }}</Option>
+                                </Select>
                             </FormItem>
                         </Col>
                          <Col span="8">
-                            <FormItem label="注册地址" prop="ClientAddress">
-                                <Input v-model="postdata.Client.ClientAddress" placeholder="请输入注册地址"></Input>
+                            <FormItem label="基金全称">
+                                <Input v-model="postdata.Fund.FundName" placeholder="请输入基金全称"></Input>
+                            </FormItem>   
+                        </Col>
+                          <Col span="8">
+                            <FormItem label="基金简称">
+                                <Input v-model="postdata.Fund.ShortName" placeholder="请输入基金简称"></Input>
+                            </FormItem>   
+                        </Col>
+                        <Col span="8">
+                            <FormItem label="基金类型">
+                               <Select v-model="postdata.Fund.RegType"  filterable   placeholder="请选择基金类型">
+                                    <Option  value="类型1" >类型1</Option>
+                                   <Option   value="类型2" >类型2</Option>
+                                   <Option   value="类型3" >类型3</Option>
+                                   <Option   value="类型4" >类型4</Option>
+                                </Select>
+                            </FormItem>   
+                        </Col>
+                        <Col span="8">
+                            <FormItem label="注册地址" prop="ClientOpenDate">
+                                 <Input v-model="postdata.Fund.Address" placeholder="请输入注册地址"></Input>
                             </FormItem>   
                         </Col>
                           <Col span="8">
                             <FormItem label="注册日期" prop="ClientOpenDate">
-                                 <DatePicker type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Client.ClientOpenDate" placeholder="请输入成立日期"></Input> -->
+                                 <DatePicker :value='postdata.Fund.RegDate' @on-change="setDate('RegDate',$event)" type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
                             </FormItem>   
                         </Col>
                          <Col span="8">
                             <FormItem label="成立日期" prop="ClientOpenDate">
-                                 <DatePicker type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Client.ClientOpenDate" placeholder="请输入成立日期"></Input> -->
+                                 <DatePicker :value='postdata.Fund.OpenDate'  @on-change="setDate('OpenDate',$event)" type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
                             </FormItem>   
                         </Col>
                          <Col span="8">
                             <FormItem label="备案日期" prop="ClientOpenDate">
-                                 <DatePicker type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Client.ClientOpenDate" placeholder="请输入成立日期"></Input> -->
+                                 <DatePicker :value='postdata.Fund.RecordDate'  @on-change="setDate('RecordDate',$event)" type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
                             </FormItem>   
                         </Col>
                         <Col span="8">
                             <FormItem label="终止日期" prop="ClientOpenDate">
-                                 <DatePicker type="date" placeholder="请选择终止日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Client.ClientOpenDate" placeholder="请输入成立日期"></Input> -->
-                            </FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="备案编码" prop="ClientOpenDate">
-                                 <!-- <DatePicker type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker> -->
-                                <Input  placeholder="请输入备案编码"></Input>
+                                 <DatePicker :value='postdata.Fund.EndDate'  @on-change="setDate('EndDate',$event)" type="date" placeholder="请选择终止日期" style="width: 100%;"></DatePicker>
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem label="存续期限" prop="ClientOpenDate">
-                                 <!-- <DatePicker type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker> -->
-                                <Input  placeholder="请输入存续期限"></Input>
-                            </FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="经营范围" prop="ClientShortName">
-                                <Input v-model="postdata.Client.ClientScope" placeholder="请输入经营范围"></Input>
-                            </FormItem>   
-                        </Col>
-                        
-                         <Col span="8">
-                            <FormItem label="客户代码" prop="ClientCode">
-                                <Input v-model="postdata.Client.ClientCode" placeholder="请输入客户代码"></Input>
-                            </FormItem>   
-                        </Col>
-                      
-                      
-                        <Col span="8">
-                            <FormItem label="联系人员" prop="ClientContact">
-                                <Input v-model="postdata.Client.ClientContact" placeholder="请输入联系人员"></Input>
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="联系电邮" prop="ClientContactEmail">
-                                <Input v-model="postdata.Client.ClientContactEmail" placeholder="请输入联系电邮"></Input>
-                            </FormItem>   
-                        </Col>
-
-                         <Col span="8">
-                            <FormItem label="联系电话" prop="ClientContactPhone">
-                                <Input v-model="postdata.Client.ClientContactPhone" placeholder="请输入联系电话"></Input>
+                            <FormItem label="基金代码" >
+                                <Input disabled v-model="postdata.Fund.FundCode" placeholder="请输入基金代码"></Input>
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem label="联系传真" prop="ClientContactFax">
-                                <Input v-model="postdata.Client.ClientContactFax" placeholder="请输入联系传真"></Input>
+                            <FormItem label="协会登记编码" >
+                                <Input v-model="postdata.Fund.RegSCode" placeholder="请输入协会登记编码"></Input>
                             </FormItem>   
                         </Col>
-                       <Col span="8">
-                            <FormItem label="投资项目数量" prop="ClientRegisteredCapital">
-                                <Input  type="number" placeholder="请输入累计投资项目数">
-                                <span slot="append">个</span>
-                                </Input>
-                            </FormItem>
+                          <Col span="8">
+                            <FormItem label="社会统一代码" >
+                                <Input v-model="postdata.Fund.CodsCode" placeholder="请输入社会统一代码"></Input>
+                            </FormItem>   
                         </Col>
-                         <Col span="8">
-                            <FormItem label="退出项目数量" prop="ClientRegisteredCapital">
-                                <Input  type="number" placeholder="累计退出项目数">
-                                <span slot="append">个</span>
-                                </Input>
-                            </FormItem>
-                        </Col>
-                       
-                        
-                        
-                     
                     </Row>
 
                 </Form>
             </Card>
                
+             <Card  class="itemCard">
+                <p slot="title">基金存续期限</p>
+                     <Form :label-width="100">
+                        <Row>
+                            <Col span="8">
+                                <FormItem label="存续开始" prop="ClientOpenDate">
+                                    <DatePicker :value='postdata.Fund.LiveStartDate'  @on-change="setDate('LiveStartDate',$event)" type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
+                                </FormItem>  
+                             </Col>
+                             <Col span="8">
+                                <FormItem label="存续结束" prop="ClientOpenDate">
+                                    <DatePicker :value='postdata.Fund.LiveEndDate'  @on-change="setDate('LiveEndDate',$event)" type="date" placeholder="请选择成立日期" style="width: 100%;"></DatePicker>
+                                </FormItem>  
+                             </Col>
+                         </Row>
+                     </Form>
+                    
+                <Table :columns="progress" :data="progressData">
+                    <template slot-scope="{row,index}" slot="action">
+                        <span  @click="showEdict(-1,index,row)" style="margin-right:5px;color:#3498db;cursor:pointer;">编辑</span>
+                        <span  @click="processDelete(index)" style="margin-right:5px;color:#ed4014;cursor:pointer;">删除</span>
+                    </template>
+                </Table>    
+                 <Button style="margin-top:15px;" type="primary" @click="showEdict(1,0,'')" >添加存续期限</Button>
+
+            </Card>  
             <Card  class="itemCard">
                 <p slot="title">基金成员信息</p>
                  <Form :label-width="150">
+                    <Card  v-for="(item,index) in postdata.Members" :key='index' style="margin-bottom:15px;">
                         <Row>
-                         <Col span="12">
-                            <FormItem label="基金合伙人" prop="ClientRegisteredCapital">
-                                <Input   placeholder="请选择基金合伙人"></Input>
-                            </FormItem>
-                        </Col>
-                        <Col span="12">
-                            <FormItem label="投决会委员" prop="ClientRegisteredCapital">
-                                <Input      placeholder="请选择投决会委员"></Input>
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="合伙人数量" prop="ClientRegisteredCapital">
-                                <Input  type="number" placeholder="请输入合伙人数量">
-                                <span slot="append">个</span>
-                                </Input>
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="普通合伙人数量" prop="ClientRegisteredCapital">
-                                <Input   type="number"   placeholder="请输入普通合伙人数量">
-                                <span slot="append">个</span>
-                                </Input>
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="有限合伙人数量" prop="ClientRegisteredCapital">
-                                <Input   type="number"   placeholder="请输入有限合伙人数量">
-                                <span slot="append">个</span>
-                                </Input>
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="管理人" prop="ClientRegisteredCapital">
-                                <Input   placeholder="请输入管理人"></Input>
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="普通合伙人" prop="ClientRegisteredCapital">
-                                <Input      placeholder="请输入普通合伙人"></Input>
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="执行事务合伙人" prop="ClientRegisteredCapital">
-                                <Input     placeholder="请输入执行事务合伙人"></Input>
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="执行事务合伙人委派代表" prop="ClientRegisteredCapital">
-                                <Input     placeholder="请输入执行事务合伙人委派代表"></Input>
-                            </FormItem>
-                        </Col>
-                    </Row>
+                            <Col span="8">
+                                <FormItem label="成员类型" >
+                                    <Select v-model="item.MemberType"  filterable   placeholder="请选择基金类型">
+                                        <Option  :value="31">内部管理人</Option>
+                                        <Option  :value="32">外部管理人</Option>
+                                        <Option  :value="33">托管人</Option>
+                                        <Option  :value="34">投资顾问</Option>
+                                        <Option  :value="35">内部机构投资人</Option>
+                                        <Option  :value="36">外部机构投资人</Option>
+                                        <Option  :value="37">自然人投资人</Option>
+                                        <Option  :value="38">基金产品投资人</Option>
+                                        <Option  :value="39">基金经理</Option>
+                                        <Option  :value="40">基金主办</Option>
+                                        <Option  :value="41">基金成员</Option>
+                                        <Option  :value="42">基金投决会</Option>
+                                    </Select>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="成员名字" >
+                                    <Select filterable v-model='item.MemberID' label-in-value @on-change='setFundMemName(index,$event)' placeholder="请选择成员名字">
+                                        <Option v-for="item in MemberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                    </Select>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="投资人类型" >
+                                    <Select v-model="item.InvestorType"  filterable   placeholder="请选择基金类型">
+                                        <Option   value="自然人(非员工跟投)" >自然人（非员工跟投）</Option>
+                                        <Option   value="自然人(员工跟投)" >自然人（员工跟投）</Option>
+                                        <Option   value="境内法人机构(公司等)" >境内法人机构(公司等)</Option>
+                                        <Option   value="境内非法人机构(一般合伙企业等)" >境内非法人机构(一般合伙企业等)</Option>
+                                         <Option  value="本产品管理人跟投" >本产品管理人跟投</Option>
+                                        <Option   value="私募基金产品" >私募基金产品</Option>
+                                        <Option   value="证券公司及其子公司资产管理计划" >证券公司及其子公司资产管理计划</Option>
+                                        <Option   value="基金公司及其子公司资产管理计划" >基金公司及其子公司资产管理计划</Option>
+                                         <Option  value="期货公司及其子公司资产管理计划" >期货公司及其子公司资产管理计划</Option>
+                                        <Option   value="信托计划" >信托计划</Option>
+                                        <Option   value="商业银行理财产品" >商业银行理财产品</Option>
+                                        <Option   value="保险资产管理计划" >保险资产管理计划</Option>
+                                         <Option  value="慈善基金、捐赠基金等社会公益基金" >慈善基金、捐赠基金等社会公益基金</Option>
+                                        <Option   value="养老基金" >养老基金</Option>
+                                        <Option   value="社会保障基金" >社会保障基金</Option>
+                                        <Option   value="企业年金" >企业年金</Option>
+                                         <Option  value="政府类引导基金" >政府类引导基金</Option>
+                                        <Option   value="财政直接出资" >财政直接出资</Option>
+                                        <Option   value="境外资金(QFII、RQFII等)" >境外资金（QFII、RQFII等）</Option>
+                                        <Option   value="境外机构" >境外机构</Option>
+                                    </Select>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="认缴金额">
+                                    <Input v-model="item.OrderMoney"  placeholder="请输入认缴金额"></Input>
+
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="实缴金额" >
+                                <Input v-model="item.PaidMoney" placeholder="请输实缴金额"></Input>
+
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="份额类型" >
+                                     <Select v-model="item.ShareType"  filterable   placeholder="请选择份额类型">
+                                        <Option  value="优先级">优先级</Option>
+                                        <Option  value="劣后级">劣后级</Option>
+                                        <Option  value="无分级">无分级</Option>
+                                    </Select>
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="管理费计提标准" >
+                                <Input v-model="item.ManageFeeRate" placeholder="请输入管理费计提标准"></Input>
+
+                                </FormItem>  
+                            </Col>
+                             <Col span="8">
+                                <FormItem label="业绩报酬计提标准" >
+                                    <Input v-model="item.RewardRate" placeholder="请输入业绩报酬计提标准"></Input>
+
+                                </FormItem>  
+                            </Col>
+                            <Col span="8">
+                               <Button  type="error" ghost style="border:none 0;" @click="deleteFundMember(index)">删除</Button>
+                            </Col>
+                            
+                        </Row>
+                    </Card>
+                    <Button style="margin-top:15px;" type="primary" @click="addNewFundMember">新增</Button>
                  </Form>
-                  
-
-            </Card>
-            <Card  class="itemCard">
-                <p slot="title">基金财务信息</p>
-                <Form :label-width="120">
-                    <Row>
-                        <Col span="8">
-                            <FormItem label="认缴规模" prop="ClientRegisteredCapital">
-                                <Input  type="number" placeholder="请输入注册资本">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="实缴规模" prop="ClientTotalAssets">
-                                <Input  type="number" placeholder="请输入总资产">
-                                  <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>   
-                        </Col>
-
-                         <Col span="8">
-                            <FormItem label="退资规模" prop="ClientNetAssets">
-                                <Input  type="number" placeholder="请输入净资产">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>   
-                        </Col>
-                        <Col span="12">
-                            <FormItem label="管理费计提标准" prop="ClientIncome">
-                                <Input type="number" placeholder="请输入营业收入">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>
-                        </Col>
-                         <Col span="12">
-                            <FormItem label="业绩报酬计提标准" prop="ClientProfit">
-                                <Input type="number" placeholder="请输入营业利润">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>   
-                        </Col>
-
-                        
-                        
-                     
-                    </Row>
-
-                </Form>
-            </Card>
-            <Card  class="itemCard">
-                <p slot="title">项目信息</p>
-                  <Form :label-width="80">
-                    <Row>
-                        <Col span="16">
-                            <change-tap @getValue="getTapValue"></change-tap>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="项目品种" prop="ProjectType">
-                                <AutoComplete v-model="TypeVlaue" :data="TypeData" :filter-method="filterMethod" placeholder="请选择项目品种"></AutoComplete>
-
-                                <!-- <Input v-model="postdata.Project.ProjectType" placeholder="请选择项目品种"></Input> -->
-                            </FormItem>
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="项目角色" prop="ProjectRole">
-                                 <AutoComplete v-model="RoleVlaue" :data="RoleData" :filter-method="filterMethod" placeholder="请选择项目角色"></AutoComplete>
-                                <!-- <Input v-model="postdata.Project.ProjectRole" placeholder="请选择项目角色"></Input> -->
-                            </FormItem>   
-                        </Col>
-
-                         <Col span="8">
-                            <FormItem label="项目经理" prop="Manager">
-                                 <AutoComplete v-model="ManagerVlaue" :data="ManagerData" :filter-method="filterMethod" placeholder="请选择项目经理"></AutoComplete>
-                                <!-- <Input  placeholder="请选择项目经理"></Input> -->
-                            </FormItem>  
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="项目主办" prop="Owner">
-                                 <AutoComplete v-model="OwnerVlaue" :data="OwnerData" :filter-method="filterMethod" placeholder="请选择项目主办"></AutoComplete>
-                                <!-- <Input  placeholder="请选择项目主办"></Input> -->
-                            </FormItem>
-                        </Col>
-                         <Col span="16">
-                            <FormItem label="项目成员" prop="Member">
-                                <Select v-model="MemberData" multiple style="width:100%;">
-                                    <Option v-for="item in MemberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                                </Select>
-                                <!-- <Input  placeholder="请选择项目成员"></Input> -->
-                            </FormItem>   
-                        </Col>
-                        
-                        
-                         <Col span="8">
-                            <FormItem label="项目内容" prop="phone">
-                                <Input v-model="postdata.Project.ProjectSummary" placeholder="请输入项目内容"></Input>
-                            </FormItem>   
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="项目来源" prop="phone">
-                                <Input v-model="postdata.Project.ProjectSource" placeholder="请输入项目来源"></Input>
-                            </FormItem>   
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="开始日期" prop="ProjectStartDate">
-                                  <DatePicker type="date" placeholder="请选择开始日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Project.ProjectStartDate" placeholder="请选择预计周期"></Input> -->
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="结束日期" prop="name">
-                                  <DatePicker type="date" placeholder="请选择结束日期" style="width: 100%;"></DatePicker>
-                                <!-- <Input v-model="postdata.Project.ProjectEndDate" placeholder="请选择预计周期"></Input> -->
-                            </FormItem>
-                        </Col>
-                        <Col span="8">
-                            <FormItem label="工时费用" prop="ProjectEstimatedHourCost">
-                                <Input v-model="postdata.Project.ProjectEstimatedHourCost" type="number" placeholder="请输入工时费">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>   
-                        </Col>
-                         <Col span="8">
-                            <FormItem label="直接费用" prop="ProjectEstimatedFeeCost">
-                                <Input v-model="postdata.Project.ProjectEstimatedFeeCost" type="number" placeholder="请输入直接费用">
-                                      <span slot="append">万元</span>
-                                </Input>
-                            </FormItem>   
-                        </Col>
-                    </Row>
-
-                </Form>   
-
             </Card>
             <Card  class="itemCard">
                 <p slot="title">请示信息</p>
@@ -362,8 +246,8 @@
                     <FormItem label="具体内容" prop="TaskSummary">
                         <Input v-model="postdata.TaskSummary" type="textarea" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
                     </FormItem>
-                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                                <p class="fileName" v-for="(item,index) in fileName" >
+                    <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
+                                <p class="fileName" v-for="(item,index) in fileName" :key='index'>
                                     <Row >
                                         <Col span="20">
                                             <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
@@ -378,145 +262,392 @@
                     </FormItem>
                      <FormItem>
                         <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                        <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
+                        <Button type="primary" @click="handleSubmit()">提交</Button>
                        
                     </FormItem>
                 </Form>   
 
             </Card>
+            <Modal v-model="processModal" title="编辑项目进度信息" @on-ok="setProcess">
+                <Form :label-width="100">
+                         <Row >
+                            <Col span="12">
+                                <FormItem label="序号">
+                                    <Input placeholder="序号" type="number" v-model="ScheduleID"></Input>
+                                </FormItem>
+                            </Col>
+                             <Col span="12">
+                                <FormItem label="进度名">
+                                    <Input placeholder="进度名"  v-model="ScheduleName"></Input>
+                                </FormItem>
+                            </Col>
+                             <Col span="12">
+                                <FormItem label="预计开始时间">
+                                     <DatePicker @on-change="setEstStartDate" :value='EstStartDate' type="date"  placeholder="选择开始时间" style="width: 100%;"></DatePicker>
+                                </FormItem>
+                            </Col>
+                             <Col span="12">
+                                <FormItem label="预计结束时间">
+                                     <DatePicker @on-change="setEstEndDate" :value='EstEndDate' type="date"  placeholder="选择结束时间" style="width: 100%;"></DatePicker>
+                                </FormItem>
+                            </Col>
+                             <Col span="12">
+                                <FormItem label="实际开始时间">
+                                     <DatePicker @on-change="setRealStartDate" :value='RealStartDate' type="date"  placeholder="选择实际开始时间" style="width: 100%;"></DatePicker>
+                                </FormItem>
+                            </Col>
+                             <Col span="12">
+                                <FormItem label="实际结束时间">
+                                     <DatePicker @on-change="setRealEndDate" :value='RealEndDate' type="date"  placeholder="选择实际结束时间" style="width: 100%;"></DatePicker>
+                                </FormItem>
+                            </Col>
+                            <Col span="24">
+                                <FormItem label="进度说明">
+                                    <Input placeholder="进度说明"  v-model="Summary"></Input>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                </Form>
+
+            </Modal>
         <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
 
     </div>
 </template>
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
-import changeTap from "@/view/components/template/change_tap.vue"
 import {TaskTypeID} from "@/libs/data"
-
+import {getPlatform,getuserList,addNewFundTask,getAllFundList,getFundDetail} from "@/api/data"
 export default {
-      components:{
-        UploadFiles,
-        changeTap
+    components:{
+        UploadFiles
     },
     data(){
         return{
-            name:'',
+           name:'',
             phone:'',
-            cityData:['a', 'b', 'c'],
-            cityVlaue:'',
-            IndustryData:['a', 'b', 'c'],
-            DataVlaue:'',
-            TypeVlaue:'',
-            TypeData:['a', 'b', 'c'],
-            RoleVlaue:'',
-            RoleData:['a', 'b', 'c'],
-            ManagerVlaue:'',
-            ManagerData:['a', 'b', 'c'],
-            OwnerVlaue:'',
-            OwnerData:['a', 'b', 'c'],
-            MemberData:[],
-            MemberList:[
-                {
-                        value: 'New York',
-                        label: 'New York'
-                    },
-                    {
-                        value: 'London',
-                        label: 'London'
-                    },
-                    {
-                        value: 'Sydney',
-                        label: 'Sydney'
-                    },
-                    {
-                        value: 'Ottawa',
-                        label: 'Ottawa'
-                    },
-                    {
-                        value: 'Paris',
-                        label: 'Paris'
-                    },
-                    {
-                        value: 'Canberra',
-                        label: 'Canberra'
-                    }
-            ],  fileName:[],
+            ScheduleID:'',
+            ScheduleName:'',
+            Summary:'',
+            EstStartDate:'',
+            EstEndDate:'',
+            RealStartDate:'',
+            RealEndDate:'',
+            processModal:false,
+            edictProcessIndex:0,
+            fundList:[],
+            fundID:'',
+            progress:[
+                {title:'序号',key:'ScheduleID',width:100},
+                {title:'进度名',key:'ScheduleName'},
+                {title:'预计开始时间',key:'EstStartDate'},
+                {title:'预计结束时间',key:'EstEndDate'},
+                {title:'实际开始时间',key:'RealStartDate'},
+                {title:'实际结束时间',key:'RealEndDate'},
+                {title:'说明',key:'Summary'},
+                {title:'操作', slot: 'action',width: 150}
+            ],
+            progressData:[],
+            platformList:[],
+            limitData:[],
+            MemberList:[],
+            fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
+            
             postdata:{
                     TaskTypeID:TaskTypeID.fundChanges,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
                     TaskName:'',//任务名（UI中的请示事项要点）
                     TaskSummary:'',//任务概要（UI中的请示事项具体内容）
                     TaskOwner:'',//任务申请人ID，与User表的UserID对应，取自当前登录用户
-                    Client:{
-                        ClientID:0,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
-                        ClientName:'',//公司全称
-                        ClientRegion:'',//所在省市，下拉表，从后台字典表中获取
-                        ClientShortName:'',//公司简称
-                        ClientCode:'',//客户代码，不同客户使用该唯一的代码区分
-                        ClientScope:'',//经营范围
-                        ClientIndustry:'',//所属行业，下拉表，从后台字典表中获取
-                        ClientLegalPerson:'',//法人代表
-                        ClientManager:'',//总经理
-                        ClientRegisteredCapital:0,//注册资本
-                        ClientOpenDate:'',//成立日期
-                        ClientAddress:'',//注册地址
-                        ClientZip:'',//邮政编码
-                        ClientContact:'',//联系人员
-                        ClientContactEmail:'',//联系电邮
-                        ClientContactPhone:'',//联系电话
-                        ClientContactFax:'',//联系传真
-                        ClientTotalAssets:0,//总资产
-                        ClientNetAssets:0,//净资产
-                        ClientIncome:0,//营业收入
-                        ClientProfit:0,//营业利润
-                        ClientNetProfit:0,//净利润
-                        ClientFinancialYear:0,//财务年度
-                        ClientFinancialQuarter:0,//财务季度
-                        ClientStatus:1//状态，1表示最新信息，0表示历史信息
+                    Fund:{
+                        FundID:0,
+                        PlatformID:'',//
+                        FundName:'',//
+                        ShortName:'',///
+                        FundCode:'',//基金代码
+                        CodsCode:'',//社会统一
+                        RegSCode:'',//协会登记
+                        RegType:'',//基金类型
+                        Address:'',//注册地址
+                        RegDate:'',//注册日期
+                        OpenDate:'',//成立日期
+                        RecordDate:'',//备案日期
+                        EndDate:'',//终止日期
+                        LiveStartDate:'',//存续开始日期
+                        LiveEndDate:'',//存续结束日期
+                        FundStatus:1
                     },
-                    Project:{
-                        ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
-                        ClientID:0,//客户ID 
-                        ClientCode:'',//客户代码，不同项目使用“客户代码 + 项目品种 + 项目角色”唯一区分
-                        ProjectType:'',//项目品种，下拉表，从后台字典表中获取
-                        ProjectRole:'',//项目角色，下拉表，从后台字典表中获取
-                        ProjectSummary:'',//项目概要
-                        ProjectSource:'',//项目来源
-                        ProjectStartDate:'',//项目开始日期
-                        ProjectEndDate:'',//项目结束日期
-                        ProjectEstimatedFeeCost:0,//预计直接费用
-                        ProjectEstimatedHourCost:0,//预计工时费用
-                        ProjectStatus:1,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                        Members:[
-                            {
-                                ID:0,//数据ID (用默认值0)
-                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                                MemberID:'',//项目成员ID，与用户表UserID对应
-                                MemberName:'',//项目成员的姓名
-                                MemberType:1,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                                EstimatedHour:0,//预计投入工时，暂未使用
-                                MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                            },
-                            {
-                                ID:0,//数据ID (用默认值0)
-                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                                MemberID:'',//项目成员ID，与用户表UserID对应
-                                MemberName:'',//项目成员的姓名
-                                MemberType:2,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                                EstimatedHour:0,//预计投入工时，暂未使用
-                                MemberStatus:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                            }
-                        ]
-                    }
+                    Members:[
+                        // ID
+                        // FundID开发立项0变动为选择
+                        // MemberID成员id
+                        // MemberName成员姓名
+                        // MemberType31管理人（内部，Platforms），32管理人（外部，Clients），33托管人（Clients），34投资顾问（Clients），35投资人（内部机构，Platforms），36投资人（外部机构，Clients），37投资人（自然人，Users），38投资人（基金产品，Funds），39基金经理，40基金主办，41基金成员，42基金投决会
+                        // InvestorType
+                        // OrderMoney认缴金额
+                        // PaidMoney实缴金额
+                        // ShareType//优先级，劣后级，无分级
+                        // ManageFeeRate管理费计提标准
+                        // RewardRate业绩报酬计提标准
+                        // Status
+                    ],
+                    Schedules:[]
             }
         }
+    },mounted(){
+        this.name=JSON.parse(localStorage.getItem('userName'));
+        this.postdata.TaskOwner=JSON.parse(localStorage.getItem('userId'));
+        this.phone=JSON.parse(localStorage.getItem('phone'))
+        this.getuserList();
+        this.getPlatform();
+        this.getAllFundList();
     },
     methods:{
-         filterMethod (value, option) {
-             console.log(value,option)
-                return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
+        handleSubmit(){
+            this.postdata.Fund.Members=this.postdata.Members;
+            this.postdata.Fund.Schedules=this.progressData;
+            console.log(this.postdata)
+            addNewFundTask(this.postdata).then(res=>{
+                if(res.data.code==2401){
+                    this.$Message.success({
+                        content:'操作成功'
+                    })
+                }else{
+                    this.$Message.error({
+                        content:'操作失败:'+res.data.message
+                    })
+                }
+            })
+        },
+        getAllFundList(){
+            getAllFundList({FundStatus:1,USerID:JSON.parse(localStorage.getItem('userId'))}).then(res=>{
+                if(res.data.code==2405){
+                    this.fundList=res.data.fundList
+                }else{
+                    this.$Message.error({
+                        content:'基金列表加载失败:'+res.data.message
+                    })
+                }
+            })
+        },
+        getFundDetail(){    
+            getFundDetail({FundID:this.fundID}).then(res=>{
+                if(res.data.code==2406){
+                    this.postdata={
+                        TaskName:'',//任务名（UI中的请示事项要点）
+                        TaskSummary:'',//任务概要（UI中的请示事项具体内容）
+                        TaskTypeID:TaskTypeID.fundChanges,
+                        TaskOwner:JSON.parse(localStorage.getItem('userId')),//任务申请人ID，与User表的UserID对应，取自当前登录用户
+                        Fund:{
+                            FundID:res.data.fund.fundID,
+                            PlatformID:res.data.fund.platformID,//
+                            FundName:res.data.fund.fundName,//
+                            ShortName:res.data.fund.shortName,///
+                            FundCode:res.data.fund.fundCode,//基金代码
+                            CodsCode:res.data.fund.codsCode,//社会统一
+                            RegSCode:res.data.fund.regSCode,//协会登记
+                            RegType:res.data.fund.regType,//基金类型
+                            Address:res.data.fund.address,//注册地址
+                            RegDate:res.data.fund.regDate,//注册日期
+                            OpenDate:res.data.fund.openDate,//成立日期
+                            RecordDate:res.data.fund.recordDate,//备案日期
+                            EndDate:res.data.fund.endDate,//终止日期
+                            LiveStartDate:res.data.fund.liveStartDate,//存续开始日期
+                            LiveEndDate:res.data.fund.liveEndDate,//存续结束日期
+                            FundStatus:1
+                        },
+                        Members:[],
+                        Schedules:[]
+
+                    }
+                    this.loadMembers(res.data.fund.members);
+                    this.loadProcess(res.data.fund.schedules)
+                }else{
+                    this.$Message.error({
+                        content:'基金信息加载失败:'+res.data.message
+                    })
+                }
+            })
+        },
+        loadMembers(dat){
+            this.postdata.Members=[];
+            dat.forEach(element=>{
+                this.postdata.Members.push({
+                    ID:element.id,
+                    FundID:element.fundID,
+                    MemberID:element.memberID,
+                    MemberName:element.memberName,
+                    MemberType:element.memberType,
+                    InvestorType:element.investorType,
+                    OrderMoney:element.orderMoney,
+                    PaidMoney:element.paidMoney,
+                    ShareType:element.shareType,
+                    ManageFeeRate:element.manageFeeRate,
+                    RewardRate:element.rewardRate,
+                    Status:element.status
+                })
+            })
+        },
+        loadProcess(dat){
+            this.progressData=[];
+            dat.forEach(element=>{
+                this.progressData.push({
+                    ID:element.id,
+                    FundID:element.fundID,
+                    ScheduleID:element.scheduleID,
+                    ScheduleName:element.scheduleName,
+                    Summary:element.summary,
+                    EstStartDate:element.estStartDate.substr(0,10),
+                    EstEndDate:element.estEndDate.substr(0,10),
+                    RealStartDate:element.realStartDate.substr(0,10),
+                    RealEndDate:element.realEndDate.substr(0,10),
+                    Status:element.status,
+                })
+            })
+           
+        },
+        setFundMemName(index,dat){
+            this.postdata.Members[index].MemberName=dat.label;
+        },
+        addNewFundMember(){
+            this.postdata.Members.push({
+                ID:0,
+                FundID:this.postdata.Fund.FundID,
+                MemberID:'',
+                MemberName:'',
+                MemberType:'',
+                InvestorType:'',
+                OrderMoney:'',
+                PaidMoney:'',
+                ShareType:'',
+                ManageFeeRate:'',
+                RewardRate:'',
+                Status:1
+            })
+         },
+         deleteFundMember(index){
+             this.$Modal.confirm({
+                 title:'删除',
+                 content:'是否删除：'+this.postdata.Members[index].MemberName+'?',
+                 onOk:()=>{
+                     this.postdata.Members.splice(index,1)
+                 }
+             })
+         },
+         getPlatform(){
+            getPlatform({'PlatStatus':1,'USerID':JSON.parse(localStorage.getItem("userId"))}).then(res=>{
+                if(res.data.code==2105){
+                    this.platformList=res.data.platList;
+                    
+                }else{
+                     this.$Message.error({
+                        content:"权属平台信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+         getuserList(){
+            getuserList({"PageIndex":1,"PageSize":1000}).then(res=>{
+                if(res.data.code==0){
+                    res.data.userList.forEach(element => {
+                        this.MemberList.push({
+                            label:element.userName,
+                            value:element.userId
+                        })
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"成员信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        showEdict(type,index,row){
+                this.processModal=true;
+                // this.FundID=this.postdata.Fund.FundID;
+                if(type==1){
+                    //新增
+                    this.ScheduleID='';
+                    this.ScheduleName='';
+                    this.Summary='';
+                    this.EstStartDate='';
+                    this.EstEndDate='';
+                    this.RealEndDate='';
+                    
+                    this.RealStartDate='';
+                    this.processDeal=true;
+                }else{
+                    //编辑
+                    this.edictProcessIndex=index;
+                    this.ScheduleID=row.ScheduleID;
+                    this.ScheduleName=row.ScheduleName;
+                    this.Summary=row.Summary;
+                    this.EstStartDate=row.EstStartDate;
+                    this.EstEndDate=row.EstEndDate;
+                    this.RealStartDate=row.RealStartDate;
+                    this.RealEndDate=row.RealEndDate;
+
+                    this.processDeal=false;
+                }
+            },setProcess(){
+                if(this.processDeal){
+                    //新增
+                    this.progressData.push({
+                        ScheduleID:this.ScheduleID,
+                        FundID:this.postdata.Fund.FundID,
+                        ScheduleName:this.ScheduleName,
+                        Summary:this.Summary,
+                        EstStartDate:this.EstStartDate,
+                        EstEndDate:this.EstEndDate,
+                        ID:0,
+                        RealStartDate:this.RealStartDate,
+                        RealEndDate:this.RealStartDate,
+                        Status:1
+                    })
+                }else{
+                    //编辑
+                    this.progressData[this.edictProcessIndex].ScheduleID=this.ScheduleID;
+                    this.progressData[this.edictProcessIndex].ScheduleName=this.ScheduleName;
+                    this.progressData[this.edictProcessIndex].Summary=this.Summary;
+                    this.progressData[this.edictProcessIndex].EstStartDate=this.EstStartDate;
+                    this.progressData[this.edictProcessIndex].EstEndDate=this.EstEndDate;
+                    this.progressData[this.edictProcessIndex].FundID=this.FundID;
+                    this.progressData[this.edictProcessIndex].ID=0;
+                    this.progressData[this.edictProcessIndex].RealStartDate=this.RealStartDate;
+                    this.progressData[this.edictProcessIndex].RealEndDate=this.RealEndDate;
+                    this.progressData[this.edictProcessIndex].Status=1;
+
+                }
             },
+            processDelete(index){
+                // this.postdata.Project.Schedules
+                 this.$Modal.confirm({
+                    title:"删除",
+                    content:"是否删除该进度:"+this.progressData[index]["ScheduleName"]+"?",
+                    onOk:()=>{
+                        // this.postdata.Project.Schedules.splice(index,1);
+                        this.progressData.splice(index,1);
+                    }
+                })
+            },
+             setEstStartDate(value){
+                this.EstStartDate=value;
+            },
+            setEstEndDate(value){
+                this.EstEndDate=value; 
+            },
+            setRealStartDate(value){
+                this.RealStartDate=value; 
+            },
+            setRealEndDate(value){
+                this.RealEndDate=value; 
+            },
+        setDate(key,val){
+            // console.log(key,val)
+            this.postdata.Fund[key]=val
+        }, 
+         
         deleteFile(index){
             this.fileName.splice(index,1);
             this.fileWrap.splice(index,1);
@@ -534,10 +665,8 @@ export default {
         },showUploadFile(){
             //显示modal
             this.$refs["uploadModal"].showModal(true);
-        },getTapValue(tap,tapDet){
-            console.log(tap,tapDet)
         }
-    }
+}
 }
 </script>
 <style lang='less' scoped>

@@ -19,11 +19,11 @@
     </div>
 </template>
 <script>
-import {returnTaskFlow} from "@/api/user"
+import {taskFlowReturn} from "@/api/data"
 export default {
     name:'returnStep',
     props:{
-        taskFlows:Array,
+        // taskFlows:Array,
         taskFlowID:String,
         taskID:String
     },
@@ -36,10 +36,30 @@ export default {
 
         }
     },
-    watch:{
-        taskFlows(){
+    
+    methods:{
+        handleOk(){
+            
+            taskFlowReturn({
+                TaskID:this.taskID,
+                TaskFlowID:this.taskFlowID,
+                FlowComment:this.content,
+                ReturnFlowID:this.backId
+            }).then(res=>{
+                if(res.data.code==2023){
+                     this.$Message.success({content:'操作成功'})
+                }else{
+                     this.$Message.success({content:'操作失败:'+res.data.message})
+                }
+            })  
+        
+           
+           
+        },
+        showModal(flag,data){
+            this.flag=flag;
             let hasDat=[]
-            this.taskFlows.forEach(element=>{
+            data.forEach(element=>{
                 if(hasDat.indexOf(element.flowID)==-1){
                      this.stepList.push({
                         value:element.flowID,
@@ -48,30 +68,6 @@ export default {
                 }
                 hasDat.push(element.flowID)
             })
-        }
-    },
-    methods:{
-        handleOk(){
-            returnTaskFlow({
-                TaskID:this.taskID,
-                TaskFlowID:this.taskFlowID,
-                FlowComment:this.content,
-                ReturnFlowID:this.backId
-            }).then(res=>{
-                if(res.data.code==2103){
-                    this.$Notice.success({
-                        title:'修改节点成功'
-                    })
-                }else{
-                    this.$Message.error({
-                        content:'修改节点失败：'+res.data.message
-                    })
-                }
-            })
-           
-        },
-        showModal(flag){
-            this.flag=flag
         }
     }
 }
