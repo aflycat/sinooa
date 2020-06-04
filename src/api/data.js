@@ -440,7 +440,17 @@ export const addNewPlatformMeet = (data) => {
 
         })
     }
-    //项目列表查询
+    //获取平台的任务详情
+export const getPlatformTaskDetail = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/plattask/query/',
+        data,
+        method: 'post'
+    })
+}
+
+
+//项目列表查询
 export const programListQuery = (data) => {
     return axios.request({
         url: "http://120.78.154.66:8089/api/projecttask/projectlistquery/",

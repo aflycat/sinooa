@@ -4,33 +4,21 @@
             <p slot="title">任务明细</p>
             <Form :label-width="80">
                 <Row>
-                     <Col span="24">
-                        <FormItem label="任务编号：">
-                            <b> {{postdata.TaskNumber}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="24">
-                        <FormItem label="事项要点：">
-                            <b>{{postdata.TaskName}}</b>
-                        </FormItem>
-                    </Col>
-                   
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="报送人：">
                             <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="联系电话：">
                            <b>{{ postdata.TaskOwnerPhone}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24">
-                        <FormItem label="报送内容：">
-                           <b> {{postdata.TaskSummary}}</b>
-                        </FormItem>
+                    <Col span="8">
+                        <FormItem label="承担项目" prop="phone">
+                            <b>{{postdata.Project.clientCode}}-{{postdata.Project.projectType}}-{{postdata.Project.projectRole}}</b>
+                        </FormItem>     
                     </Col>
-                  
                 </Row>
                  </Form>    
         </Card>
@@ -55,13 +43,7 @@
                                 <Input v-model="postdata.IncoExpe.PayeeBank" placeholder="请输入开户行"></Input>
                             </FormItem>   
                         </Col>
-                        <Col span="8">
-                            <FormItem label="承担项目" prop="phone">
-                                <Select v-model="postdata.ProjectID" filterable  >
-                                    <Option v-for="item in ProjectData" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                                </Select>
-                            </FormItem>     
-                        </Col>
+                      
                     </Row>
                    
                 </Form>
@@ -70,6 +52,11 @@
                 <p slot="title">收入详情</p>
                  <Form :label-width="100">
                     <Row>
+                        <Col span="8">
+                            <FormItem label="发生日期" >
+                             <DatePicker type="date" @on-change="setDate" :value='postdata.IncoExpe.Details[0].OccurDate' placeholder="请选择发生日期" style="width:100%;"></DatePicker>   
+                            </FormItem>   
+                        </Col>
                          <Col span="8">
                             <FormItem label="收入性质" prop="phone">
                                 <Input v-model="postdata.IncoExpe.Details[0].IncomeNature" placeholder="请输入收入性质"></Input>
@@ -101,24 +88,6 @@
               
             </Card>
          <Card  class="itemCard">
-            <p slot="title">审批进度</p>
-            <Form :label-width="80">
-                 <Timeline>
-                    <template v-for="(item,index) in postdata.TaskFlows">
-
-                        <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
-                            <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
-                                {{item.flowSummary}}  <Divider type="vertical" />
-                                {{item.flowOwnerName}} <Divider type="vertical" />
-                                 {{item.flowEmail}}
-                            </p>
-                            <p class="content">{{item.flowComment||''}}</p>
-                        </TimelineItem>
-                    </template>
-                </Timeline>
-            </Form>    
-        </Card>
-         <Card  class="itemCard">
             <p slot="title">审批意见</p>
             <Form :label-width="80">
                   <Row>
@@ -129,7 +98,6 @@
                     </Col>
                     <Col span="24">
                         <FormItem label=" ">
-                            <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
                             <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmit()">
                                 <span v-if="!loading">同意</span>
                                 <span v-else>提交中...</span>
@@ -225,6 +193,7 @@ export default {
                         TaskOwnerName: res.data.taskOwnerName,
                         TaskOwnerPhone: res.data.taskOwnerPhone,
                         ProjectID: res.data.project.projectID,
+                        Project:res.data.project,
                         IncoExpe: {//费用收入信息
                             IncoExpeID: res.data.incoExpe.incoExpeID,//费用收入信息ID
                             IncoExpeType:res.data.incoExpe.incoExpeType,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入
@@ -246,17 +215,18 @@ export default {
                 }
             })
         },
+        setDate(value){
+            this.postdata.IncoExpe.Details[0].OccurDate=value;
+        },  
          loadIncoexpeDetail(dat){
             dat.forEach(element => {
                 this.postdata.IncoExpe.Details.push({
                      "ID":0,
                      "IncoExpeID":"0",
                      "Type":501,
-                     "OccurDate":element.OccurDate,
+                     "OccurDate":element.occurDate,
                      "Amount":element.amount,
                      "IncomeNature":element.incomeNature 
-
-
                 })
             });
         },getTotalAmountCn(){

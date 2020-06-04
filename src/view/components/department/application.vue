@@ -225,7 +225,6 @@ export default {
         setMember(dat){
             //设置员工
            this.memWrap=[];
-           
            dat.forEach(element=>{
                this.memWrap.push({
                    ID:0,

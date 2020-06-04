@@ -88,7 +88,7 @@
                         </Col>
                     </Row>
                      <FormItem>
-                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>    
+                        <!-- <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>     -->
                          <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
                             <span v-if="!loading">同意</span>
                             <span v-else>提交中...</span>

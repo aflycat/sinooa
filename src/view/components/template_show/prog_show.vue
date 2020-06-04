@@ -34,7 +34,7 @@
                     <Col span="24" v-if="postdata.TaskFiles.length>0" >
                         <FormItem label="报送文件：" >
                             <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
-                                <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
+                                <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.oldFileName" target="_blank" style="color:#2d8cf0;">
                                     {{item.oldFileName}}
                                 </a> 
                                  <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
@@ -59,12 +59,12 @@
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem label="统一社会代码" >
+                            <FormItem label="统一社会代码：" >
                                 <b>{{postdata.Client.CodsCode}}</b>
                             </FormItem>   
                         </Col>
                         <Col span="8">
-                            <FormItem label="所在国家" >
+                            <FormItem label="所在国家：" >
                                 <b>{{postdata.Client.Country}}</b>
                             </FormItem>   
                         </Col>
@@ -309,6 +309,10 @@
                 
             </Card>
             <Card  class="itemCard">
+                <p slot="title">项目进度</p>
+                <Table :columns="progress" :data="progressData"> </Table>
+            </Card> 
+            <Card  class="itemCard">
             <p slot="title">审批进度</p>
             <Form :label-width="80">
                 <Timeline>
@@ -388,6 +392,16 @@ export default {
             loading:false,
             loading1:false,
             loading2:false,
+             progress:[
+                {title:'序号',key:'ScheduleID',width:100},
+                {title:'进度名',key:'ScheduleName'},
+                {title:'预计开始时间',key:'EstStartDate'},
+                {title:'预计结束时间',key:'EstEndDate'},
+                 {title:'实际开始时间',key:'RealStartDate'},
+                {title:'实际结束时间',key:'RealEndDate'},
+                {title:'说明',key:'Summary'},
+            ],
+            progressData:[],
             postdata:{
                  TaskName:'',//任务名（UI中的请示事项要点）
                     TaskSummary:'',//任务概要（UI中的请示事项具体内容）
@@ -548,12 +562,9 @@ export default {
                             ProjectRole:res.data.project.projectRole,//项目角色，下拉表，从后台字典表中获取
                             ProjectSummary:res.data.project.projectSummary,//项目概要
                             Source:res.data.project.source,//项目来源
-                            // ProjectStartDate:res.data.project.projectStartDate,//项目开始日期
-                            // ProjectEndDate:res.data.project.projectEndDate,//项目结束日期
                             EstimatedFeeCost:res.data.project.estimatedFeeCost,//预计直接费用
                             EstimatedHourCost:res.data.project.estimatedHourCost,//预计工时费用
                             ProjectStatus:res.data.project.projectStatus,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                            
                             PlatformID:res.data.project.platformID,//权属平台id
                             RealStartDate:res.data.project.realStartDate,//实际项目开始日期
                             RealEndDate:res.data.project.realEndDate,//实际项目结束日期
@@ -572,12 +583,11 @@ export default {
                         }
                     };
                     this.taskFlows=res.data.taskFlows;
-
                     this.loadMember(res.data.project.members);//加载人员信息
                     this.geAllPlatformDetail(res.data.project.platformID);//获取平台信息
                     this.getDepartmentDetail(res.data.project.departmentID);//获取部门信息
                                     //获取基金信息
-                                    //加载项目进度
+                    this.loadProcess(res.data.project.schedules)//加载项目进度                //加载项目进度
                    
                 }else{
                     this.$Message.error({
@@ -586,6 +596,22 @@ export default {
                 }
             })
         },
+        loadProcess(obj){
+                obj.forEach(element=>{
+                    this.progressData.push({
+                        ID:element.iD,
+                        ProjectID:element.projectID,
+                        RealStartDate:element.realStartDate.substr(0,10),
+                        RealEndDate:element.realEndDate.substr(0,10),
+                        ScheduleID:element.scheduleID,
+                        ScheduleName:element.scheduleName,
+                        EstStartDate:element.realStartDate.substr(0,10),
+                        EstEndDate:element.estEndDate.substr(0,10),
+                        Summary:element.summary,
+                        Status:element.status
+                    })
+                })
+            },
         geAllPlatformDetail(id){
             geAllPlatformDetail({PlatformID:id}).then(res=>{
                 if(res.data.code==2106){

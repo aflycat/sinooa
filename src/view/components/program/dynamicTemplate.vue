@@ -37,7 +37,6 @@
                 <p slot="title">流程信息</p>
                 <Row>
                     <component-show   v-for="(item,index) in tableData" :index="index" :obj="item" :key="index"></component-show >
-
                 </Row>
         </Card>
         <Card  class="itemCard">
@@ -130,7 +129,9 @@ export default {
         selectProDetail(){
             getListDetail({TaskTypeID:this.process}).then(res=>{
                 if(res.data.code==2003){
-                    this.tableData=JSON.parse(res.data.metadata) 
+
+                    this.tableData=JSON.parse(res.data.metadata)
+
                 }else{
                     this.$Message.error({
                         content:'信息获取失败：'+res.data.message

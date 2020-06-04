@@ -61,15 +61,14 @@
                 </Card>
               </router-link>  
             </Col>
-             <Col span="3">
+             <!-- <Col span="3">
               <router-link to="/normal/leave">
                 <Card class="narmalBtn">
-                  <!-- <Icon type="md-medical" /> -->
                   <Icon type="md-medical"  size="40" color="rgb(255, 133, 192)"/>
                   <p style="color:#515a6e;">请假申请</p>
                 </Card>
               </router-link>  
-            </Col>
+            </Col> -->
             </Row>
           
       </Card>

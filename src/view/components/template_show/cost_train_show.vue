@@ -15,14 +15,19 @@
                         </FormItem>
                     </Col>
                    
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="报送人：">
                             <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="联系电话：">
                            <b>{{ postdata.TaskOwnerPhone}}</b>
+                        </FormItem>
+                    </Col>
+                     <Col span="8">
+                        <FormItem label="承担项目：">
+                           <b>{{postdata.Project.clientCode}}-{{postdata.Project.projectType}}-{{postdata.Project.projectRole}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24">
@@ -250,6 +255,7 @@ export default {
                         TaskOwnerName: res.data.taskOwnerName,
                         TaskOwnerPhone: res.data.taskOwnerPhone,
                         ProjectID: res.data.project.projectID,
+                        Project:res.data.project,
                         IncoExpe: {//费用收入信息
                             IncoExpeID: res.data.incoExpe.incoExpeID,//费用收入信息ID
                             IncoExpeType:res.data.incoExpe.incoExpeType,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入

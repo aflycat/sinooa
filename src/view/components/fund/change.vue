@@ -474,7 +474,7 @@ export default {
             this.postdata.Members=[];
             dat.forEach(element=>{
                 this.postdata.Members.push({
-                    ID:element.id,
+                    ID:0,
                     FundID:element.fundID,
                     MemberID:element.memberID,
                     MemberName:element.memberName,
@@ -493,7 +493,7 @@ export default {
             this.progressData=[];
             dat.forEach(element=>{
                 this.progressData.push({
-                    ID:element.id,
+                    ID:0,
                     FundID:element.fundID,
                     ScheduleID:element.scheduleID,
                     ScheduleName:element.scheduleName,
@@ -513,7 +513,7 @@ export default {
         addNewFundMember(){
             this.postdata.Members.push({
                 ID:0,
-                FundID:this.postdata.Fund.FundID,
+                FundID:this.fundID,
                 MemberID:'',
                 MemberName:'',
                 MemberType:'',

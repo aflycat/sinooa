@@ -31,7 +31,7 @@ export default {
                 this.flags=false;
                 addRole({"RoleName":this.name}).then(res=>{
                     if(res.data.code==0){
-                        this.$Notice.success({
+                        this.$Message.success({
                             title:'角色创建成功'
                         })
                        this.$emit('loadRole')

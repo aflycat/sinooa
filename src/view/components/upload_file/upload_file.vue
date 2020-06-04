@@ -2,7 +2,7 @@
     <div class="upload_file">
         <Modal v-model="fileModal"   title="上传文件" width="650" @on-ok="closeFile()" @on-cancel="cancleFile()">
             <Row :gutter="16" v-if="fileClass==1">
-                <Col span="6" v-for="(item,index) in fileTypeList">
+                <Col span="6" v-for="(item,index) in fileTypeList" :key='index'>
                     <Card  class="fileList">
                         <div style="text-align:center;"  @dblclick="openFile(2,index,item.name)" >
                             <img :src="fileImg" style="width:80px;height:auto;">
@@ -14,9 +14,9 @@
             </Row>
             <Row :gutter="16" v-if="fileClass==2" >
                 <Breadcrumb class="fileList">
-                    <BreadcrumbItem v-for="item in  road1" >{{item}}/</BreadcrumbItem>
+                    <BreadcrumbItem v-for="(item,index) in  road1"  :key='index'>{{item}}/</BreadcrumbItem>
                 </Breadcrumb>
-                <Col span="6" v-for="(item,index) in fileTypeList[fileSecIndex].children">
+                <Col span="6" v-for="(item,index) in fileTypeList[fileSecIndex].children"  :key='index'>
                     <Card  class="fileList">
                         <div style="text-align:center;" @dblclick="openFile(0,index,item.name,item.typeId)">
                             <img :src="fileImg" style="width:80px;height:auto;">
@@ -27,7 +27,7 @@
             </Row>
             <Row v-if="fileClass==0">
                  <Breadcrumb class="fileList">
-                    <BreadcrumbItem v-for="item in road2">{{item}}</BreadcrumbItem>
+                    <BreadcrumbItem v-for="(item,index) in road2"  :key='index'>{{item}}</BreadcrumbItem>
                 </Breadcrumb>
                 <Card  class="fileList">
                     <Upload
@@ -40,7 +40,7 @@
                             <p>单击或者拖拽文件到此处</p>
                         </div>
                     </Upload>
-                    <p class="fileName" v-for="(item,index) in fileName" style="margin-top:10px;">
+                    <p class="fileName" v-for="(item,index) in fileName"  :key='index' style="margin-top:10px;">
                         <Row :gutter="16">
                             <Col span="20">
                                 <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>

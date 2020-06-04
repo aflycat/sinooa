@@ -3,55 +3,55 @@
 <!-- 项目收入费用-->
     <div class="information">
         <Row :gutter="16">
-            <Col span="6">
+            <!-- <Col span="6">
                 <Card class="itemCard preview">
                     <h3>{{postdata.UserName}}</h3>
                     <p><Icon class="icon" type="ios-call-outline" />{{postdata.Phone}}</p>
-                    <Divider />
-                    <p><Icon class="icon"  type="ios-briefcase-outline" />前端工程师</p>
+                    <Divider /> -->
+                    <!-- <p><Icon class="icon"  type="ios-briefcase-outline" />前端工程师</p>
                     <p><Icon class="icon"  type="ios-git-network" />{{postdata.DepartmentId}}</p>
-                    <p><Icon class="icon"  type="ios-pin-outline" />{{postdata.CompanyId}}</p>
-                </Card>
-            </Col>
+                    <p><Icon class="icon"  type="ios-pin-outline" />{{postdata.CompanyId}}</p> -->
+                <!-- </Card>
+            </Col> -->
            
-           <Col span="16" offset="2">
+           <Col span="24" >
                 <Card class="itemCard">
                     <p slot="title">个人设置</p>
                     <Form :label-width="80">
                         <Row>
                            <Col span="12">
                                 <FormItem label="姓名:">
-                                    {{postdata.UserName}}
+                                    <b> {{postdata.UserName}}</b>
                                 </FormItem>
                             </Col>
                              <Col span="12">
                                     <FormItem label="性别:">
-                                       {{postdata.Sex}}
+                                       <b> {{postdata.Sex}}</b>
                                     </FormItem>
                                 </Col>
                               <Col span="12">
                                     <FormItem label="最高学历:" >
-                                        {{postdata.Degree}}
+                                         <b>{{postdata.Degree}}</b>
                                     </FormItem>
                                 </Col>
                                 <Col span="12">
                                     <FormItem label="专业:">
-                                        {{postdata.Speciality}}
+                                         <b>{{postdata.Speciality}}</b>
                                     </FormItem>
                                 </Col>
                                 <Col span="12">
                                     <FormItem label="电话:">
-                                        {{postdata.Phone}}
+                                         <b>{{postdata.Phone}}</b>
                                     </FormItem>
                                 </Col>
                                 <Col span="12">
                                     <FormItem label="邮编:">
-                                        {{postdata.Email}}
+                                        <b> {{postdata.Email}}</b>
                                     </FormItem>
                                 </Col>
                                 <Col span="24">
                                     <FormItem label="通讯地址:">
-                                        {{postdata.Address}}
+                                         <b>{{postdata.Address}}</b>
                                     </FormItem>
                                 </Col>     
                                         </Row>
@@ -63,54 +63,54 @@
                 <p slot="title">公司信息</p>
                 <Form :label-width="100">
                     <Row>
-                    <Col span="8">
+                    <!-- <Col span="8">
                         <FormItem label="所属公司:">
-                            {{postdata.CompanyId}}
+                            <b> {{postdata.CompanyId}}</b>
                         </FormItem>
                     </Col>
                     <Col span="8">
                         <FormItem label="所属部门:">
-                        {{postdata.DepartmentId}}
+                         <b>{{postdata.DepartmentId}}</b>
                         </FormItem>
-                    </Col>
+                    </Col> -->
                     <Col span="8">
                         <FormItem label="邮箱:">
-                            {{postdata.Email}}
+                            <b> {{postdata.Email}}</b>
                         </FormItem>
                     </Col>
                     <Col span="16">
                         <FormItem label="所属角色:">
                              <!-- {{roleList[item]}} -->
-                            <span v-for="item in postdata.Roles" :key="item">
+                            <b> <span v-for="item in postdata.Roles" :key="item">
                                 {{roleList[item]}}&nbsp;&nbsp;
-                            </span>
+                            </span></b>
                             
                         </FormItem>
                     </Col>
                     <Col span="8">
                         <FormItem label="基本工资:">
-                            {{postdata.PayBase}}
+                           <b>  {{postdata.PayBase}}</b>
                         </FormItem>
                     </Col>
                     <Col span="8">
                         <FormItem label="考勤补贴:">
-                            {{postdata.PayAttendace}}
+                            <b> {{postdata.PayAttendace}}</b>
                         </FormItem>
                     </Col>
                     
                     <Col span="8">
                         <FormItem label="当前工时标准:">
-                            {{postdata.PayHour}}
+                            <b> {{postdata.PayHour}}</b>
                         </FormItem>
                     </Col>
                     <Col span="8">
                         <FormItem label="人力成本:">
-                            {{postdata.PayHrcost}}
+                             <b>{{postdata.PayHrcost}}</b>
                         </FormItem>
                     </Col>
                     <Col span="8">
                         <FormItem label="账号状态:">
-                            {{postdata.Status}}
+                             <b>{{postdata.Status}}</b>
                         </FormItem>
                     </Col>
                         </Row>
@@ -122,7 +122,7 @@
                         <Row>
                             <Col span="8">
                                 <FormItem label="用户名:">
-                                    {{postdata.LoginId}}
+                                    <b>{{postdata.LoginId}}</b>
                                 </FormItem>
                             </Col>
                             <Col span="8">
@@ -150,7 +150,10 @@
     </div>
 </template>
 <script>
-import {getUserDetail,getRoleList} from "@/api/data"
+import {
+    getUserDetail,
+    getRoleList
+    } from "@/api/data"
 export default {
     data(){
         return{
@@ -237,11 +240,8 @@ export default {
 </script>
 <style lang='less' scoped>
     .information{
-        width: 100%;
-        height:100%;
-        .itemCard{
-            margin-bottom: 20px;
-        }
+        
+     
         .preview{
             p{
                 padding: 10px 0;

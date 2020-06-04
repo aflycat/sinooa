@@ -211,12 +211,7 @@
                             </FormItem>
                             <!--  -->
                         </Col>
-                         <!-- <Col span="8">
-                            <FormItem label="平台代码" >
-                                <Input v-model="postdata.Project.PlatCode" placeholder="请输入平台代码"></Input>
-                            </FormItem>   
-                        </Col> -->
-                        <!--  -->
+                    
                         <Col span="8">
                             <FormItem label="所属部门" >
                                 <Select   v-model="postdata.Project.DepartmentID"  @on-change="getDepartment" filterable  label-in-value placeholder="请选择所属部门">
@@ -224,11 +219,7 @@
                                 </Select>
                             </FormItem>
                         </Col>
-                         <!-- <Col span="8">
-                            <FormItem label="部门代码" >
-                                <Input v-model="postdata.Project.DeptCode" placeholder="请输入所属基金"></Input>
-                            </FormItem>   
-                        </Col> -->
+                      
                         <Col span="8">
                             <FormItem label="所属基金" >
                                 <Select @on-change="getFund" filterable label-in-value  placeholder="请选择所属基金">
@@ -237,11 +228,7 @@
                                 </Select>
                             </FormItem>
                         </Col>
-                         <!-- <Col span="8">
-                            <FormItem label="基金代码" >
-                                <Input v-model="postdata.Project.FundCode" placeholder="请输入基金代码"></Input>
-                            </FormItem>   
-                        </Col> -->
+                      
                         <Col span="8">
                             <FormItem label="项目品种" prop="ProjectType">
                                 <Select disabled v-model="postdata.Project.ProjectType" filterable   placeholder="请选择项目品种">

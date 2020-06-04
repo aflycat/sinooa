@@ -39,3 +39,52 @@ export default costWageShow
 export default costProgramShow
 export default costTrainShow
 export default costGeneralShow
+
+import platChangeEdict from "./plat_change_edict.vue"
+import platChangeShow from "./plat_change_show.vue"
+import depChangeEdict from "./dep_change_edict.vue"
+import depChangeShow from "./dep_change_show.vue"
+import funExitEdict from "./fun_exit_edict.vue"
+import funExitShow from "./fun_exit_show.vue"
+import funInvesEdict from "./fun_inves_edict.vue"
+import funInvesShow from "./fun_inves_show.vue"
+import funExeEdict from "./fun_exe_edict.vue"
+import funEexeShow from "./fun_exe_show.vue"
+import funChangeEdict from "./fun_change_edict.vue"
+import funChangeShow from "./fun_change_show.vue"
+import proDynimicSdict from "./pro_dynimic_edict"
+import proDynimicShow from "./pro_dynimic_show"
+import proProcessEdict from "./pro_process_edict.vue"
+import proProcessShow from "./pro_process_show.vue"
+import proChangeEdict from "./pro_change_edict.vue"
+import proChangeShow from "./pro_change_show.vue"
+
+export default platChangeEdict
+export default platChangeShow
+export default depChangeEdict
+export default depChangeShow
+export default costTrainShow
+export default funExitEdict
+export default funExitShow
+
+export default funInvesEdict
+export default funInvesShow
+export default funExeEdict
+export default funEexeShow
+
+export default funChangeEdict
+export default funChangeShow
+export default proDynimicSdict
+export default proDynimicShow
+export default proProcessEdict
+export default proProcessShow
+export default proChangeEdict
+export default proChangeShow
+
+import weeklyShow from "./weekly_show.vue"
+import weeklyEdict from "./weekly_edict.vue"
+import opraEdict from "./opra_edict.vue"
+
+export default weeklyShow
+export default weeklyEdict
+export default opraEdict

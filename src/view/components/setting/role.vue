@@ -11,11 +11,11 @@
                 <p slot="title">角色列表</p>
                 <Table :loading="loading" :max-height='600' :columns="columns_mem" :data="data_mem"></Table>
                 <Page style="margin-top:15px;" :total="pageTotal" :page-size-opts="[5,10,20,30]"  show-elevator show-sizer @on-page-size-change="changePageSize" @on-change="changePageIndex"/>
-                <Row >
+                <!-- <Row >
                     <Col span="24" style="background:#fff;margin:15px 0;padding:15px 0;">
                         <Button type="primary">导出</Button>
                     </Col>
-                </Row>    
+                </Row>     -->
             </Card >
            
         <role-manage ref="roleManage"  :edictId="edictId" :roleName="roleName"></role-manage>
@@ -61,6 +61,7 @@ export default {
                                     this.edictId=params.row.roleId;
                                     this.roleName=params.row.roleName;
                                     this.showRoleManage();
+
                                     
                                 }
                             }

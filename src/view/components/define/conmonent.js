@@ -128,5 +128,13 @@ export const component = {
         readonly: false,
         disabled: false,
         multiple: false
+    },
+    table: {
+        type: 'table',
+        width: 100,
+        label: '',
+        titleLayout: 'center',
+        header: [{ title: '表头1', key: 'key0' }, { title: '表头2', key: 'key1' }],
+        content: []
     }
 }

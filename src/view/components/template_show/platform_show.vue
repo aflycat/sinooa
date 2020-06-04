@@ -6,40 +6,38 @@
                 <Row>
                      <Col span="24">
                         <FormItem label="任务编号：">
-                            
+                           <b> {{postdata.TaskNumber}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24">
                         <FormItem label="事项要点：">
+                            <b> {{postdata.TaskName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
-                        <FormItem label="事项标签：">
-                            <!-- {{getdata.taskNumber||''}} -->
-
-                        </FormItem>
-                    </Col>
+                  
                     <Col span="12">
                         <FormItem label="报送人：">
-                          
+                          <b> {{postdata.TaskOwner}}</b>
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="联系电话：">
+                            <b> {{postdata.TaskOwnerPhone}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24">
                         <FormItem label="报送内容：">
+                            <b> {{postdata.TaskSummary}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24" v-if="postdata.TaskFiles.length>0" >
                         <FormItem label="报送文件：" >
-                            <!-- <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
+                            <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
                                 <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
                                     {{item.oldFileName}}
                                 </a> 
                                  <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
-                            </p> -->
+                            </p>
                         </FormItem>
                     </Col>
                 </Row>
@@ -50,49 +48,53 @@
             <p slot="title">任务明细</p>
             <Form class="formWrap"  :label-width="120">
                 <FormItem  label="权属平台全称:">
-                    
+                     <b>{{postdata.Platform.PlatName}}</b>
                 </FormItem>
                 <Row>
                     <Col span="12">
                         <FormItem  label="权属平台简称:">
+                            <b>{{postdata.Platform.ShortName}}</b>
                         </FormItem>
                     </Col>
                 
                     <Col span="12">
                         <FormItem label="权属平台代码:">
+                             <b>{{postdata.Platform.PlatCode}}</b>
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem  label="统一社会信用代码:">
+                             <b>{{postdata.Platform.CodsCode}}</b>
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="成立日期:">
+                             <b>{{postdata.Platform.OpenDate.substr(0,10)}}</b>
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="注册地址:">
+                             <b>{{postdata.Platform.Address}}</b>
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="注册资本:">
-                           万元
+                            <b>{{postdata.Platform.RegisteredCapital}}</b>万元
                         </FormItem>
                     </Col>
                     <Col span="24">
                         <FormItem label="经营范围:">
+                             <b>{{postdata.Platform.OperateScope}}</b>
                         </FormItem>
                     </Col>
                 </Row>
                  </Form>
-                 <Table :columns="member" :data="memberData">
-                   
-                </Table>
+                 <Table :columns="member" :data="memberData"></Table>
          </Card>
          <Card  class="itemCard">
             <p slot="title">审批进度</p>
             <Form :label-width="80">
-                <!-- <Timeline>
+                <Timeline>
                    
                     <template v-for="(item,index) in postdata.TaskFlows">
 
@@ -108,7 +110,7 @@
                     </template>
                     
                    
-                </Timeline> -->
+                </Timeline>
                 
             </Form>    
         </Card>
@@ -160,20 +162,29 @@
     </div>
 </template>
 <script>
+import {getPlatformTaskDetail} from "@/api/data"
 import returnStep from "@/view/components/template/return_step"
 import UploadFiles from "@/view/components/upload_file/upload_file"
+import {platformMemberType,paltformMemberStatus} from "@/libs/data"
 export default {
     components:{
         UploadFiles,
         returnStep
+    },props:{
+        taskFlowID:String,
+        taskID:String,
+        taskTypeID:String
+    },
+    mounted(){
+        this.getPlatformTaskDetail()
     },
     data(){
         return{
             fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
-            loading:true,
-            loading2:true,
+            loading:false,
+            loading2:false,
              member:[
                 {title:"人员类型",key:"kind"},
                 {title:"人员姓名",key:"name"},
@@ -183,10 +194,72 @@ export default {
             ],
             memberData:[],
             postdata:{
-                TaskFiles:[]
+                TaskFiles:[],
+                TaskNumber:'',
+                TaskFlows:[],
+                Platform:{
+                  PlatformID:"0",//新增为0
+                    PlatName:'',//全称
+                    ShortName:'',//简称
+                    PlatCode:'',//代码
+                    CodsCode:'',//社会信用代码
+                    OpenDate:'',//成立时间
+                    Address:'',//注册地址
+                    RegisteredCapital:0,//注册资本
+                    OperateScope:'',//经营范围
+                    PlatStatus:1,//1，0为历史2表示生效
+                    Members:[ ]
+                }
+
             }
         }
     },methods:{
+        getPlatformTaskDetail(){
+            getPlatformTaskDetail({TaskID:this.taskID}).then(res=>{
+                if(res.data.code==2103){
+                    this.postdata={
+                        TaskFiles:res.data.taskFiles,
+                        TaskTypeID:res.data.taskTypeID,
+                        TaskName:res.data.taskName,
+                        TaskSummary:res.data.taskSummary,
+                        TaskNumber:res.data.taskNumber,
+                        TaskOwner:res.data.taskOwner,
+                        TaskOwnerPhone:res.data.taskOwnerPhone,
+                        TaskOwnerName:res.data.taskOwnerName,
+                        TaskFlows:res.data.taskFlows,
+                        Platform:{
+                            PlatformID:res.data.platform.platformID,//新增为0
+                            PlatName:res.data.platform.platName,//全称
+                            ShortName:res.data.platform.shortName,//简称
+                            PlatCode:res.data.platform.platCode,//代码
+                            CodsCode:res.data.platform.codsCode,//社会信用代码
+                            OpenDate:res.data.platform.openDate,//成立时间
+                            Address:res.data.platform.address,//注册地址
+                            RegisteredCapital:res.data.platform.registeredCapital,//注册资本
+                            OperateScope:res.data.platform.operateScope,//经营范围
+                            PlatStatus:res.data.platform.platStatus,
+                            Members:res.data.platform.members
+                        }
+                    }
+                    this.loadMember(res.data.platform.members)
+                }else{
+                    this.$Message.error({
+                        content:'数据加载失败'
+                    })
+                }
+            })
+        },
+        loadMember(dat){
+            dat.forEach(element => {
+                this.memberData.push({
+                    kind:platformMemberType[element.memberType],
+                    name:element.memberName,
+                    scale:element.shareRate,
+                    money:element.subscription,
+                    nature:paltformMemberStatus[element.status] 
+                })
+            });
+        },
         deleteFile(index){
             this.fileName.splice(index,1);
             this.fileWrap.splice(index,1);
@@ -204,7 +277,11 @@ export default {
         },
         showReturnModal(){
             this.$refs['stepModal'].showModal(true)
+        },
+        showUploadFile(){
+            this.$refs.uploadModal.showModal(true);
         }
+        
     }
 
 }

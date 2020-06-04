@@ -48,33 +48,33 @@
                 <Form class="formWrap"  :label-width="120">
                     
                         <FormItem  label="部门全称:">
-                           {{postdata.Department.DeptName}}
+                           <b>{{postdata.Department.DeptName}}</b>
                         </FormItem>
                         <Row>
                             <Col span="12">
                                 <FormItem  label="权属平台:">
-                                   
+                                  <b> {{platformName}}</b>
                                 </FormItem>
                             </Col>
                         
                             <Col span="12">
                                 <FormItem label="部门代码:">
-                                   {{postdata.Department.DeptCode}}
+                                  <b>  {{postdata.Department.DeptCode}}</b>
                                 </FormItem>
                             </Col>
                             <Col span="12">
                                 <FormItem  label="部门经理:">
-                                    {{mannager}}
+                                   <b>  {{manager}}</b>
                                 </FormItem>
                             </Col>
                             <Col span="12">
                                 <FormItem label="部门副经理:">
-                                    {{deputyManager}}
+                                   <b> {{deputyManager}}</b>
                                 </FormItem>
                             </Col>
                             <Col span="24">
                                 <FormItem label="部门员工:">
-                                    {{member.toString()}}
+                                   <b>  {{member.toString()}}</b>
                                 </FormItem>
                             </Col>
                             
@@ -153,7 +153,7 @@
 </template>
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
-import {getDepartmentTaskInfor} from "@/api/data"
+import {getDepartmentTaskInfor,geAllPlatformDetail} from "@/api/data"
 
 export default {
    components:{
@@ -166,12 +166,13 @@ export default {
     },
     data(){
         return{
+            platformName:'',
             fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
             fileForm:new FormData(),
             loading:false,
             loading2:false,
-            mannager:'',
+            manager:'',
             deputyManager:'',
             member:[],
             postdata:{
@@ -226,7 +227,7 @@ export default {
                         switch (element.memberType){
                             case 21:
                                 //部门经理
-                                this.mannager=element.memberName
+                                this.manager=element.memberName
 
                             break;
                             case 22:
@@ -241,7 +242,7 @@ export default {
 
                         }
                     });
-                    this.getPlatform(this.depDeatil.department.platformID)
+                    this.geAllPlatformDetail(this.postdata.Department.PlatformID)
                 }else{
                     this.$Message.error({
                         content:'数据加载失败:'+res.data.message
@@ -249,11 +250,11 @@ export default {
                 }
             })
         },
-         getPlatform(id){
+         geAllPlatformDetail(id){
             geAllPlatformDetail({PlatformID:id}).then(res=>{
                 
                 if(res.data.code==2106){
-                    this.platformName=res.data.platform.platName;
+                    this.platformName=res.data.platform.shortName;
 
                 }else{
                     this.$Message.error("权属平台信息查询失败:"+res.data.message)
@@ -274,6 +275,9 @@ export default {
                 this.fileWrap=fileWrap;
             }
             this.showFile=true;
+        },
+        showUploadFile(){
+            this.$refs.uploadModal.showModal(true)
         },
         showReturnModal(){
             this.$refs['stepModal'].showModal(true)

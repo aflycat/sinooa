@@ -1,9 +1,10 @@
 <template>
   <div class="user-avatar-dropdown">
     <Dropdown @on-click="handleClick">
-      <Badge :dot="!!messageUnreadCount">
+      {{userName}}
+      <!-- <Badge :dot="!!messageUnreadCount">
         <Avatar :src="userAvatar"/>
-      </Badge>
+      </Badge> -->
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">
       
@@ -36,6 +37,14 @@ export default {
       type: Number,
       default: 0
     }
+  },
+  data(){
+    return{
+      userName:''
+    }
+  },
+  mounted(){
+    this.userName=JSON.parse(localStorage.getItem('userName'))
   },
   methods: {
     ...mapActions([

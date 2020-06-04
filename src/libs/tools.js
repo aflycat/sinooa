@@ -244,3 +244,26 @@ export const digitUppercase = (n) => {
         .replace(/(零.)+/g, '零')
         .replace(/^整$/, '零元整');
 }
+
+export const toUpperCase = (jsonObj) => {
+    var newObj = {};
+    if (typeof(jsonObj) == 'object') {
+        for (var key in jsonObj) {
+            if (typeof jsonObj[key] == 'number') {
+                newObj[key.substring(0, 1).toUpperCase() + key.substring(1)] = jsonObj[key].toString()
+            } else {
+                newObj[key.substring(0, 1).toUpperCase() + key.substring(1)] = jsonObj[key];
+            }
+        }
+        return newObj;
+
+    }
+}
+
+export const orderObj = (obj) => {
+    var ordered = {};
+    Object.keys(obj).sort().forEach(function(key) {
+        ordered[key] = obj[key]
+    })
+    return ordered
+}

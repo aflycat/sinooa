@@ -57,6 +57,11 @@
                 <p slot="title">收入详情</p>
                  <Form :label-width="100">
                     <Row>
+                        <Col span="8">
+                            <FormItem label="发生日期" >
+                             <DatePicker type="date" @on-change="setDate" :value='postdata.IncoExpe.Details[0].OccurDate' placeholder="请选择发生日期" style="width:100%;"></DatePicker>   
+                            </FormItem>   
+                        </Col>
                          <Col span="8">
                             <FormItem label="收入性质" prop="phone">
                                 <Input v-model="postdata.IncoExpe.Details[0].IncomeNature" placeholder="请输入收入性质"></Input>
@@ -110,7 +115,6 @@
                                 </p>
                     </FormItem>
                      <FormItem>
-                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
                        <Button type="primary" :loading="loading" @click="handleSubmit()">
                              <span v-if="!loading">提交</span>
                             <span v-else>提交中...</span>
@@ -119,19 +123,16 @@
                 </Form>   
 
             </Card>
-            <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
 
     </div>
 </template>
 <script>
-import UploadFiles from "@/view/components/upload_file/upload_file"
 import {getProjectList,getAllUserList,setIncoexpeTask} from "@/api/data"
 import {digitUppercase} from "@/libs/tools"
 import {TaskTypeID} from "@/libs/data"
 
 export default {
      components:{
-        UploadFiles
     },
     data(){
         return{
@@ -207,7 +208,11 @@ export default {
                     })
                 }
             })
-        },getTotalAmountCn(){
+        },setDate(value){
+            console.log(value)
+            this.postdata.IncoExpe.Details[0].OccurDate=value;
+        },  
+        getTotalAmountCn(){
             this.postdata.IncoExpe.TotalAmount=this.postdata.IncoExpe.Details[0].Amount;
             this.postdata.IncoExpe.TotalAmountCN=digitUppercase(this.postdata.IncoExpe.TotalAmount);
 

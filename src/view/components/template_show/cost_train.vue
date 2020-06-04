@@ -4,33 +4,22 @@
             <p slot="title">任务明细</p>
             <Form :label-width="80">
                 <Row>
-                     <Col span="24">
-                        <FormItem label="任务编号：">
-                            <b> {{postdata.TaskNumber}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="24">
-                        <FormItem label="事项要点：">
-                            <b>{{postdata.TaskName}}</b>
-                        </FormItem>
-                    </Col>
-                   
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="报送人：">
                             <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="联系电话：">
                            <b>{{ postdata.TaskOwnerPhone}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24">
-                        <FormItem label="报送内容：">
-                           <b> {{postdata.TaskSummary}}</b>
+                    <Col span="8">
+                        <FormItem label="承担项目：">
+                           <b>{{postdata.Project.clientCode}}-{{postdata.Project.projectType}}-{{postdata.Project.projectRole}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24" v-if="postdata.TaskFiles.length>0" >
+                    <!-- <Col span="24" v-if="postdata.TaskFiles.length>0" >
                         <FormItem label="报送文件：" >
                             <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
                                 <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
@@ -39,7 +28,7 @@
                                  <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
                             </p>
                         </FormItem>
-                    </Col>
+                    </Col> -->
                 </Row>
                  </Form>    
         </Card>
@@ -96,7 +85,7 @@
                 </p>
 
             </Card>
-             <Card  class="itemCard">
+             <!-- <Card  class="itemCard">
                 <p slot="title">审批进度</p>
                     <Form :label-width="80">
                         <Timeline>
@@ -113,7 +102,7 @@
                             </template>
                         </Timeline>
                     </Form>    
-            </Card>  
+            </Card>   -->
             <Card  class="itemCard">
                 <p slot="title">审批意见</p>
                 <Form :label-width="80">
@@ -137,7 +126,7 @@
                                 </p>
                     </FormItem>
                      <FormItem>
-                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
+                        <!-- <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button> -->
                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
                             <span v-if="!loading">同意</span>
                             <span v-else>提交中...</span>
@@ -235,19 +224,19 @@
 
 
         </Modal>
-            <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
+            <!-- <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files> -->
         
     </div>
 </template>
 <script>
-import UploadFiles from "@/view/components/upload_file/upload_file"
+// import UploadFiles from "@/view/components/upload_file/upload_file"
 import {getProjectList,getAllUserList,setIncoexpeTask,getIncoexpeTask} from "@/api/data"
 import {digitUppercase,} from "@/libs/tools"
 // import changeTap from "@/view/components/template/change_tap.vue"
 import {TaskTypeID} from "@/libs/data"
 export default {
     components:{
-        UploadFiles
+        // UploadFiles
 
     },props:{
         taskFlowID:String,
@@ -384,7 +373,7 @@ export default {
              getIncoexpeTask({TaskID:this.taskID}).then(res=>{
                  if(res.data.code==2503){
                      this.postdata={
-                         TaskName: res.data.taskName,//任务名（UI中的报销单据要点）
+                        TaskName: res.data.taskName,//任务名（UI中的报销单据要点）
                         TaskSummary:  res.data.taskSummary,//任务概要（UI中的备注）
                         TaskOwner:  res.data.taskOwner,//任务申请人ID，与User表的UserID对应，取自当前登录用户
                         TaskFiles: res.data.taskFiles,
@@ -393,6 +382,7 @@ export default {
                         TaskOwnerName: res.data.taskOwnerName,
                         TaskOwnerPhone: res.data.taskOwnerPhone,
                         ProjectID: res.data.project.projectID,
+                        Project:res.data.project,
                         IncoExpe: {//费用收入信息
                             IncoExpeID: res.data.incoExpe.incoExpeID,//费用收入信息ID
                             IncoExpeType:res.data.incoExpe.incoExpeType,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入

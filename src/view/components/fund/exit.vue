@@ -150,8 +150,8 @@
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem v-model='postdata.FundInvestExit.ExitDate'  label="退出日期">
-                                 <DatePicker type="date" placeholder="请选择退出日期" style="width: 100%;" @on-change='setExitDate'></DatePicker>
+                            <FormItem  label="退出日期">
+                                 <DatePicker  :value='postdata.FundInvestExit.ExitDate' type="date" placeholder="请选择退出日期" style="width: 100%;" @on-change='setExitDate'></DatePicker>
                             </FormItem>   
                         </Col>
                         <Col span="8" >

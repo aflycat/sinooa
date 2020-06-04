@@ -4,23 +4,19 @@
                 <p slot="title">报销人信息</p>
                 <Form :label-width="80">
                     <Row>
+                         <Col span="8">
+                            <FormItem label="报送人：">
+                                <b>{{postdata.TaskOwnerName}}</b>
+                            </FormItem>
+                        </Col>
                         <Col span="8">
-                            <FormItem label="报销人" prop="name">
-                                {{name}}
-                           
+                            <FormItem label="联系电话：">
+                            <b>{{ postdata.TaskOwnerPhone}}</b>
                             </FormItem>
                         </Col>
                          <Col span="8">
-                            <FormItem label="联系电话" prop="phone">
-                                {{phone}}
-                                
-                            </FormItem>   
-                        </Col>
-                         <Col span="8">
                             <FormItem label="承担项目" prop="phone">
-                                <Select v-model="postdata.ProjectID" filterable  >
-                                    <Option v-for="item in ProjectData" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                                </Select>
+                               <b>{{postdata.Project.clientCode}}-{{postdata.Project.projectType}}-{{postdata.Project.projectRole}}</b>
                             </FormItem>     
                         </Col>
                        
@@ -112,7 +108,7 @@
 
               
             </Card>
-             <Card  class="itemCard">
+             <!-- <Card  class="itemCard">
             <p slot="title">审批进度</p>
                 <Form :label-width="80">
                     <Timeline>
@@ -129,7 +125,7 @@
                         </template>
                     </Timeline>
                 </Form>    
-        </Card>
+        </Card> -->
            <Card  class="itemCard">
                 <p slot="title">请示信息</p>
                 <Form :label-width="80">
@@ -139,7 +135,7 @@
                     <FormItem label="具体内容" >
                         <Input  type="textarea" v-model="postdata.TaskSummary" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
                     </FormItem>
-                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
+                     <!-- <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
                                 <p class="fileName" v-for="(item,index) in fileName" :key="index">
                                     <Row >
                                         <Col span="20">
@@ -151,16 +147,16 @@
                                         </Col>
                                     </Row>
                                 </p>
-                    </FormItem>
-                     <FormItem>
-                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                       <!-- <Button type="primary" :loading="loading" @click="handleSubmit()">
-
-                             <span v-if="!loading">提交</span>
+                    </FormItem> -->
+                    <FormItem>
+                        <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
+                            <span v-if="!loading">同意</span>
                             <span v-else>提交中...</span>
-                            
-                        </Button> -->
-                       
+                        </Button> 
+                        <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
+                            <span v-if="!loading">不同意</span>
+                            <span v-else>提交中...</span>
+                        </Button>     
                     </FormItem>
                 </Form>   
 
@@ -233,7 +229,7 @@ export default {
                 if(res.data.code==2503){
                     this.postdata={
                         TaskName: res.data.taskName,//任务名（UI中的报销单据要点）
-                        TaskSummary:  res.data.taskSummary,//任务概要（UI中的备注）
+                        TaskSummary: res.data.taskSummary,//任务概要（UI中的备注）
                         TaskOwner:  res.data.taskOwner,//任务申请人ID，与User表的UserID对应，取自当前登录用户
                         TaskFiles: res.data.taskFiles,
                         TaskFlows: res.data.taskFlows,
@@ -241,6 +237,7 @@ export default {
                         TaskOwnerName: res.data.taskOwnerName,
                         TaskOwnerPhone: res.data.taskOwnerPhone,
                         ProjectID: res.data.project.projectID,
+                         Project:res.data.project,
                         IncoExpe: {//费用收入信息
                             IncoExpeID: res.data.incoExpe.incoExpeID,//费用收入信息ID
                             IncoExpeType:res.data.incoExpe.incoExpeType,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入

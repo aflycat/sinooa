@@ -5,21 +5,10 @@
             <Form :label-width="80">
                 <Row>
                      <Col span="12">
-                        <FormItem label="任务编号：">
-                            <b> {{postdata.TaskNumber}}</b>
-                        </FormItem>
-                    </Col>
-                     <Col span="12">
                         <FormItem label="发放月份：" >
-                           <b>{{postdata.PayDetails[0].payMonth.substr(0,7)||''}}</b>
+                           <b>{{postdata.PayDetails[0].payMonth.substr(0,7)||' '}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24">
-                        <FormItem label="事项要点：">
-                            <b>{{postdata.TaskName}}</b>
-                        </FormItem>
-                    </Col>
-                   
                     <Col span="12">
                         <FormItem label="报送人：">
                             <b>{{postdata.TaskOwnerName}}</b>
@@ -30,12 +19,6 @@
                            <b>{{ postdata.TaskOwnerPhone}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24">
-                        <FormItem label="报送内容：">
-                           <b> {{postdata.TaskSummary}}</b>
-                        </FormItem>
-                    </Col>
-                    
                 </Row>
                  </Form>    
         </Card>
@@ -47,32 +30,17 @@
                 </p>
                 
             </Card>
-            <Card  class="itemCard">
-                <p slot="title">审批进度</p>
-                    <Form :label-width="80">
-                        <Timeline>
-                            <template v-for="(item,index) in postdata.TaskFlows">
-
-                                <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
-                                    <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
-                                        {{item.flowSummary}}  <Divider type="vertical" />
-                                        {{item.flowOwnerName}} <Divider type="vertical" />
-                                        {{item.flowEmail}}
-                                    </p>
-                                    <p class="content">{{item.flowComment||''}}</p>
-                                </TimelineItem>
-                            </template>
-                        </Timeline>
-                    </Form>    
-            </Card>
+            
              <Card  class="itemCard">
                 <p slot="title">审批意见</p>
                 <Form :label-width="80">
+
                     <FormItem label="具体内容" >
                         <Input  type="textarea" v-model="postdata.TaskSummary" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
                     </FormItem>
                     
                      <FormItem>
+
                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
                             <span v-if="!loading">同意</span>
                             <span v-else>提交中...</span>
@@ -107,6 +75,7 @@ export default {
             loadingMember:false,
             loading:false,
             loading2:false,
+         
             wagecolumns:[
                 // {type: 'selection',width: 60, align: 'center',fixed:'left'},
                 {title: '姓名', align: 'center',key:'PayeeName',fixed:'left',width:100},
@@ -492,7 +461,7 @@ export default {
                 TaskSummary: '',//任务概要（UI中的备注）
                 TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户
                 PayDetails: [
-
+                    {payMonth:''}
                 ]
             },
             newWageInfor:{

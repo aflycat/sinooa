@@ -377,20 +377,7 @@ export default {
                         LiveEndDate:'',//存续结束日期
                         FundStatus:1
                     },
-                    Members:[
-                        // ID
-                        // FundID开发立项0变动为选择
-                        // MemberID成员id
-                        // MemberName成员姓名
-                        // MemberType31管理人（内部，Platforms），32管理人（外部，Clients），33托管人（Clients），34投资顾问（Clients），35投资人（内部机构，Platforms），36投资人（外部机构，Clients），37投资人（自然人，Users），38投资人（基金产品，Funds），39基金经理，40基金主办，41基金成员，42基金投决会
-                        // InvestorType
-                        // OrderMoney认缴金额
-                        // PaidMoney实缴金额
-                        // ShareType//优先级，劣后级，无分级
-                        // ManageFeeRate管理费计提标准
-                        // RewardRate业绩报酬计提标准
-                        // Status
-                    ],
+                    Members:[],
                     Schedules:[]
             }
         }
@@ -406,6 +393,7 @@ export default {
         handleSubmit(){
             this.postdata.Fund.Members=this.postdata.Members;
             this.postdata.Fund.Schedules=this.progressData;
+
             addNewFundTask(this.postdata).then(res=>{
                 if(res.data.code==2401){
                     this.$Message.success({
@@ -472,8 +460,8 @@ export default {
             this.postdata.Members=[];
             dat.forEach(element=>{
                 this.postdata.Members.push({
-                    ID:element.id,
-                    FundID:0,
+                    ID:0,
+                    FundID:element.fundID,
                     MemberID:element.memberID,
                     MemberName:element.memberName,
                     MemberType:element.memberType,
@@ -491,8 +479,8 @@ export default {
             this.progressData=[];
             dat.forEach(element=>{
                 this.progressData.push({
-                    ID:element.id,
-                    FundID:0,
+                    ID:0,
+                    FundID:element.fundID,
                     ScheduleID:element.scheduleID,
                     ScheduleName:element.scheduleName,
                     Summary:element.summary,
@@ -511,7 +499,7 @@ export default {
         addNewFundMember(){
             this.postdata.Members.push({
                 ID:0,
-                FundID:0,
+                FundID:this.fundID,
                 MemberID:'',
                 MemberName:'',
                 MemberType:'',
@@ -593,7 +581,7 @@ export default {
                         ScheduleID:this.ScheduleID,
                         ScheduleName:this.ScheduleName,
                         Summary:this.Summary,
-                        FundID:0,
+                        FundID:this.fundID,
                         EstStartDate:this.EstStartDate,
                         EstEndDate:this.EstEndDate,
                         ID:0,

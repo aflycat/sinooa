@@ -1,7 +1,6 @@
 <template>
     <div class="attr">
-        
-        <Form  :label-width="60">
+        <Form  :label-width="100">
             <FormItem label="标题">
                 <Input v-model="setAttrData.label"></Input>
             </FormItem>
@@ -16,7 +15,7 @@
                 <Input  v-model="setAttrData.maxlength" type="number"></Input>
             </FormItem>
 
-            <FormItem label="宽度">
+            <FormItem  label="宽度">
                 <Input   v-model="setAttrData.width"></Input>
             </FormItem>
 
@@ -24,6 +23,7 @@
                 <Input style="margin-top:8px;" type="text" v-for="(item,index) in setAttrData.items" :key='index' v-model="item.label" @on-focus="getIndex(index)"></Input>                
                 <Button style="margin-top:8px;" @click="addNewItem()">添加</Button>
                 <Button type="error" style="margin-top:8px;margin-left:8px;" v-if="setAttrData.items.length>0" @click="deleteItem()">删除</Button>
+            
             </FormItem>
             
             <FormItem v-if="setAttrData.type=='radio'" label="默认选中">
@@ -96,6 +96,19 @@
                     <Option v-for="item in memberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
             </FormItem>
+            <FormItem v-if="setAttrData.type=='table'" label="标题位置">
+                
+                <Select v-model="setAttrData.titleLayout">
+                    <Option v-for="item in titleLayout" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                </Select>
+            </FormItem>
+            <FormItem v-if="setAttrData.type=='table'" label="表头项">
+                <Input style="margin-top:8px;" type="text" v-for="(item,index) in setAttrData.header" :key='index' v-model="item.title" @on-focus="getIndex(index)"></Input>                
+                <Button style="margin-top:8px;" @click="addNewHeader()">添加</Button>
+                <Button type="error" style="margin-top:8px;margin-left:8px;" v-if="setAttrData.header.length>1" @click="deleteHeader()">删除</Button>
+            </FormItem>
+
+            
 
             <FormItem label="操作">
                <Button type="error" @click="deleThisItem()">删除</Button>
@@ -121,6 +134,20 @@ export default {
             fundList:[],
             ProjectList:[],
             memberList:[],
+            titleLayout:[
+                {
+                    value:'left',
+                    label:'居左'
+                },
+                {
+                    value:'center',
+                    label:'居中'
+                },
+                {
+                    value:'right',
+                    label:'居右'
+                }
+            ],
             timeType:[
                 {
                     value: 'year',
@@ -150,13 +177,29 @@ export default {
             ]
         }
     },mounted(){
-        this.getPlatform();
-        this.getDepartmentList();
-        this.getAllFundList();
-        this.getProList();
-        this.getAllUserList();
+        switch (this.setAttrData.type){
+            
+            case 'platform':
+                this.getPlatform();
+            break;
+            case 'depart':
+                  this.getDepartmentList();
+            break;
+            case 'fund':
+                 this.getAllFundList();
+            break;
+            case 'program':
+                 this.getProList();
+            break;
+            case 'member':
+                this.getAllUserList();
+            break;
+           
+            
+        }
     },
     methods:{
+          
             getAllUserList(){
                 getAllUserList({"Status":1}).then(res=>{
                     if(res.data.code==0){
@@ -221,7 +264,6 @@ export default {
                         this.$Message.warning("该账号下没有相关部门")
                     }else{
                         this.deptList=res.data.deptList
-                        console.log(this.deptList)
                     }
                 }else{
                     this.$Message.error("部门列表获取失败:"+res.data.message)
@@ -242,6 +284,15 @@ export default {
         },
         deleThisItem(){
             this.$emit("deleteCom",this.indexCom)
+        },
+        addNewHeader(){
+            this.setAttrData.header.push({
+                title:'表头',
+                key:'key'+this.setAttrData.header.length
+            })
+        },
+        deleteHeader(){
+            this.setAttrData.header.splice(this.index,1)
         }
     }
 }

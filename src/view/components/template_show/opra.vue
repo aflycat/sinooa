@@ -159,7 +159,7 @@ export default {
         gettaskDetail(){
             getTaskDetail({TaskID:this.taskID}).then(res=>{
                 console.log(res)
-                if(res.data.code==2003){
+                if(res.data.code==2013){
                     this.getdata=res.data;
                     this.taskFlows=res.data.taskFlows;
                    

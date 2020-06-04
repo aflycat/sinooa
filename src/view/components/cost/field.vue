@@ -159,7 +159,7 @@
                                 </p>
                     </FormItem>
                      <FormItem>
-                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
+                        <!-- <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button> -->
                        <Button type="primary" :loading="loading" @click="handleSubmit()">
                              <span v-if="!loading">提交</span>
                             <span v-else>提交中...</span>
@@ -168,20 +168,20 @@
                 </Form>   
 
             </Card>
-            <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
+            <!-- <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files> -->
 
     </div>
 </template>
 <script>
-import UploadFiles from "@/view/components/upload_file/upload_file"
+// import UploadFiles from "@/view/components/upload_file/upload_file"
 
 import {getProjectList,getAllUserList,setIncoexpeTask} from "@/api/data"
 import {digitUppercase} from "@/libs/tools"
 import {TaskTypeID} from "@/libs/data"
 export default {
-     components:{
-         UploadFiles
-    },
+    //  components:{
+    //      UploadFiles
+    // },
     data(){
         return{
             fileName:[],

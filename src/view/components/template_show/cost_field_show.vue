@@ -15,14 +15,19 @@
                         </FormItem>
                     </Col>
                    
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="报送人：">
                             <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="联系电话：">
                            <b>{{ postdata.TaskOwnerPhone}}</b>
+                        </FormItem>
+                    </Col>
+                     <Col span="8">
+                        <FormItem label="承担项目：">
+                           <b>{{postdata.Project.clientCode}}-{{postdata.Project.projectType}}-{{postdata.Project.projectRole}}</b>
                         </FormItem>
                     </Col>
                     <Col span="24">
@@ -30,7 +35,7 @@
                            <b> {{postdata.TaskSummary}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24" v-if="postdata.TaskFiles.length>0" >
+                    <!-- <Col span="24" v-if="postdata.TaskFiles.length>0" >
                         <FormItem label="报送文件：" >
                             <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
                                 <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
@@ -39,7 +44,7 @@
                                  <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
                             </p>
                         </FormItem>
-                    </Col>
+                    </Col> -->
                 </Row>
                  </Form>    
         </Card>
@@ -74,7 +79,7 @@
                     <Row>
                          <Col span="8">
                             <FormItem label="外勤时间：" >
-                                 <b>{{postdata.IncoExpe.Details[0].OccurDate}}</b>
+                                 <b>{{postdata.IncoExpe.Details[0].OccurDate.substr(0,10)}}</b>
                             </FormItem>   
                         </Col>
                         <Col span="8">
@@ -203,13 +208,12 @@
                                 </p>
                     </FormItem>
                      <FormItem>
-                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>    
+                        <!-- <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>     -->
                          <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
                             <span v-if="!loading">同意</span>
                             <span v-else>提交中...</span>
                         </Button> 
-                           
-                          
+                         <Button @click="showReturnModal"   style="margin-right: 8px" type="warning">修改</Button>  
                         <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
                             <span v-if="!loading">不同意</span>
                             <span v-else>提交中...</span>
@@ -219,17 +223,17 @@
                 </Form>   
 
             </Card>
-        <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
+        <!-- <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files> -->
 
     </div>
 </template>
 <script>
-import UploadFiles from "@/view/components/upload_file/upload_file"
+// import UploadFiles from "@/view/components/upload_file/upload_file"
 import {getIncoexpeTask} from "@/api/data"
 export default {
     name:'costFieldShow',
      components:{
-        UploadFiles,
+        // UploadFiles,
     },
      props:{
         taskFlowID:String,
@@ -240,6 +244,7 @@ export default {
     data(){
         return{
              loading:false,
+             showReturnModal:false,
             loading2:false,
             fileName:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
@@ -252,6 +257,7 @@ export default {
                 TaskSummary: '',//任务概要（UI中的备注）
                 TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户
                 ProjectID:'',//项目ID 
+                Project:'',
                 TaskFiles:[],
                 IncoExpe: {//费用收入信息
                     IncoExpeID:0,//费用收入信息ID
@@ -295,6 +301,7 @@ export default {
                         TaskOwnerName: res.data.taskOwnerName,
                         TaskOwnerPhone: res.data.taskOwnerPhone,
                         ProjectID: res.data.project.projectID,
+                        Project:res.data.project,
                         IncoExpe: {//费用收入信息
                             IncoExpeID: res.data.incoExpe.incoExpeID,//费用收入信息ID
                             IncoExpeType:res.data.incoExpe.incoExpeType,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入

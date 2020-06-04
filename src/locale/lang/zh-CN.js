@@ -21,7 +21,7 @@ export default {
     approval: "项目立项",
     change: "项目变动",
     progress: "项目进展",
-    // investment: "项目中止",
+    investment: "项目投资",
     summary: "项目总结",
     programlist: '项目列表',
     customlist: '客户列表',

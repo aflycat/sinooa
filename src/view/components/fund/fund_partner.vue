@@ -3,7 +3,7 @@
 <template>
 <!-- 基金合伙人信息 -->
     <div class="found_partner">
-             <Card class="itemCard">
+            <Card class="itemCard">
                 <p slot="title">报送人信息</p>
                  <Form :label-width="80">
                     <Row>
@@ -304,7 +304,7 @@ export default {
             this.submitdata.TaskOwner=JSON.parse(localStorage.getItem('userId'));
             this.submitdata.FundID=this.fundID;
             addNewFunOperaTask(this.submitdata).then(res=>{
-                if(res.data.code==2409){
+                if(res.data.code==2407){
                     this.$Message.success({
                         content:'操作成功'
                     })

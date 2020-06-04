@@ -15,15 +15,20 @@
                         </FormItem>
                     </Col>
                    
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="报送人：">
                             <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="联系电话：">
                            <b>{{ postdata.TaskOwnerPhone}}</b>
                         </FormItem>
+                    </Col>
+                     <Col span="8">
+                        <FormItem label="承担项目" prop="phone">
+                            <b>{{postdata.Project.clientCode}}-{{postdata.Project.projectType}}-{{postdata.Project.projectRole}}</b>
+                        </FormItem>     
                     </Col>
                     <Col span="24">
                         <FormItem label="报送内容：">
@@ -62,6 +67,11 @@
                 <p slot="title">收入详情</p>
                  <Form :label-width="120">
                     <Row>
+                         <Col span="8">
+                            <FormItem label="发生时间" >
+                                <b>{{postdata.IncoExpe.Details[0].OccurDate.substr(0,10)}}</b>
+                            </FormItem>   
+                        </Col>
                          <Col span="8">
                             <FormItem label="收入性质：" prop="phone">
                                 <b>{{postdata.IncoExpe.Details[0].IncomeNature}}</b>
@@ -172,6 +182,7 @@ export default {
                     TaskSummary: '',//任务概要（UI中的备注）
                     TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户
                     ProjectID:'',//项目ID 
+                    Project:'',
                     IncoExpe: {//费用收入信息
                         IncoExpeID:0,//费用收入信息ID
                         IncoExpeType:500,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入
@@ -205,6 +216,7 @@ export default {
                         TaskOwnerName: res.data.taskOwnerName,
                         TaskOwnerPhone: res.data.taskOwnerPhone,
                         ProjectID: res.data.project.projectID,
+                        Project:res.data.project,
                         IncoExpe: {//费用收入信息
                             IncoExpeID: res.data.incoExpe.incoExpeID,//费用收入信息ID
                             IncoExpeType:res.data.incoExpe.incoExpeType,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入

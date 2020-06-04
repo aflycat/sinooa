@@ -15,22 +15,27 @@
                         </FormItem>
                     </Col>
                    
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="报送人：">
                             <b>{{postdata.TaskOwnerName}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="12">
+                    <Col span="8">
                         <FormItem label="联系电话：">
                            <b>{{ postdata.TaskOwnerPhone}}</b>
                         </FormItem>
                     </Col>
+                     <Col span="8">
+                            <FormItem label="承担项目" prop="phone">
+                               <b>{{postdata.Project.clientCode}}-{{postdata.Project.projectType}}-{{postdata.Project.projectRole}}</b>
+                            </FormItem>     
+                        </Col>
                     <Col span="24">
                         <FormItem label="报送内容：">
                            <b> {{postdata.TaskSummary}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24" v-if="postdata.TaskFiles.length>0" >
+                    <!-- <Col span="24" v-if="postdata.TaskFiles.length>0" >
                         <FormItem label="报送文件：" >
                             <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
                                 <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
@@ -39,7 +44,7 @@
                                  <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
                             </p>
                         </FormItem>
-                    </Col>
+                    </Col> -->
                 </Row>
                  </Form>    
         </Card>
@@ -199,6 +204,7 @@ export default {
                 TaskSummary: '',//任务概要（UI中的备注）
                 TaskOwner: '',//任务申请人ID，与User表的UserID对应，取自当前登录用户
                 ProjectID: -1,//项目ID 
+
                 IncoExpe: {//费用收入信息
                     IncoExpeID:0,//费用收入信息ID
                     IncoExpeType:200,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入
@@ -236,6 +242,7 @@ export default {
                         TaskOwnerName: res.data.taskOwnerName,
                         TaskOwnerPhone: res.data.taskOwnerPhone,
                         ProjectID: res.data.project.projectID,
+                         Project:res.data.project,
                         IncoExpe: {//费用收入信息
                             IncoExpeID: res.data.incoExpe.incoExpeID,//费用收入信息ID
                             IncoExpeType:res.data.incoExpe.incoExpeType,//费用收入类别，100差旅费/200招待费/300一般费用/400外勤费用/500项目收入

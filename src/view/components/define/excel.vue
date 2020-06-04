@@ -98,8 +98,9 @@
                             </div>
                         </Col>
                         <Col span="12" >
-                            <div class="comItem" >
-                              
+                            <div class="comItem"  @click="addCom('table')">
+                                <Icon type="md-menu" />
+                                <p>多行表格</p>
                             </div>
                         </Col>
                     </Row>
@@ -111,7 +112,6 @@
                     <p slot="title">流程详情</p>
                     <Form >
                         <FormItem label="流程标题" :label-width="80">
-
                             <Input v-model="title"  placeholder="请输入流程标题"></Input>
                         </FormItem>
                     </Form>
@@ -124,7 +124,7 @@
             <Col span="5">
                  <Card>
                     <p slot="title">属性</p>
-                    <form-attr @deleteCom="deleteIndexCom" v-if="AttrData" :setAttrData="AttrData" :indexCom="indexAttr"></form-attr>
+                    <form-attr @updateComponent='updateTable'  @deleteCom="deleteIndexCom" v-if="AttrData" :setAttrData="AttrData" :indexCom="indexAttr"></form-attr>
                 </Card>
             </Col>
 
@@ -140,7 +140,6 @@
                         </template>
                     </Table>
                     <Button  style="margin-top: 24px" type="success" @click="showProcess('',-1)">新增流程</Button>
-                    <!-- <Button v-if="dataProcess.length!=0" style="margin-top: 24px;margin-left:8px;" type="primary" >存为模板</Button> -->
             </Card>
         </Row>
          <Row :gutter="16" v-if="current==2">
@@ -307,6 +306,8 @@ export default {
         },
         showProcess(dat,type){
              this.$refs["processBasic"].showModal(dat,type);
+        },updateTable(value){
+            // this.tableData[this.checkIndex]=value;
         }
     }
 }

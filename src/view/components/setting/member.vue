@@ -11,11 +11,11 @@
                 <p slot="title">人员列表</p>
                 <Table :loading="loading" :columns="columns_mem" :data="data_mem"  class="memTable"></Table>
                  <Page style="margin-top:15px;" :page-size-opts="[5,10,20,30]" :total="pageTotal" @on-change="changePage" @on-page-size-change="changePageSise" show-elevator show-sizer />
-                 <Row >
+                 <!-- <Row >
                     <Col span="24" style="background:#fff;margin:15px 0;padding:15px 0;">
                         <Button type="primary">导出</Button>
                     </Col>
-                </Row>    
+                </Row>     -->
             </Card >       
          <mem-basic :isEdict="isEdict" @loadUserlistAgain="getUserList" :userId="userId" ref="memBasic"></mem-basic>
          <Modal v-model="passWmodal" title="重置密码" @on-ok="changePass">
@@ -47,10 +47,10 @@ export default {
             userId:'',
             isEdict:false,
             columns_mem:[
-                {type: 'selection',width: 60, align: 'center'},
+                // {type: 'selection',width: 60, align: 'center'},
                 {title: '姓名', align: 'center',key:'userName'},
                 {title: '登录账号', key: 'loginId'},
-                {title: '部门', key: 'departmentName'},
+                // {title: '部门', key: 'departmentName'},
                 {title: '邮箱', key: 'email'},
                 {title: '电话', key: 'phone'},
                 {title: '用户状态', key: 'status', filters:[
@@ -171,7 +171,7 @@ export default {
                         this.data_mem.push({
                             userName:element.userName,
                             loginId:element.loginId,
-                            departmentName:element.departmentName,
+                            // departmentName:element.departmentName,
                             email:element.email,
                             phone:element.phone,
                             status: element.status,
@@ -211,7 +211,6 @@ export default {
         },
         changePage(value){
             this.PageIndex=value;
-            console.log(value)
            this.getUserList()
         },
         changePageSise(value){

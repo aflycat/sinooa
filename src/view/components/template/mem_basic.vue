@@ -22,21 +22,21 @@
                         <Input  v-model="PasswordAgain"  placeholder="密码"></Input>
                     </FormItem>
                 </Col>
-                <Col span="12">
+                <!-- <Col span="12">
                     <FormItem label="所属公司">
                         <Select placeholder="选择所属公司" @on-change="getDepartment" v-model="postdata.CompanyId">
                           <Option v-for="item in companyList" :value="item.value" :key="item.value">{{item.label}}</Option>
                         </Select>
                     </FormItem>
-                </Col>
-                <Col span="12">
+                </Col> -->
+                <!-- <Col span="12">
                     <FormItem label="所属部门">
                         <Select placeholder="选择所属部门"   v-model="postdata.DepartmentId">
                           <Option v-for="item in departmentList" :value="item.value" :key="item.value">{{item.label}}</Option>
                             
                         </Select>
                     </FormItem>
-                </Col>
+                </Col> -->
                <Col span="12">
                     <FormItem label="邮箱">
                         <Input  v-model="postdata.Email" placeholder="邮箱"></Input>
@@ -46,9 +46,9 @@
                  <Col span="12">
                     <FormItem label="性别">
                         <Select placeholder="选择性别"  v-model="postdata.Sex">
-                            <Option :value="'男'" :key="1">男</Option>
-                            <Option :value="'女'" :key="2">女</Option>
-                            <Option :value="'保密'" :key="3">保密</Option>
+                            <Option value="男" :key="1">男</Option>
+                            <Option value="女" :key="2">女</Option>
+                            <Option value="保密" :key="3">保密</Option>
                         </Select>
                     </FormItem>
                 </Col>
@@ -56,11 +56,11 @@
                     <FormItem label="最高学历" >
                         <!-- <Input  placeholder="最高学历"></Input> -->
                         <Select placeholder="最高学历"  v-model="postdata.Degree">
-                            <Option :value="'博士'" :key="1">博士</Option>
-                            <Option :value="'研究生'" :key="2">研究生</Option>
-                            <Option :value="'本科'" :key="3">本科</Option>
-                            <Option :value="'大专'" :key="4">大专</Option>
-                            <Option :value="'其他'" :key="6">其他</Option>
+                            <Option value="博士" :key="1">博士</Option>
+                            <Option value="研究生" :key="2">研究生</Option>
+                            <Option value="本科" :key="3">本科</Option>
+                            <Option value="大专" :key="4">大专</Option>
+                            <Option value="其他" :key="6">其他</Option>
                         </Select>
                     </FormItem>
                 </Col>
