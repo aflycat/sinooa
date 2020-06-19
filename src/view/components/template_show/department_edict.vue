@@ -4,17 +4,6 @@
             <p slot="title">任务明细</p>
             <Form :label-width="80">
                 <Row>
-                     <Col span="24">
-                        <FormItem label="任务编号：">
-                            <b>{{postData.TaskNumber}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="24">
-                        <FormItem label="事项要点：">
-                            <b>{{postData.TaskName}}</b>
-                        </FormItem>
-                    </Col>
-                   
                     <Col span="12">
                         <FormItem label="报送人：">
                            <b> {{postData.TaskOwnerName}}</b>
@@ -25,24 +14,11 @@
                           <b> {{ postData.TaskOwnerPhone}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24">
-                        <FormItem label="报送内容：">
-                           <b> {{postData.TaskSummary}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="24" v-if="postData.TaskFiles.length>0" >
-                        <FormItem label="报送文件：" >
-                            <p  v-for="(item,index) in postData.TaskFiles" :key='index'>
-                                <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
-                                    {{item.oldFileName}}
-                                </a> 
-                                 <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
-                            </p>
-                        </FormItem>
-                    </Col>
+                  
                 </Row>
-                 </Form>    
+            </Form>    
         </Card>
+
         <Card class="itemCard">
             <p slot="title">部门信息</p>
             <Form class="formWrap"  :label-width="110">
@@ -101,57 +77,37 @@
                 </Row>
                  </Form>
         </Card>
-        <Card  class="itemCard">
-            <p slot="title">审批进度</p>
-            <Form :label-width="80">
-                <Timeline>
-                   
-                    <template v-for="(item,index) in postData.TaskFlows">
-
-                        <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
-                            <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
-                                {{item.flowSummary}}  <Divider type="vertical" />
-                                {{item.flowOwnerName}} <Divider type="vertical" />
-                                 {{item.flowEmail}}
-                            </p>
-
-                            <p class="content">{{item.flowComment||''}}</p>
-                        </TimelineItem>
-                    </template>
-                    
-                   
-                </Timeline>
-                
-            </Form>    
-        </Card>
-         <Card  class="itemCard">
-                <p slot="title">审批意见</p>
-                <Form :label-width="80">
-                    <FormItem label="具体内容" >
-                        <Input  type="textarea" v-model="postData.TaskSummary" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
-                    </FormItem>
-                     <FormItem>
-                        <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
-                            <span v-if="!loading">同意</span>
-                            <span v-else>提交中...</span>
-                        </Button> 
-                        <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
-                            <span v-if="!loading">不同意</span>
-                            <span v-else>提交中...</span>
-                        </Button>     
-                    </FormItem>
-                </Form>   
-
-            </Card>
+        <task-file :fileList='postData.TaskFiles' :flowRequire='flowRequire'></task-file>
+        <task-flows :taskFlows='postData.TaskFlows' :taskFlowID='taskFlowID'></task-flows>
+        <edict-button @handle-submit-agree='handleSubmitAgree' :TaskID='taskID' 
+                :TaskFlowID='taskFlowID' :TaskStr='postData' 
+                >
+            </edict-button>
     </div>
 </template>
 <script>
-import {getPlatform,getAllUserList,upDepartment,getDepartmentTaskInfor} from "@/api/data"
+import taskFile from "@/view/components/template/task_file_show"
+import taskFlows from "@/view/components/template/approval_process"
+import edictButton from "@/view/components/template/return_edict_button"
+import {
+    getPlatform,
+    getAllUserList,
+    upDepartment,
+    getDepartmentTaskInfor,
+    taskFlowAgree,
+    setDepartment
+
+} from "@/api/data"
 export default {
+    components:{
+        taskFile,taskFlows,edictButton
+    },
     props:{
         taskFlowID:String,
         taskID:String,
-        taskTypeID:String
+        taskTypeID:String,
+        flowRequire:String,
+
     },
     data(){
 
@@ -164,14 +120,19 @@ export default {
             name:"",
             phone:"",
             manager:'',//经理
+            stanManager:'',
             managerName:'',
             deputyManager:'',//副经理
+            stanDeput:'',
             deputyManagerName:'',
             member:[],//成员
+            standMember:[],
             memberArr:[],
             platList:[],
             memWrap:[],//成员专门的数组
             managerWrap:[],
+            standDepartInfor:{},
+            standMemStr:[],
             postData:{
                 TaskNumber:"",
                 TaskFlows:[],
@@ -190,9 +151,10 @@ export default {
                     DeptCode:"",
                     DeptStatus:1,
                     Members:[]
-
                 }
-            }
+            },
+            TaskName:'',
+            TaskSummary:''
         }
         
     },mounted(){
@@ -201,10 +163,63 @@ export default {
         this.getDepartmentTaskInfor()
     },
     methods:{
-        handleSubmitAgree(){
-             this.postData.Department.Members=this.managerWrap.concat(this.memWrap);
-            
-            console.log(this.postData)
+        handleSubmitAgree(TaskName,TaskSummary){
+            var postInfor=JSON.stringify(this.postData.Department);
+            var memberflag=false,
+                flag=TaskName==this.TaskName&&TaskSummary==this.TaskSummary;
+            if((this.manager==this.stanManager)&&(this.deputyManager==this.stanDeput)&&(this.member.toString()==this.standMember.toString())){
+                memberflag=false;
+            }else{
+                memberflag=true;
+            }
+
+            if((postInfor==this.standDepartInfor)&&(!memberflag)&&flag){
+                this.taskFlowAgree()
+            }else{
+                //flag true 无修改普通 false修改了普通
+             
+                this.postData.TaskID=this.taskID;
+                this.postData.TaskFlowID=this.taskFlowID;
+                this.postData.Department.Members=this.managerWrap.concat(this.memWrap);
+               
+                let inforflag=(postInfor==this.standDepartInfor)&&(!memberflag)
+                if(!inforflag){
+                     
+                    // this.postData.Department.Members.forEach(element=>{
+                    //     element.DepartmentID=0
+                    // })
+                }else{
+                    this.postData.Department.DepartmentID=0;
+                }
+                this.setDepartment()
+
+            }
+
+           
+        },taskFlowAgree(){
+            taskFlowAgree({TaskID:this.taskID,TaskFlowID:this.taskFlowID}).then(res=>{
+                if(res.data.code==2022){
+                    this.$Message.success({
+                        content:"操作成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"操作成功"+res.data.message
+                    })
+                }
+            })
+        },setDepartment(){
+            setDepartment(this.postData).then(res=>{
+                if(res.data.code==2204){
+                    this.$Message.success({
+                        content:"操作成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"操作成功"+res.data.message
+                    })
+                }
+            })
         },
          getDepartmentTaskInfor(){
              getDepartmentTaskInfor({TaskID:this.taskID}).then(res=>{
@@ -228,48 +243,54 @@ export default {
                             DeptStatus:res.data.department.deptStatus,
                             DeptCode:res.data.department.deptCode,
                             DeptStatus:res.data.department.deptStatus,
-                            Members:res.data.department.members
+                            Members:[]
                         }
+                       
                      }
+                     this.TaskName=res.data.taskName;
+                     this.TaskSummary=res.data.taskSummary;
+                     this.standDepartInfor=JSON.stringify(this.postData.Department); 
                      res.data.department.members.forEach(element => {
                         switch (element.memberType){
                             case 21:
                                 //部门经理
                                 this.manager=element.memberID;
+                                this.stanManager=element.memberID;
                                 this.managerWrap[0]={
                                     ID:0,
                                     DepartmentID:element.departmentID,
                                     MemberID:element.memberID,
                                     MemberName:element.memberName,
-                                    MemberType:22,//21经理22副经理23员工
-                                    MemberStatus:1
-                                }
-                                
-                               
+                                    MemberType:21,//21经理22副经理23员工
+                                    MemberStatus:element.status
+                                }                   
+
                             break;
                             case 22:
                                 //部门副经理
                                 this.deputyManager=element.memberID
+                                this.stanDeput=element.memberID
                                 this.managerWrap[1]={
                                      ID:0,
                                     DepartmentID:element.departmentID,
                                     MemberID:element.memberID,
                                     MemberName:element.memberName,
                                     MemberType:22,//21经理22副经理23员工
-                                    MemberStatus:1
+                                    MemberStatus:element.status
                                 }
 
                             break;
                             case 23:
                                 //成员
                                 this.member.push(element.memberID);
+                                this.standMember.push(element.memberID);
                                 this.memWrap.push({
-                                     ID:0,
+                                    ID:0,
                                     DepartmentID:element.departmentID,
                                     MemberID:element.memberID,
                                     MemberName:element.memberName,
-                                    MemberType:22,//21经理22副经理23员工
-                                    MemberStatus:1
+                                    MemberType:23,//21经理22副经理23员工
+                                    MemberStatus:element.status
                                 })
                             break;
 
@@ -312,7 +333,6 @@ export default {
         },
         setManager(dat){
             //设置经理
-          
             this.manager=dat.value;
             this.managerName=dat.label;
             this.managerWrap[0]={
@@ -323,14 +343,13 @@ export default {
                     MemberType:21,//21经理22副经理23员工
                     MemberStatus:1
             }
-              console.log( this.managerWrap)
         },
         setDeputyManager(dat){
             //设置副经理
             this.deputyManager=dat.value;
             this.deputyManagerName=dat.label;
             this.managerWrap[1]={
-                 ID:0,
+                ID:0,
                 DepartmentID:0,
                 MemberID:dat.value,
                 MemberName:dat.label,
@@ -341,10 +360,9 @@ export default {
         setMember(dat){
             //设置员工
            this.memWrap=[];
-           
            dat.forEach(element=>{
                this.memWrap.push({
-                   ID:0,
+                    ID:0,
                     DepartmentID:0,
                     MemberID:element.value,
                     MemberName:element.label,

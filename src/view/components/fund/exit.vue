@@ -219,7 +219,8 @@
 <script>
 import {geAllPlatformDetail,
 getAllFundList,
-getFundDetail,addNewFundExitTask
+getFundDetail,addNewFundExitTask,addNewFundExitTaskFile,uploadFile
+
 
 } from "@/api/data"
 import UploadFiles from "@/view/components/upload_file/upload_file"
@@ -277,17 +278,58 @@ export default {
         // this.getProjectList();
     },methods:{
         handleSubmit(){
-            addNewFundExitTask(this.postdata).then(res=>{
-                 if(res.data.code==2413){
+             if(this.fileName.length>0){
+                this.submitWithFile();
+            }else{
+                this.submitWithoutFile()
+            }
+           
+        },submitWithFile(){
+            addNewFundExitTaskFile(this.postdata).then(res=>{
+                 if(res.data.code==2414){
+                      this.uploadFile(res.data.taskID,res.data.taskFlowID);
                     this.$Message.success({
-                        content:'操作成功'
+                        content:'任务创建成功'
                     })
                 }else{
                     this.$Message.error({
-                        content:'操作失败:'+res.data.message
+                        content:'任务创建失败:'+res.data.message
                     })
                 }
             })
+
+        },uploadFile(taskID,taskFlowID){
+                    this.fileForm.append('TaskID',taskID)
+                    this.fileForm.append('TaskFlowID',taskFlowID)
+                    this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                    this.fileWrap.forEach(element=>{
+                        this.fileForm.append('TaskFiles',element.file)
+                    })
+                    uploadFile(this.fileForm).then(res=>{
+                        if(res.data.code==2032&&res.data.taskFiles.length>0){
+                            this.$Message.success({
+                                content:'文件上传成功'
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:'文件上传失败:'+res.data.message
+                            })
+                        }
+                    })
+        },
+        submitWithoutFile(){
+            addNewFundExitTask(this.postdata).then(res=>{
+                 if(res.data.code==2413){
+                    this.$Message.success({
+                        content:'任务创建成功'
+                    })
+                }else{
+                    this.$Message.error({
+                        content:'任务创建失败:'+res.data.message
+                    })
+                }
+            })
+
         },
          getAllFundList(){
             getAllFundList({FundStatus:1,USerID:JSON.parse(localStorage.getItem('userId'))}).then(res=>{

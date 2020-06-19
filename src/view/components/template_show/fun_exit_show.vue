@@ -30,16 +30,8 @@
                             <b>{{postdata.TaskSummary}}</b>
                         </FormItem>
                     </Col>
-                    <Col span="24" v-if="postdata.TaskFiles.length>0" >
-                        <FormItem label="报送文件：" >
-                            <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
-                                <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
-                                    {{item.oldFileName}}
-                                </a> 
-                                 <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
-                            </p>
-                        </FormItem>
-                    </Col>
+                    <task-file :fileList='postdata.TaskFiles'></task-file>
+
                 </Row>
                  </Form>    
         </Card>
@@ -261,10 +253,12 @@
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import returnStep from "@/view/components/template/return_step"
+import taskFile from "@/view/components/template/task_file_show"
 import {getDealTaskDetailFund,getPlatform,getAllFundList,programListQuery} from "@/api/data"
 export default {
     components:{
-        UploadFiles
+        UploadFiles,
+        taskFile
     },
     props:{
         taskID:String,

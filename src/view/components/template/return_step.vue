@@ -2,17 +2,12 @@
     <div class="returnStep">
          <Modal
             v-model="flag"
-            title="节点选择"
+            title="审批意见"
             @on-ok="handleOk"
            >
             <Form :label-width="80">
                 <FormItem label="修改意见">
-                     <Input v-model="content" placeholder="请输入修改意见"></Input>
-                </FormItem>
-                <FormItem label="节点">
-                    <Select v-model="backId" >
-                        <Option v-for="(item,index) in stepList" :value="item.value" :key="index">{{ item.label }}</Option>
-                    </Select>
+                     <Input v-model="postdata.FlowComment" placeholder="请输入修改意见"></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -23,51 +18,43 @@ import {taskFlowReturn} from "@/api/data"
 export default {
     name:'returnStep',
     props:{
-        // taskFlows:Array,
-        taskFlowID:String,
-        taskID:String
+        TaskFlowID:String,
+        taskID:String,
+        taskFlows:Array
     },
     data(){
         return{
-            flag:false,
-            backId:'',
-            stepList:[],
-            content:''
-
+            flag:false,         
+            postdata:{
+                TaskID:'',
+                TaskFlowID:'',
+                FlowComment:'',
+                ReturnFlowID:''
+            }
         }
+    },mounted(){
     },
-    
     methods:{
         handleOk(){
-            
-            taskFlowReturn({
-                TaskID:this.taskID,
-                TaskFlowID:this.taskFlowID,
-                FlowComment:this.content,
-                ReturnFlowID:this.backId
-            }).then(res=>{
+            var that=this;
+            this.taskFlows.forEach(element=>{
+                
+                if(element.flowRequire==0){
+                    this.postdata['TaskID']=element.taskID;
+                    this.postdata['TaskFlowID']=that.TaskFlowID;
+                    this.postdata['ReturnFlowID']=element.flowID;
+                }
+            })
+            taskFlowReturn(this.postdata).then(res=>{
                 if(res.data.code==2023){
                      this.$Message.success({content:'操作成功'})
                 }else{
                      this.$Message.success({content:'操作失败:'+res.data.message})
                 }
             })  
-        
-           
-           
         },
         showModal(flag,data){
             this.flag=flag;
-            let hasDat=[]
-            data.forEach(element=>{
-                if(hasDat.indexOf(element.flowID)==-1){
-                     this.stepList.push({
-                        value:element.flowID,
-                        label:element.flowSummary
-                    })    
-                }
-                hasDat.push(element.flowID)
-            })
         }
     }
 }

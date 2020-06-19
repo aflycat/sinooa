@@ -6,12 +6,12 @@
                  <Row>
                     <Col span="12">
                         <FormItem label="报送人">
-                            <Input v-model="name" disabled placeholder="填写报送人"></Input>
+                            {{name}}
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="联系电话">
-                            <Input v-model="phone"  type="number" placeholder="联系电话"></Input>
+                            {{phone}}
                         </FormItem>
                     </Col>
                 </Row>
@@ -117,7 +117,7 @@
 
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
-import {getPlatform,getAllUserList,upDepartment} from "@/api/data"
+import {getPlatform,getAllUserList,upDepartment,getDepartmentFile,uploadFile} from "@/api/data"
 export default {
     components:{
         UploadFiles
@@ -243,27 +243,64 @@ export default {
             this.postData.Department.CloseDate=value;
         },
         handleSubmit(){
-            // console.log(this.managerWrap.concat(this.memWrap))
+            if(this.fileName.length>0){
+                this.submitWithFile()
+            }else{
+                this.submitWithoutFile()
+            }
+            
+        },
+        submitWithFile(){
             this.postData.Department.Members=this.managerWrap.concat(this.memWrap);
-            console.log(this.postData);
-            // console.log(this.postData.Department.Members.concat(this.memWrap))
-            upDepartment(this.postData).then(res=>{
+            getDepartmentFile(this.postData).then(res=>{
                 if(res.data.code=2201){
+                    this.uploadFile(res.data.taskID,res.data.taskFlowID);
                     this.$Message.success({
-                        content:"操作成功"
+                        content:"任务创建成功"
                     })
                 }else{
                     this.$Message.error({
-                        content:"操作失败:"+res.data.message
+                        content:"任务创建失败:"+res.data.message
                     })
                 }
             })
 
-
-
-
         },
-         deleteFile(index){
+        uploadFile(taskID,taskFlowID){
+                this.fileForm.append('TaskID',taskID)
+                this.fileForm.append('TaskFlowID',taskFlowID)
+                this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                this.fileWrap.forEach(element=>{
+                    this.fileForm.append('TaskFiles',element.file)
+                })
+                uploadFile(this.fileForm).then(res=>{
+                    if(res.data.code==2032&&res.data.taskFiles.length>0){
+                        this.$Message.success({
+                            content:'文件上传成功'
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:'文件上传失败:'+res.data.message
+                        })
+                    }
+                })
+        },
+        submitWithoutFile(){
+            this.postData.Department.Members=this.managerWrap.concat(this.memWrap);
+            upDepartment(this.postData).then(res=>{
+                if(res.data.code=2201){
+                    this.$Message.success({
+                        content:"任务创建成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"任务创建失败:"+res.data.message
+                    })
+                }
+            })
+        },
+
+        deleteFile(index){
             this.fileName.splice(index,1);
             this.fileWrap.splice(index,1);
 

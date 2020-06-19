@@ -39,7 +39,7 @@
                             </Col>
                             <Col span="12">
                                 <FormItem label="成立日期:">
-                                    {{platformInfor.platform.openDate}}
+                                    {{platformInfor.platform.openDate.substr(0,10)}}
                                 </FormItem>
                             </Col>
                             <Col span="12">
@@ -152,27 +152,27 @@ export default {
 
                 break;
                 case 4:
-                    return "股东-法人代表"
+                    return "法人代表"
 
                 break;
                 case 5:
-                    return "股东-董事长"
+                    return "董事长"
 
                 break;
                 case 6:
-                    return "股东-董事"
+                    return "董事"
 
                 break;
                 case 7:
-                    return "股东-监事"
+                    return "监事"
 
                 break;
                 case 8:
-                    return "股东-总经理"
+                    return "总经理"
 
                 break;
                 case 9:
-                    return "股东-合伙人"
+                    return "合伙人"
 
                 break;
 

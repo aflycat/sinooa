@@ -1,6 +1,5 @@
 <template>
     <div class="summary">
-        <!-- 项目总结报告 -->
          <Card class="itemCard">
             <p slot="title">报送人信息</p>
             <Form :label-width="80">
@@ -79,7 +78,7 @@ import store from "@/store"
 import {getprogectType,getprogectRole,getuserList,
 getCityList,getIndustryList,
 getProjectList,getProjectDetail,
-addNewProTaskProcess
+addNewProTaskProcess,uploadFile,addNewProTaskProcessFile
 } from "@/api/data"
 import {TaskTypeID} from "@/libs/data"
 
@@ -110,30 +109,72 @@ export default {
                     TaskSummary:'',//任务概要（UI中的请示事项具体内容）
                     TaskOwner:'',//任务申请人ID，与User表的UserID对应，取自当前登录用户
                     ProjectID:''
-            }
+            },
+             TypeDataObj:{},
+            RoleDataObj:{},
            
         }
     },mounted(){
         this.name=JSON.parse(localStorage.getItem("userName"));
         this.phone=JSON.parse(localStorage.getItem("phone"));
         this.submitData.TaskOwner=JSON.parse(localStorage.getItem("userId"));
-        this.getProList(1);
+        this.getprogectType();
+        this.getprogectRole();
+        this.getProList(2);
        
     },
         methods:{
             handleSubmit(){
+                if(this.fileName.length>0){
+                    this.submitWithFile();
+                }else{
+                    this.submitWithoutFile()
+                }
+
+            }, submitWithoutFile(){
                 addNewProTaskProcess(this.submitData).then(res=>{
                     if(res.data.code==2309){
                         this.$Message.success({
-                            content:'操作成功'
+                            content:'任务创建成功'
                         })
                     }else{
                         this.$Message.error({
-                            content:'操作失败:'+res.data.message
+                            content:'任务创建失败:'+res.data.message
                         })
                     }
-                })
-
+                })    
+            },submitWithFile(){
+                addNewProTaskProcessFile(this.submitData).then(res=>{
+                    if(res.data.code== 2310){
+                        this.uploadFile(res.data.taskID,res.data.taskFlowID);
+                        this.$Message.success({
+                            content:'任务创建成功'
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:'任务创建失败:'+res.data.message
+                        })
+                    }
+                })    
+            },
+            uploadFile(taskID,taskFlowID){
+                    this.fileForm.append('TaskID',taskID)
+                    this.fileForm.append('TaskFlowID',taskFlowID)
+                    this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                    this.fileWrap.forEach(element=>{
+                        this.fileForm.append('TaskFiles',element.file)
+                    })
+                    uploadFile(this.fileForm).then(res=>{
+                        if(res.data.code==2032&&res.data.taskFiles.length>0){
+                            this.$Message.success({
+                                content:'文件上传成功'
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:'文件上传失败:'+res.data.message
+                            })
+                        }
+                    })
             },
             getProList(status){
                 //获取项目列表
@@ -141,7 +182,7 @@ export default {
                     if(res.data.code==2307){
                         res.data.projectList.forEach(element => {
                             this.ProjectData.push({
-                                label:element.clientCode+'--'+element.projectType+'--'+element.projectRole,
+                                label:element.clientCode+'--'+this.TypeDataObj[element.projectType]+'--'+this.RoleDataObj[element.projectRole],
                                 value:element.projectID
                             })
                         });
@@ -152,7 +193,36 @@ export default {
                         })
                     }
                 })
+            }, getprogectType(){
+                getprogectType({"PageIndex":1,"PageSize":1000}).then(res=>{
+                    if(res.data.code==0){
+                        res.data.projectTypeList.forEach(element => {
+                            
+                            this.TypeDataObj[element.projectTypeId]=element.projectTypeName
+
+                        });
+                    }else{
+                        this.$Message.error({
+                            content:"项目品种信息加载失败:"+res.data.message
+                        })
+                    }
+                })
             },
+        getprogectRole(){
+            getprogectRole({"PageIndex":1,"PageSize":1000}).then(res=>{
+                 if(res.data.code==0){
+                    res.data.projectRoleList.forEach(element => {
+                        this.RoleDataObj[element.projectRoleId]=element.projectRoleName;
+
+                    });
+
+                }else{
+                    this.$Message.error({
+                        content:"项目角色信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
             selectProDetail(){
                 // this.ProjectVlaue=this.submitData.ProjectID;
                 // console.log(this.ProjectVlaue)

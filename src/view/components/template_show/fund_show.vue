@@ -1,48 +1,7 @@
 <template>
     <div class="fund_show">
-        <Card  class="itemCard">
-            <p slot="title">任务明细</p>
-            <Form :label-width="80">
-                <Row>
-                     <Col span="24">
-                        <FormItem label="任务编号：">
-                            <b> {{postdata.TaskNumber}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="24">
-                        <FormItem label="事项要点：">
-                            <b>{{postdata.TaskName}}</b>
-                        </FormItem>
-                    </Col>
-                   
-                    <Col span="12">
-                        <FormItem label="报送人：">
-                            <b>{{postdata.TaskOwnerName}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="12">
-                        <FormItem label="联系电话：">
-                           <b>{{ postdata.TaskOwnerPhone}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="24">
-                        <FormItem label="报送内容：">
-                           <b> {{postdata.TaskSummary}}</b>
-                        </FormItem>
-                    </Col>
-                    <Col span="24" v-if="postdata.TaskFiles.length>0" >
-                        <FormItem label="报送文件：" >
-                            <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
-                                <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.fileName" target="_blank" style="color:#2d8cf0;">
-                                    {{item.oldFileName}}
-                                </a> 
-                                 <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
-                            </p>
-                        </FormItem>
-                    </Col>
-                </Row>
-                 </Form>    
-        </Card>
+        <approval-header :TaskNumber='postdata.TaskNumber' :TaskName='postdata.TaskName' :TaskOwnerName='postdata.TaskOwnerName' :TaskOwnerPhone='postdata.TaskOwnerPhone' :TaskSummary='postdata.TaskSummary'></approval-header>
+
            
             <Card  class="itemCard">
                 <p slot="title">基金基本信息</p>
@@ -57,12 +16,12 @@
                         </Col>
                          <Col span="8">
                             <FormItem label="基金全称：">
-                                 <b>{{ postdata.TaskOwnerPhone}}</b>
+                                 <b>{{ postdata.Fund.FundName}}</b>
                             </FormItem>   
                         </Col>
                           <Col span="8">
                             <FormItem label="基金简称：">
-                                <b>{{ postdata.TaskOwnerPhone}}</b>
+                                <b>{{ postdata.Fund.ShortName}}</b>
                             </FormItem>   
                         </Col>
                         <Col span="8">
@@ -146,13 +105,23 @@
                                 </FormItem>  
                             </Col>
                              <Col span="8">
-                                <FormItem label="成员名字：" >
-                                     <b>{{item.MemberName}}</b>
+                                 <FormItem v-if='item.MemberType==37||item.MemberType==39||item.MemberType==40||item.MemberType==41||item.MemberType==42'   label="成员名字:" >
+                                    <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                
+                                <FormItem v-if='item.MemberType==32||item.MemberType==33||item.MemberType==34||item.MemberType==36' label="平台简称:" >
+                                     <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                <FormItem v-if='item.MemberType==31||item.MemberType==35' label="客户代码:" >
+                                     <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                  <FormItem v-if='item.MemberType==38' label="基金简称:" >
+                                    <b> {{item.MemberName}} </b>
                                 </FormItem>  
                             </Col>
                              <Col span="8">
                                 <FormItem label="投资人类型：" >
-                                    <b>{{item.InvestorType}}</b>
+                                   <b> {{InvestorType[item.InvestorType]}} </b>
                                 </FormItem>  
                             </Col>
                              <Col span="8">
@@ -189,89 +158,30 @@
                   
 
             </Card>
-            <Card  class="itemCard">
-            <p slot="title">审批进度</p>
-                <Form :label-width="80">
-                    <Timeline>
-                        <template v-for="(item,index) in postdata.TaskFlows">
+            <task-file :fileList='postdata.TaskFiles' :flowRequire='flowRequire'></task-file>
+            <task-flows :taskFlows='postdata.TaskFlows' :taskFlowID='taskFlowID'></task-flows>
+            <approval-button  v-if='flowRequire<=1100' :TaskID='taskID'  :TaskFlowID='taskFlowID' :flowRequire='flowRequire' :taskFlows='postdata.TaskFlows'></approval-button>
 
-                            <TimelineItem  :color="item.flowStatus==1?'#19be6b':'#515a6e'"  :key="index">
-                                <p >{{item.flowDoneDate.replace("T"," ").substr(0,16)}}   <Divider type="vertical" />
-                                    {{item.flowSummary}}  <Divider type="vertical" />
-                                    {{item.flowOwnerName}} <Divider type="vertical" />
-                                    {{item.flowEmail}}
-                                </p>
-                                <p class="content">{{item.flowComment||''}}</p>
-                            </TimelineItem>
-                        </template>
-                    </Timeline>
-                </Form>    
-        </Card>
-            <Card  class="itemCard">
-                <p slot="title">审批意见</p>
-                <Form :label-width="80">
-                    <Col span="24">
-                        <FormItem label="快捷输入">
-                            <RadioGroup  @on-change="easzyInput">
-                                <Radio label="同意"></Radio>
-                                <Radio label="基本同意"></Radio>
-                                <Radio label="收阅执行"></Radio>
-                                <Radio label="不同意"></Radio>
-                            </RadioGroup>
-                        </FormItem>
-                    </Col>
-                   <Col span="24">
-                        <FormItem label="审批意见">
-                            <Input v-model="FlowComment" type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入具体内容"></Input>
-                        </FormItem>
-                    </Col>
-                    <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                                <p class="fileName" v-for="(item,index) in fileName" :key='index'>
-                                    <Row >
-                                        <Col span="20">
-                                            <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
-                                            <span style="color:#808695;font-size:12px;">{{item.file}}</span>
-                                        </Col>
-                                        <Col span="4" style="color:#ed4014;cursor:pointer;" >
-                                        <span @click="deleteFile(index)">删除</span> 
-                                        
-                                        </Col>
-                                    </Row>
-                                </p>
-                    </FormItem>
-                     <FormItem>
-                        <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>    
-                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
-                            <span v-if="!loading">同意</span>
-                            <span v-else>提交中...</span>
-                        </Button> 
-                            <Button @click="showReturnModal"   style="margin-right: 8px" type="warning">修改</Button>  
-                          
-                        <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
-                            <span v-if="!loading">不同意</span>
-                            <span v-else>提交中...</span>
-                        </Button>                    
-
-                    </FormItem>
-                </Form>   
-
-            </Card>
          
-        <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
 
     </div>
 </template>
 <script>
-import UploadFiles from "@/view/components/upload_file/upload_file"
 import {TaskTypeID} from "@/libs/data"
 import {getPlatform,getuserList,addNewFundTask,getDealTaskDetailFund} from "@/api/data"
+import taskFile from "@/view/components/template/task_file_show"
+import taskFlows from "@/view/components/template/approval_process"
+import approvalButton from "@/view/components/template/approval_button"
+import approvalHeader from "@/view/components/template/approval_header"
+
 export default {
      components:{
-        UploadFiles,
+        taskFile,taskFlows,approvalButton,approvalHeader
     },
     props:{
         taskID:String,
         taskFlowID:String,
+        flowRequire:String
     },
     data(){
         return{
@@ -303,6 +213,29 @@ export default {
                 40:'基金主办',
                 41:'基金成员',
                 42:'基金投决会'
+
+            },
+             InvestorType:{
+                "1":'自然人（非员工跟投）',
+                "2":'自然人（员工跟投）',
+                "3":'境内法人机构(公司等)',
+                "4":'境内非法人机构(一般合伙企业等)',
+                "5":'本产品管理人跟投',
+                "6":'私募基金产品',
+                "7":'证券公司及其子公司资产管理计划',
+                "8":'基金公司及其子公司资产管理计划',
+                "9":'期货公司及其子公司资产管理计划',
+                "10":'信托计划',
+                "11":'商业银行理财产品',
+                "12":'保险资产管理计划',
+                "13":'慈善基金、捐赠基金等社会公益基金',
+                "14":'养老基金',
+                "15":'社会保障基金',
+                "16":'企业年金',
+                "17":'政府类引导基金',
+                "18":'财政直接出资',
+                "19":'境外资金（QFII、RQFII等）',
+                "20":'境外机构'
 
             },
             progress:[

@@ -5,49 +5,19 @@
                 <p slot="title">报送人信息</p>
                 <Form :label-width="80">
                     <Row>
-                        <Col span="24">
-                            <FormItem label="任务编号：">
-                                <b>{{postUnchange.TaskNumber}}</b>
-                            </FormItem>
-                        </Col>
                         <Col span="8">
                             <FormItem label="报送人" prop="name">
-                                {{postUnchange.TaskOwnerName}}
+                                {{postdata.TaskOwnerName}}
                             </FormItem>
                         </Col>
                          <Col span="8">
                             <FormItem label="联系电话" prop="phone">
-                                {{postUnchange.TaskOwnerPhone}}
+                                {{postdata.TaskOwnerPhone}}
                             </FormItem>   
                         </Col>
-                        <!-- <Col span="24" v-if="postdata.TaskFiles.length>0" >
-                            <FormItem label="报送文件：" >
-                                <p  v-for="(item,index) in postdata.TaskFiles" :key='index'>
-                                    <a :href="'http://120.78.154.66:8089/taskfiles/'+item.dateFolder+'/'+item.oldFileName" target="_blank" style="color:#2d8cf0;">
-                                        {{item.oldFileName}}
-                                    </a> 
-                                    <Button style="color:#ed4014;" type="text" @click="deleteOriginFile(item.taskFileID,item.oldFileName,index)">删除</Button>
-                                </p>
-                            </FormItem>
-                        </Col> -->
                     </Row>
                 </Form>
-            </Card>
-            <Card class="itemCard">
-                <p slot="title">项目选择</p>
-                <Form :label-width="80">
-                    <Row>
-                        <Col span="8">
-                            <FormItem label="项目简称" prop="ProjectType">
-                                <Select v-model="ProjectVlaue" filterable  @on-change="selectProDetail">
-                                    <Option v-for="item in ProjectData" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                                </Select>
-                            </FormItem>
-                        </Col>
-                      </Row>
-                   
-                </Form>
-            </Card>
+            </Card> 
             <Card  class="itemCard">
                 <p slot="title">公司基本信息</p>
                 <Form :label-width="100">
@@ -327,7 +297,7 @@
                         </Col>
                           <Col span="8">
                             <FormItem label="预计工时费用" >
-                                <Input v-model="postdata.Project.EstimatedHourCost" type="number" placeholder="请输入工时费">
+                                <Input v-model="postdata.Project.EstHourCost" type="number" placeholder="请输入工时费">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -339,9 +309,9 @@
                                 </Input>
                             </FormItem>
                         </Col>
-                         <Col span="8">
-                            <FormItem label="预计直接费用" prop="EstimatedFeeCost">
-                                <Input v-model="postdata.Project.EstimatedFeeCost" type="number" placeholder="请输入直接费用">
+                          <Col span="8">
+                            <FormItem label="预计直接费用" >
+                                <Input v-model="postdata.Project.EstFeeCost" type="number" placeholder="请输入直接费用">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -359,48 +329,14 @@
                         <span  @click="processDelete(index)" style="margin-right:5px;color:#ed4014;cursor:pointer;">删除</span>
                     </template>
                 </Table>
-
                  <Button style="margin-top:15px;" type="primary" @click="showEdict(1,0,'')" >添加进度</Button>
-                
-            </Card>      
-             <Card  class="itemCard">
-                <p slot="title">请示信息</p>
-                <Form :label-width="80">
-                        <FormItem label="事项要点">
-                            <Input v-model="postUnchange.TaskName" placeholder="请输入事项要点"></Input>
-                        </FormItem>
-                        <FormItem label="具体内容" prop="TaskSummary">
-                            <Input v-model="postUnchange.TaskSummary" type="textarea" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
-                        </FormItem>
-                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                                <p class="fileName" v-for="(item,index) in fileName" :key='index'>
-                                    <Row >
-                                        <Col span="20">
-                                            <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
-                                            <span style="color:#808695;font-size:12px;">{{item.file}}</span>
-                                        </Col>
-                                        <Col span="4" style="color:#ed4014;cursor:pointer;" >
-                                        <span @click="deleteFile(index)">删除</span> 
-                                        </Col>
-                                    </Row>
-                                </p>
-                    </FormItem>
-
-                     <FormItem>
-                         <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
-                                <span v-if="!loading">同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-                            <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
-                                <span v-if="!loading">不同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-
-                    </FormItem>
-                </Form>   
             </Card>
-            <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
+            <task-file :fileList='TaskFiles' :flowRequire='flowRequire'></task-file>
+            <task-flows :taskFlows='TaskFlows' :taskFlowID='taskFlowID'></task-flows>     
+            <edict-button @handle-submit-agree='handleSubmitAgree' :TaskID='taskID' 
+                :TaskFlowID='taskFlowID' :TaskStr='postdata' 
+                >
+            </edict-button> <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
             <Modal v-model="processModal" title="编辑项目进度信息" @on-ok="setProcess">
                 <Form :label-width="100">
                          <Row >
@@ -457,19 +393,25 @@
 
 import {getprogectType,getprogectRole,getuserList,
 getCityList,getIndustryList,getProjectList,getPlatform,getAllDepartment,
-getProjectDetail,addNewProjecttask,getAllFundList,getDealTaskDetail
+getProjectDetail,addNewProjecttask,getAllFundList,getDealTaskDetail,taskFlowAgree,addNewProjecttaskMod
 } from "@/api/data"
-
+import taskFile from "@/view/components/template/task_file_show"
+import taskFlows from "@/view/components/template/approval_process"
+import edictButton from "@/view/components/template/return_edict_button"
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import {TaskTypeID} from "@/libs/data"
 import {toUpperCase,orderObj} from "@/libs/tools"
 export default {
     components:{
         UploadFiles,
+        taskFile,
+        taskFlows,
+        edictButton
     },props:{
         taskID:String,
         taskFlowID:String,
-        taskTypeID:String
+        taskTypeID:String,
+        flowRequire:String
     },
     data(){
         return{
@@ -520,15 +462,7 @@ export default {
             fundListData:[],
             fileForm:new FormData(),
             standPost:{},
-            postUnchange:{
-                TaskTypeID:this.taskTypeID,
-                TaskName:'',
-                TaskSummary:'',
-                TaskNumber:'',
-                TaskOwner:'',
-                TaskOwnerPhone:'',
-                TaskOwnerName:'',
-            },
+            
             postdata:{
                     Client:{
                         ClientID:0,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
@@ -586,7 +520,18 @@ export default {
                         EstStartDate:'',//预计项目开始日期
                         EstEndDate:''//预计项目结束日期
                     }
-            }
+            },
+            TaskFiles:[],
+            TaskFlows:[],
+            managerObj:{},
+            ownerObj:{},
+            memberArr:[],
+            standmanagerObj:'',
+            standownerObj:'',
+            standmemberArr:[],
+            memberArrStr:[] ,
+            TaskName:'',
+            TaskSummary:''
         }
     },
     mounted(){
@@ -606,17 +551,19 @@ export default {
             //获取任务详情
             getDealTaskDetail( {"TaskID":this.taskID} ).then(res=>{
                 if(res.data.code==2303){
-                    this.standPost=res.data;
-                    this.postUnchange={
-                        TaskTypeID:this.taskTypeID,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
+                    this.standPost=JSON.parse(JSON.stringify(res.data))
+                    this.standPost.project.members=[]
+                    this.standPost.project.schedules=[]
+                    this.TaskFiles=res.data.taskFiles;
+                    this.TaskFlows=res.data.taskFlows;
+                    this.postdata={
+                        TaskID:res.data.taskID,
                         TaskName:res.data.taskName,//任务名（UI中的请示事项要点）
                         TaskSummary:res.data.taskSummary,//任务概要（UI中的请示事项具体内容）
                         TaskNumber:res.data.taskNumber,
                         TaskOwnerName:res.data.taskOwnerName,
                         TaskOwnerPhone:res.data.taskOwnerPhone,
                         TaskOwner:res.data.taskOwner,//任务申请人ID，与User表的UserID对应，取自当前登录用户
-                    }
-                    this.postdata={
                         Client:{
                             ClientID:res.data.client.clientID,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
                             ClientName:res.data.client.clientName,//公司全称
@@ -655,8 +602,7 @@ export default {
                             ProjectRole:parseInt(res.data.project.projectRole),//项目角色，下拉表，从后台字典表中获取
                             Summary:res.data.project.projectSummary,//项目概要
                             Source:res.data.project.source,//项目来源
-                            EstimatedFeeCost:res.data.project.estimatedFeeCost,//预计直接费用
-                            EstimatedHourCost:res.data.project.estimatedHourCost,//预计工时费用
+                        
                             ProjectStatus:res.data.project.projectStatus,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
                             FundCode:res.data.project.fundCode,//基金代码
                             FundID:res.data.project.fundID,//基金id
@@ -671,21 +617,21 @@ export default {
                             RelatedClient:res.data.project.relatedClient,//相关其他客户代码
                             ProjectLabel:res.data.project.projectLabel,//项目标签
                             EstIncome:res.data.project.estIncome,//预计总收入
-                            Schedules:res.data.project.schedules,//项目进度
                             Summary:res.data.project.summary,//项目概要
                             EstStartDate:res.data.project.estStartDate,//预计项目开始日期
                             EstEndDate:res.data.project.estEndDate,//预计项目结束日期
-                            Members:res.data.project.members,
-                            Schedules:res.data.project.schedules,
                             CurNumber:res.data.project.curNumber,
                             CurYear:res.data.project.curYear,
                             EstFeeCost:res.data.project.estFeeCost,
-                            EstHourCost:res.data.project.estHourCost
-
-
+                            EstHourCost:res.data.project.estHourCost,
+                            Members:[],
+                           Schedules:[]
                         }
                                 
                     }
+                    this.TaskSummary=res.data.taskSummary;
+                    this.TaskName=res.data.taskName;
+                    // this.standPost.project.members=[]
                     this.ProjectVlaue=res.data.project.projectID;
                     this.loadMember(res.data.project.members);//加载人员信息  
                     this.loadProcess(res.data.project.schedules)//加载项目进度
@@ -694,59 +640,86 @@ export default {
                         content:'数据加载失败：'+res.data.message
                     })
                 }
-            })
+                })
 
-        },
-            handleSubmitAgree(){
+            },
+            handleSubmitAgree(TaskName,TaskSummary){
                 //点击同意并修改内容
-                var obj={
-                    TaskTypeID:this.taskTypeID,
-                    TaskName: this.standPost.taskName,//任务名（UI中的请示事项要点）
-                    TaskSummary: this.standPost.taskSummary,//任务概要（UI中的请示事项具体内容）
-                    TaskNumber: this.standPost.taskNumber,
-                    TaskOwnerName: this.standPost.taskOwnerName,
-                    TaskOwnerPhone: this.standPost.taskOwnerPhone,
-                    TaskOwner: this.standPost.taskOwner,//
-                }
+                this.postdata.TaskName=TaskName;
+                this.postdata.TaskSummary=TaskSummary;
+                this.postdata.Project.Schedules=[];
+                this.progressData.forEach(element=>{
+                     this.postdata.Project.Schedules.push({
+                         ID:0,
+                         ProjectID:this.ProjectVlaue,
+                         ScheduleID:element.ScheduleID,
+                         ScheduleName:element.ScheduleName,
+                         Summary:element.Summary,
+                         EstStartDate:element.EstStartDate,
+                         EstEndDate:element.EstEndDate,
+                         RealStartDate:element.RealStartDate,
+                         RealEndDate:element.RealEndDate,
+                         Status:element.Status,
+                     })
+                })
                 //由于返回数据和提交数据参数首字符大小不一  先将首字母大写，再排序，然后转化为字符串，再比较
-                var postClient=JSON.stringify(orderObj(toUpperCase(this.postdata.Client))),
-                    standClient=JSON.stringify(orderObj(toUpperCase(this.standPost.client))),
-                    postProject=JSON.stringify(orderObj(toUpperCase(this.postdata.Project))),
-                    standProject=JSON.stringify(orderObj(toUpperCase(this.standPost.project)))
-
-                if(!(postClient==standClient)){
-                    //客户信息有修改
-                    alert('客户信息有修改')
-
-                }
-                if(!(postProject==standProject)){
-                    //项目信息有修改
-                     alert('项目信息有修改')
-                } 
-                if(!(JSON.stringify(this.postUnchange)==JSON.stringify(obj))){
-                    //普通信息有修改
-                     alert('普通信息有修改')
-                }
-            
-
-                //点击同意无修改内容
-
+                 var postClient=JSON.stringify(orderObj(toUpperCase(this.postdata.Client))),
+                     standClient=JSON.stringify(orderObj(toUpperCase(this.standPost.client))),
+                     postProject=JSON.stringify(orderObj(toUpperCase(this.postdata.Project))),
+                     standProject=JSON.stringify(orderObj(toUpperCase(this.standPost.project))),
+                    flag=TaskName==this.TaskName&&TaskSummary==this.TaskSummary;
                 
-                // this.postdata.Project.Schedules=[];
-                // this.progressData.forEach(element=>{
-                //      this.postdata.Project.Schedules.push({
-                //          ID:0,
-                //          ProjectID:this.ProjectVlaue,
-                //          ScheduleID:element.ScheduleID,
-                //          ScheduleName:element.ScheduleName,
-                //          Summary:element.Summary,
-                //          EstStartDate:element.EstStartDate,
-                //          EstEndDate:element.EstEndDate,
-                //          RealStartDate:element.RealStartDate,
-                //          RealEndDate:element.RealEndDate,
-                //          Status:element.Status,
-                //      })
-                // })
+                var projectFlag=
+                    (this.standmanagerObj==this.managerObj['MemberID'])
+                    &&
+                    (this.standownerObj==this.ownerObj['MemberID'])
+                    &&
+                    (JSON.stringify(this.standmemberArr)==JSON.stringify(this.memberArrStr));
+                
+             
+                if((postClient==standClient)&&((postProject==standProject)&&projectFlag)&&flag){
+                    //无信息修改
+                    taskFlowAgree({TaskID:this.taskID,TaskFlowID:this.taskFlowID}).then(res=>{
+                        if(res.data.code==2022){
+                            this.$Message.success({
+                                content:"操作成功"
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:"操作成功"+res.data.message
+                            })
+                        }
+                    })
+                }else{
+                    //有信息修改
+                    if(postClient==standClient){
+                        this.postdata.Client.ClientID=0  
+                    }
+                    if((postProject==standProject)&&projectFlag){
+                        this.postdata.Project.ProjectID=0
+                    }
+
+                    this.postdata.Project.Members=this.memberArr;
+                    this.postdata.Project.Members.push(this.ownerObj);
+                    this.postdata.Project.Members.push(this.managerObj);
+                    this.postdata.TaskID=this.taskID;
+                    this.postdata.TaskFlowID=this.taskFlowID;   
+                    addNewProjecttaskMod(this.postdata).then(res=>{
+                        if(res.data.code==2304){
+                            this.$Message.success({
+                                content:"操作成功"
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:"操作成功"+res.data.message
+                            })
+                        }
+                    })
+                }
+
+           
+                
+                
 
 
 
@@ -799,102 +772,48 @@ export default {
                         this.progressData.splice(index,1);
                     }
                 })
-            },
-            selectProDetail(){
-                getProjectDetail({ProjectID:this.ProjectVlaue}).then(res=>{
-                    if(res.data.code==2308){
-                        this.postdata={
-                                Client:{
-                                    ClientID:res.data.client.clientID,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
-                                    ClientName:res.data.client.clientName,//公司全称
-                                    Region:res.data.client.region,//所在省市，下拉表，从后台字典表中获取
-                                    ShortName:res.data.client.shortName,//公司简称
-                                    ClientCode:res.data.client.clientCode,//客户代码，不同客户使用该唯一的代码区分
-                                    Scope:res.data.client.scope,//经营范围
-                                    Industry:parseInt(res.data.client.industry),//所属行业，下拉表，从后台字典表中获取
-                                    LegalPerson:res.data.client.legalPerson,//法人代表
-                                    Manager:res.data.client.manager,//总经理
-                                    RegisteredCapital:res.data.client.registeredCapital,//注册资本
-                                    OpenDate:res.data.client.openDate,//成立日期
-                                    Address:res.data.client.address,//注册地址
-                                    Zip:res.data.client.zip,//邮政编码
-                                    Contact:res.data.client.contact,//联系人员
-                                    ContactEmail:res.data.client.contactEmail,//联系电邮
-                                    ContactPhone:res.data.client.contactPhone,//联系电话
-                                    ContactFax:res.data.client.contactFax,//联系传真
-                                    TotalAssets:res.data.client.totalAssets,//总资产
-                                    NetAssets:res.data.client.netAssets,//净资产
-                                    Income:res.data.client.income,//营业收入
-                                    Profit:res.data.client.profit,//营业利润
-                                    NetProfit:res.data.client.netProfit,//净利润
-                                    FinancialYear:res.data.client.financialYear,//财务年度
-                                    FinancialQuarter:res.data.client.financialQuarter,//财务季度
-                                    Region:parseInt(res.data.client.region),
-                                    Country:res.data.client.country,
-                                    CodsCode:res.data.client.codsCode,//社会统一
-                                    ClientStatus:1//状态，1表示最新信息，0表示历史信息
-                                },
-                                Project:{
-                                    ProjectID:res.data.project.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
-                                    ClientID:res.data.client.clientID,//客户ID 
-                                    ClientCode:res.data.project.clientCode,//客户代码，不同项目使用“客户代码 + 项目品种 + 项目角色”唯一区分
-                                    ProjectType:parseInt(res.data.project.projectType),//项目品种，下拉表，从后台字典表中获取
-                                    ProjectRole:parseInt(res.data.project.projectRole),//项目角色，下拉表，从后台字典表中获取
-                                    Summary:res.data.project.projectSummary,//项目概要
-                                    Source:res.data.project.source,//项目来源
-                                    EstimatedFeeCost:res.data.project.estimatedFeeCost,//预计直接费用
-                                    EstimatedHourCost:res.data.project.estimatedHourCost,//预计工时费用
-                                    ProjectStatus:res.data.project.projectStatus,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                                    FundCode:res.data.project.fundCode,//基金代码
-                                    FundID:res.data.project.fundID,//基金id
-                                    PlatformID:res.data.project.platformID,//权属平台id
-                                    RealStartDate:res.data.project.realStartDate,//实际项目开始日期
-                                    RealEndDate:res.data.project.realEndDate,//实际项目结束日期
-                                    PlatCode:res.data.project.platCode,//权属平台代码
-                                    DepartmentID:res.data.project.departmentID,//部门id
-                                    DeptCode:res.data.project.deptCode,//部门代码
-                                    FundCode:res.data.project.fundCode,//基金代码
-                                    FundID:res.data.project.fundID,//基金id
-                                    RelatedClient:res.data.project.relatedClient,//相关其他客户代码
-                                    ProjectLabel:res.data.project.projectLabel,//项目标签
-                                    EstIncome:res.data.project.estIncome,//预计总收入
-                                    Schedules:res.data.project.schedules,//项目进度
-                                    Summary:res.data.project.summary,//项目概要
-                                    EstStartDate:res.data.project.estStartDate,//预计项目开始日期
-                                    EstEndDate:res.data.project.estEndDate,//预计项目结束日期
-                                    Members:res.data.project.members,
-                                    Schedules:res.data.project.schedules,
-                                     CurNumber:res.data.project.curNumber,
-                                    CurYear:res.data.project.curYear,
-                                     EstFeeCost:res.data.project.estFeeCost,
-                                    EstHourCost:res.data.project.estHourCost
-                                }
-                        }
-                         this.loadMember(res.data.project.members);//加载人员信息  
-                         this.loadProcess(res.data.project.schedules)//加载项目进度
-                    }else{
-                        this.$Message.error({
-                            content:"获取项目详细信息失败："+res.data.message
-                        })
-                    }
-                })
             },loadMember(obj){
-                this.MemberData=[];
-
                 obj.map(item=>{
                     item.id=0;
                     switch (item.memberType){
                         case 91:
                             //项目经理
                             this.ManagerVlaue=item.memberID;
+                            this.standmanagerObj=item.memberID;
+                            this.managerObj={
+                                    ID:0,
+                                    ProjectID:item.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                                    MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                                    MemberName:item.memberName,//项目成员的姓名
+                                    MemberType:91,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                                    Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                            }
                         break;
                         case 92:
                             //项目主办
                             this.OwnerVlaue=item.memberID;
+                            this.standownerObj=item.memberID;
+                            this.ownerObj={
+                                ID:0,
+                                ProjectID:item.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                                MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                                MemberName:item.memberName,//项目成员的姓名
+                                MemberType:92,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                                Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                            }
                         break;
                         case 93:
                             //项目成员
                             this.MemberData.push(item.memberID);
+                            this.standmemberArr.push(item.memberID);
+                            this.memberArr.push({
+                                ID:0,
+                                ProjectID:item.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                                MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                                MemberName:item.memberName,//项目成员的姓名
+                                MemberType:93,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                                Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                            })
                         break;
                     }              
                 })
@@ -903,53 +822,53 @@ export default {
                 this.progressData=[];
                 obj.forEach(element=>{
                     this.progressData.push({
-                        ID:element.iD,
+                        ID:0,
                         ProjectID:element.projectID,
-                        RealStartDate:element.realStartDate.substr(0,10),
-                        RealEndDate:element.realEndDate.substr(0,10),
                         ScheduleID:element.scheduleID,
                         ScheduleName:element.scheduleName,
+                        Summary:element.summary,
                         EstStartDate:element.realStartDate.substr(0,10),
                         EstEndDate:element.estEndDate.substr(0,10),
-                        Summary:element.summary,
+                        RealStartDate:element.realStartDate.substr(0,10),
+                        RealEndDate:element.realEndDate.substr(0,10),
                         Status:element.status
                     })
                 })
+                
+                this.standPost.project.schedules=JSON.parse(JSON.stringify(this.progressData)) 
+                console.log(this.standPost)
             },
             getManager(value){
-                 this.postdata.Project.Members[0]={
-                
-                    ID:0,//数据ID (用默认值0)
-                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                this.managerObj={
+                    ID:0,
+                    ProjectID:this.postdata.Project.ProjectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
                     MemberID:value.value,//项目成员ID，与用户表UserID对应
                     MemberName:value.label,//项目成员的姓名
                     MemberType:91,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                    //EstimatedHour:0,//预计投入工时，暂未使用
                     Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                
                 }
             },
             getOwner(value){
-                this.postdata.Project.Members[1]={
-                    ID:0,//数据ID (用默认值0)
-                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                this.ownerObj={
+                    ID:0,
+                    ProjectID:this.postdata.Project.ProjectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
                     MemberID:value.value,//项目成员ID，与用户表UserID对应
                     MemberName:value.label,//项目成员的姓名
-                    MemberType:92,//91表示项目经理，92表示项目主办，93表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                    //EstimatedHour:0,//预计投入工时，暂未使用
+                    MemberType:92,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
                     Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
                 }
             },
             getMember(value){
-                this.postdata.Project.Members.splice(2,this.postdata.Project.Members.length-1)
+                this.memberArr=[];
+                this.memberArrStr=[];
                 value.forEach(element=>{
-                    this.postdata.Project.Members.push({
+                    this.memberArrStr.push(element.value)
+                    this.memberArr.push({
                         ID:0,//数据ID (用默认值0)
-                        ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                        ProjectID:this.postdata.Project.ProjectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
                         MemberID:element.value,//项目成员ID，与用户表UserID对应
                         MemberName:element.label,//项目成员的姓名
                         MemberType:93,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                        //EstimatedHour:0,//预计投入工时，暂未使用
                         Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
                     })
                 })
@@ -1183,12 +1102,4 @@ export default {
         }
 }
 </script>
-<style lang='less'  scoped>
-     .approval{
-        width: 100%;
-        height:100%;
-        .itemCard{
-            margin-bottom: 20px;
-        }
-    }
-</style>
+

@@ -33,7 +33,7 @@
         </TabPane>
         <TabPane label="尚未完成" name="name2">
            <Card>
-              <TimelineItem color="red">尚未完成、动态模板、退出、投资、部门变动、权属平台变动的审批界面</TimelineItem>
+              <TimelineItem color="red">尚未完成、动态模板、退出、投资的审批界面</TimelineItem>
               <TimelineItem color="red">任务查询，附件查询，草稿箱，资料搜索</TimelineItem>
               <TimelineItem color="red">文件操作，删除，更改，上传，预览，下载</TimelineItem>
               <TimelineItem color="red">任务审批同意，不同意，驳回</TimelineItem>
@@ -46,7 +46,7 @@
         </TabPane>
         <TabPane label="需求改进" name="name3">
           <Card>
-              <TimelineItem color="red">所有的查询信息接口返回名称信息和主键，如部门查询返回部门所属平台的平台名称</TimelineItem>
+              <TimelineItem color="red">部门查询返回部门所属平台的平台名称,项目查询返回项目角色项目品种name</TimelineItem>
               <TimelineItem color="red">流程查询的时候接口返回步骤的处理组角色名称和处理人角色名称</TimelineItem>
               <TimelineItem color="red">流程编辑的时候可以完成某个流程的增删改查</TimelineItem>
               <TimelineItem color="red">查询个人信息的时候不返回用户的密码</TimelineItem>
@@ -61,6 +61,8 @@
               <TimelineItem color="red">怎么确定当前待处理任务是要审批还是要修改</TimelineItem>
               <TimelineItem color="red">投资退出接口返回对象的投资对象shortname</TimelineItem>
               <TimelineItem color="red">基金投资和退出怎么区别是否为当次任务要展示的内容（退出和投资都是数组）</TimelineItem>
+              <TimelineItem color="red">相关客户代码是手写还是从客户列表中选取</TimelineItem>
+              <TimelineItem color="red">权属平台添加人员,根据角色添加,也是从用户表中获取,roleID如何确认</TimelineItem>
             </Card>
         </TabPane>
          <TabPane label="版本更新" name="name4">
@@ -89,6 +91,18 @@
               <TimelineItem color="red">项目进展之类的报告，返回修改之后不能选择其他项目提交</TimelineItem>
               <TimelineItem color="red">返回修不能重新选择</TimelineItem>
               <TimelineItem color="red">如果项目审批人提交了该项目则直接通过</TimelineItem>
+              <TimelineItem color="red">提交直接通过的项目不能上传文件</TimelineItem>
+              <TimelineItem color="red">代办任务到自己是才能查询到，返回修改返回给个人 FlowRequire决定当前操作》100不可编辑</TimelineItem>
+              <TimelineItem color="red">返回编辑判断是否修改了内容,再判断是都修改了相关内容</TimelineItem>
+            </Card>
+        </TabPane>
+        <TabPane label="测试" name="name7">
+          <Card>
+             <TimelineItem color="red">提交申请 yxs，
+审批  test1 同意，
+审批  test2 返回修改，
+审批  test3 不同意</TimelineItem>
+             
             </Card>
         </TabPane>
         

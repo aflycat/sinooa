@@ -70,7 +70,7 @@
                         </Col>
                          <Col span="8">
                             <FormItem label="客户代码" prop="ClientCode">
-                                <Input v-model="postdata.Client.ClientCode" placeholder="请输入客户代码"></Input>
+                                <Input v-model="postdata.Client.ClientCode" @on-blur="getClientCode" placeholder="请输入客户代码"></Input>
                             </FormItem>   
                         </Col>
                         <Col span="8">
@@ -209,13 +209,7 @@
                                     <Option v-for="(item,index) in platformList" :value="item.platformID" :key="index">{{ item.shortName }}</Option>
                                 </Select>
                             </FormItem>
-                        </Col>
-                         <!-- <Col span="8">
-                            <FormItem label="平台代码" >
-                                <Input v-model="postdata.Project.PlatCode" placeholder="请输入平台代码"></Input>
-                            </FormItem>   
-                        </Col> -->
-                        
+                        </Col>                        
                         <Col span="8">
                             <FormItem label="所属部门" >
                                 <Select  @on-change="getDepartment" filterable  label-in-value placeholder="请选择所属部门">
@@ -302,8 +296,8 @@
                             </FormItem>
                         </Col>
                           <Col span="8">
-                            <FormItem label="预计工时费用" prop="ProjectEstimatedHourCost">
-                                <Input v-model="postdata.Project.EstimatedHourCost" type="number" placeholder="请输入工时费">
+                            <FormItem label="预计工时费用">
+                                <Input v-model="postdata.Project.EstHourCost" type="number" placeholder="请输入工时费">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -316,8 +310,8 @@
                             </FormItem>
                         </Col>
                          <Col span="8">
-                            <FormItem label="预计直接费用" prop="EstimatedFeeCost">
-                                <Input v-model="postdata.Project.EstimatedFeeCost" type="number" placeholder="请输入直接费用">
+                            <FormItem label="预计直接费用">
+                                <Input v-model="postdata.Project.EstFeeCost" type="number" placeholder="请输入直接费用">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -337,7 +331,7 @@
                         <Input v-model="postdata.TaskSummary" type="textarea" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
                     </FormItem>
                      <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                                <p class="fileName" v-for="(item,index) in fileName" >
+                                <p class="fileName" v-for="(item,index) in fileName" :key='index'>
                                     <Row >
                                         <Col span="20">
                                             <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
@@ -368,19 +362,18 @@
 </template>
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
-// import changeTap from "@/view/components/template/change_tap.vue"
 import store from "@/store"
 import {getprogectType,getprogectRole,getuserList,
 getCityList,getIndustryList,getPlatform,getAllDepartment,
-addNewProjecttask,getAllFundList
+addNewProjecttask,getAllFundList,
+addNewProjecttaskTofile,uploadFile,
+clientListQueryDetail
 } from "@/api/data"
 import {projectAdd,projectAddFile} from "@/api/user"
 import {TaskTypeID} from "@/libs/data"
 export default {
     components:{
         UploadFiles,
-        // changeTap
-
     },
     mounted(){
         this.name=JSON.parse(localStorage.getItem("userName"));
@@ -479,19 +472,9 @@ export default {
                         RelatedClient:'',//相关其他客户代码
                         ProjectLabel:'',//项目标签
                         EstIncome:'',//预计总收入
-                        Schedules:[
-                            //ID数据id
-                            //ProjectID项目id
-                            //ScheduleID进度序号
-                            //ScheduleName进度明
-                            //Summary//详细说明
-                            //EstStartDate//预计开始日期
-                            //EstEndDate//预计结束日期
-                            //RealStartDate实际开始日期
-                            //RealEndDate实际结束日期
-                            //Status   1最新进度 0过往进度
-
-                        ],//项目进度
+                        EstHourCost:'',
+                        EstFeeCost:'',
+                        Schedules:[],//项目进度
                         Summary:'',//项目概要
                         EstStartDate:'',//预计项目开始日期
                         EstEndDate:''//预计项目结束日期
@@ -501,27 +484,60 @@ export default {
     },
     methods:{
         handleSubmit(){
+
             this.postdata.Project.ClientCode= this.postdata.Client.ClientCode;
-            
-            if(this.fileWrap.length==0){//没有文件上传
-                addNewProjecttask(this.postdata).then(res=>{
-                    if(res.data.code==2301){
-                        this.$Message.success({
-                            content:"操作成功"
-                        })     
-                    }else{
-                         this.$Message.error({
-                            content:"信息提交失败:"+res.data.message
-                        })
-                    }
-                })
-            }else{//有文件上传
-
+            if(this.fileName.length>0){
+                this.submitWithFile();
+            }else{
+                this.submitWithoutFile()
             }
-            
 
-
-
+        },
+        submitWithFile(){
+            addNewProjecttaskTofile(this.postdata).then(res=>{
+                if(res.data.code==2302){
+                    this.uploadFile(res.data.taskID,res.data.taskFlowID);
+                    this.$Message.success({
+                        content:"任务创建成功"
+                    })     
+                }else{
+                        this.$Message.error({
+                        content:"任务创建失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        uploadFile(taskID,taskFlowID){
+                    this.fileForm.append('TaskID',taskID)
+                    this.fileForm.append('TaskFlowID',taskFlowID)
+                    this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                    this.fileWrap.forEach(element=>{
+                        this.fileForm.append('TaskFiles',element.file)
+                    })
+                    uploadFile(this.fileForm).then(res=>{
+                        if(res.data.code==2032&&res.data.taskFiles.length>0){
+                            this.$Message.success({
+                                content:'文件上传成功'
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:'文件上传失败:'+res.data.message
+                            })
+                        }
+                    })
+        },
+        submitWithoutFile(){
+            addNewProjecttask(this.postdata).then(res=>{
+                if(res.data.code==2301){
+                    this.$Message.success({
+                        content:"任务创建成功"
+                    })     
+                }else{
+                        this.$Message.error({
+                        content:"任务创建失败:"+res.data.message
+                    })
+                }
+            })
         },
         getAllFundList(){
             getAllFundList({FundStatus:1,USerID:JSON.parse(localStorage.getItem('userId'))}).then(res=>{
@@ -746,9 +762,18 @@ export default {
         },showUploadFile(){
             //显示modal
             this.$refs["uploadModal"].showModal(true);
-        },getTapValue(tap,tapDet){
-            console.log(tap,tapDet)
+        },getClientCode(){
+            clientListQueryDetail({ClientCode:this.postdata.Client.ClientCode}).then(res=>{
+                if(res.data.code==2305&&(res.data.client==null)){
+                   
+                }else{
+                     this.$Message.error({
+                        content:'客户代码已存在'
+                    })
+                }
+            })
         }
+
     }
 }
 </script>

@@ -134,7 +134,17 @@
                                 </FormItem>  
                             </Col>
                              <Col span="8">
-                                <FormItem label="成员名字:" >
+                               <FormItem v-if='item.MemberType==37||item.MemberType==39||item.MemberType==40||item.MemberType==41||item.MemberType==42'   label="成员名字:" >
+                                    <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                
+                                <FormItem v-if='item.MemberType==32||item.MemberType==33||item.MemberType==34||item.MemberType==36' label="平台简称:" >
+                                     <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                <FormItem v-if='item.MemberType==31||item.MemberType==35' label="客户代码:" >
+                                     <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                  <FormItem v-if='item.MemberType==38' label="基金简称:" >
                                     <b> {{item.MemberName}} </b>
                                 </FormItem>  
                             </Col>
@@ -214,7 +224,10 @@
     </div>
 </template>
 <script>
-import {getuserList,getAllFundList,getFundDetail,getPlatform,addNewFunOperaTask} from "@/api/data"
+import {getuserList,getAllFundList,
+getFundDetail,getPlatform,addNewFunOperaTask,
+addNewFunOperaTaskFile,uploadFile
+} from "@/api/data"
 
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import {TaskTypeID} from "@/libs/data"
@@ -303,14 +316,53 @@ export default {
         handleSubmit(){
             this.submitdata.TaskOwner=JSON.parse(localStorage.getItem('userId'));
             this.submitdata.FundID=this.fundID;
-            addNewFunOperaTask(this.submitdata).then(res=>{
-                if(res.data.code==2407){
+            if(this.fileName.length>0){
+                this.submitWithFile();
+            }else{
+                this.submitWithoutFile()
+            }
+           
+        },submitWithFile(){
+            addNewFunOperaTaskFile(this.submitdata).then(res=>{
+                if(res.data.code==2408){
+                    this.uploadFile(res.data.taskID,res.data.taskFlowID);
                     this.$Message.success({
-                        content:'操作成功'
+                        content:'任务创建成功'
                     })
                 }else{
                     this.$Message.error({
-                        content:'操作失败:'+res.data.message
+                        content:'任务创建失败:'+res.data.message
+                    })
+                }
+            })
+        },uploadFile(taskID,taskFlowID){
+                    this.fileForm.append('TaskID',taskID)
+                    this.fileForm.append('TaskFlowID',taskFlowID)
+                    this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                    this.fileWrap.forEach(element=>{
+                        this.fileForm.append('TaskFiles',element.file)
+                    })
+                    uploadFile(this.fileForm).then(res=>{
+                        if(res.data.code==2032&&res.data.taskFiles.length>0){
+                            this.$Message.success({
+                                content:'文件上传成功'
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:'文件上传失败:'+res.data.message
+                            })
+                        }
+                    })
+            },
+        submitWithoutFile(){
+            addNewFunOperaTask(this.submitdata).then(res=>{
+                if(res.data.code==2407){
+                    this.$Message.success({
+                        content:'任务创建成功'
+                    })
+                }else{
+                    this.$Message.error({
+                        content:'任务创建失败:'+res.data.message
                     })
                 }
             })

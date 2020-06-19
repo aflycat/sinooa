@@ -5,27 +5,25 @@
             <Card class="itemCard">
                 <p slot="title">报销人信息</p>
                 <Form :label-width="80">
-                    <Row>
-                        <Col span="8">
-                            <FormItem label="报销人" prop="name">
-                                <Input disabled v-model="name" placeholder="请输入报销人姓名"></Input>
+                      <Row>
+                      <Col span="8">
+                            <FormItem label="报送人" prop="name">
+                                {{name}}
                             </FormItem>
                         </Col>
                          <Col span="8">
                             <FormItem label="联系电话" prop="phone">
-                                <Input v-model="phone" placeholder="请输入报销人联系电话"></Input>
+                                {{phone}}
                             </FormItem>   
                         </Col>
                          <Col span="8">
-                            <FormItem label="承担项目" prop="phone">
+                             <FormItem label="承担项目" prop="phone">
                                 <Select v-model="postdata.ProjectID" filterable  >
                                     <Option v-for="item in ProjectData" :value="item.value" :key="item.value">{{ item.label }}</Option>
                                 </Select>
-                            </FormItem>     
+                            </FormItem>   
                         </Col>
-                       
                     </Row>
-                   
                 </Form>
             </Card>
              <Card class="itemCard">
@@ -153,7 +151,7 @@
 </template>
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
-import {getProjectList,getAllUserList,setIncoexpeTask} from "@/api/data"
+import {getProjectList,getAllUserList,setIncoexpeTask,getprogectType,getprogectRole} from "@/api/data"
 import {digitUppercase} from "@/libs/tools"
 import {TaskTypeID} from "@/libs/data"
 export default {
@@ -194,14 +192,18 @@ export default {
                             { "ID":0,"IncoExpeID":"0","Type":203,"OccurDate":"","EntertainTarget":"","EntertainPersons":0,"Amount":0 } 
                         ]
                     }
-            }
+            },
+            RoleDataObj:{},
+            TypeDataObj:{},
         }
     },
     mounted(){
         this.name=JSON.parse(localStorage.getItem("userName"));
         this.phone=JSON.parse(localStorage.getItem("phone"));
          this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"));
-        this.getProList(1);
+         this.getprogectType();
+        this.getprogectRole();
+        this.getProList();
         this.getAllUserList();
     },
     methods:{
@@ -226,23 +228,52 @@ export default {
                
             })
             this.postdata.IncoExpe.TotalAmountCN=digitUppercase(this.postdata.IncoExpe.TotalAmount);
+        },getprogectType(){
+            getprogectType({"PageIndex":1,"PageSize":1000}).then(res=>{
+                 if(res.data.code==0){
+                    res.data.projectTypeList.forEach(element => {
+                     
+                         this.TypeDataObj[element.projectTypeId]=element.projectTypeName
+                    });
+                }else{
+                    this.$Message.error({
+                        content:"项目品种信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+        getprogectRole(){
+            getprogectRole({"PageIndex":1,"PageSize":1000}).then(res=>{
+                 if(res.data.code==0){
+                    res.data.projectRoleList.forEach(element => {
+                        
+                        this.RoleDataObj[element.projectRoleId]=element.projectRoleName;
+                        
+                    });
+
+                }else{
+                    this.$Message.error({
+                        content:"项目角色信息加载失败:"+res.data.message
+                    })
+                }
+            })
         },
         getProList(status){
             //获取项目列表
-            getProjectList({"ProjectStatus":1,"USerID":JSON.parse(localStorage.getItem("userId"))}).then(res=>{
+            getProjectList({"ProjectStatus":2,"USerID":JSON.parse(localStorage.getItem("userId"))}).then(res=>{
                 if(res.data.code==2307){
-                    res.data.projectList.forEach(element => {
-                        this.ProjectData.push({
-                            label:element.clientCode+'--'+element.projectType+'--'+element.projectRole,
-                            value:element.projectID
+                        res.data.projectList.forEach(element => {
+                            this.ProjectData.push({
+                                label:element.clientCode+'--'+this.TypeDataObj[element.projectType]+'--'+this.RoleDataObj[element.projectRole],
+                                value:element.projectID
+                            })
+                        });
+                       
+                    }else{
+                        this.$Message.error({
+                            content:'项目列表数据加载失败：'+res.data.message
                         })
-                    });
-                    
-                }else{
-                    this.$Message.error({
-                        content:'项目列表数据加载失败：'+res.data.message
-                    })
-                }
+                    }
             })
         }, getAllUserList(){
             getAllUserList({"Status":1}).then(res=>{

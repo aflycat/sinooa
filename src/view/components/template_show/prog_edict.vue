@@ -222,9 +222,8 @@
                       
                         <Col span="8">
                             <FormItem label="所属基金" >
-                                <Select @on-change="getFund" filterable label-in-value  placeholder="请选择所属基金">
-                                    
-                                    <!-- <Option v-for="item in TypeData" :value="item.value" :key="item.value">{{ item.label }}</Option> -->
+                                <Select v-model="postdata.Project.FundID"  @on-change="getFund" filterable label-in-value  placeholder="请选择所属基金">
+                                    <Option v-for="item in fundListData" :value="item.fundID" :key="item.fundID">{{ item.shortName }}</Option>
                                 </Select>
                             </FormItem>
                         </Col>
@@ -301,7 +300,7 @@
                         </Col>
                           <Col span="8">
                             <FormItem label="预计工时费用" >
-                                <Input v-model="postdata.Project.EstimatedHourCost" type="number" placeholder="请输入工时费">
+                                <Input v-model="postdata.Project.EstHourCost" type="number" placeholder="请输入工时费">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -314,8 +313,8 @@
                             </FormItem>
                         </Col>
                          <Col span="8">
-                            <FormItem label="预计直接费用" prop="EstimatedFeeCost">
-                                <Input v-model="postdata.Project.EstimatedFeeCost" type="number" placeholder="请输入直接费用">
+                            <FormItem label="预计直接费用" >
+                                <Input v-model="postdata.Project.EstFeeCost" type="number" placeholder="请输入直接费用">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -325,86 +324,53 @@
                 </Form>   
 
             </Card>
-            <Card  class="itemCard">
-                <p slot="title">请示信息</p>
-                <Form :label-width="80">
-                        <FormItem label="事项要点" prop="TaskName">
-                            <Input v-model="postdata.TaskName" placeholder="请输入事项要点"></Input>
-                        </FormItem>
-                        <FormItem label="具体内容" prop="TaskSummary">
-                            <Input v-model="postdata.TaskSummary" type="textarea" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
-                        </FormItem>
-                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                                <p class="fileName" v-for="(item,index) in fileName" :key='index'>
-                                    <Row >
-                                        <Col span="20">
-                                            <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
-                                            <span style="color:#808695;font-size:12px;">{{item.file}}</span>
-                                        </Col>
-                                        <Col span="4" style="color:#ed4014;cursor:pointer;" >
-                                        <span @click="deleteFile(index)">删除</span> 
-                                        
-                                        </Col>
-                                    </Row>
-                                </p>
-                    </FormItem>
+            <task-file :fileList='postdata.TaskFiles' :flowRequire='flowRequire'></task-file>
+            <task-flows :taskFlows='postdata.TaskFlows' :taskFlowID='taskFlowID'></task-flows>
 
-                     <FormItem>
-                         <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
-                                <span v-if="!loading">同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-                            <!-- <Button @click="showReturnModal"   style="margin-right: 8px" type="warning">修改</Button>   -->
-                            <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
-                                <span v-if="!loading">不同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-                        <!-- 
-                        <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')" >
-                            <span v-if="!loading">提交</span>
-                            <span v-else>提交中...</span>
-                        </Button> -->
-                    </FormItem>
-                </Form>   
-            </Card>
-          <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>   
+    		<edict-button @handle-submit-agree='handleSubmitAgree' :TaskID='taskID' 
+                :TaskFlowID='taskFlowID' :TaskStr='postdata' 
+                >
+            </edict-button>
     </div>
 </template>
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
-import store from "@/store"
+import edictButton from "@/view/components/template/return_edict_button"
+import taskFile from "@/view/components/template/task_file_show"
+import taskFlows from "@/view/components/template/approval_process"
+
 import {getDealTaskDetail,getprogectType,getprogectRole,
 getuserList,getCityList,getIndustryList,getPlatform,
-getAllDepartment,addNewProjecttask
+getAllDepartment,addNewProjecttask,getAllFundList,taskFlowAgree,addNewProjecttaskMod
 } from "@/api/data"
 import {projectAdd,projectAddFile} from "@/api/user"
 import {TaskTypeID} from "@/libs/data"
+import {toUpperCase,orderObj} from "@/libs/tools"
 export default {
     components:{
         UploadFiles,
-        // changeTap
+        edictButton,
+        taskFile,
+        taskFlows
 
     },props:{
         taskID:String,
-        taskFlowID:String
+        taskFlowID:String,
+        flowRequire:String
     },
     mounted(){
         this.name=JSON.parse(localStorage.getItem("userName"));
         this.phone=JSON.parse(localStorage.getItem("phone"));
         this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"))
-
         this.gettaskDetail();//获取任务详情
-
-
         this.getCityList();
         this.getIndustryList();
         this.getprogectType();
         this.getprogectRole();
         this.getuserList();
         this.getPlatform();
-        this.getAllDepartment()
-
+        this.getAllDepartment();
+        this.getAllFundList();
 
     },
     data(){
@@ -426,12 +392,9 @@ export default {
             OwnerVlaue:'',
             OwnerData:[],
             MemberData:[],
-            MemberList:[],
-            fileName:[],
-            fileWrap:[],//用来保存要上传的文件，方便进行删除操作
+            fundListData:[],
             platformList:[],
             departmentList:[],
-            fileForm:new FormData(),
             postdata:{
                     TaskTypeID:TaskTypeID.itemDevelop,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
                     TaskName:'',//任务名（UI中的请示事项要点）
@@ -465,7 +428,6 @@ export default {
                         Region:'',//所在省市，下拉表，从后台字典表中获取
                         Country:"",//所在国家
                         CodsCode:""//社会统一代码                    
-
                     },
                     Project:{
                         ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
@@ -478,7 +440,6 @@ export default {
                         EstimatedHourCost:0,//预计工时费用
                         ProjectStatus:1,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目,5终止报告审批完的项目
                         Members:[],
-
                         PlatformID:'',//权属平台id
                         RealStartDate:'',//实际项目开始日期
                         RealEndDate:'',//实际项目结束日期
@@ -495,13 +456,27 @@ export default {
                         EstStartDate:'',//预计项目开始日期
                         EstEndDate:''//预计项目结束日期
                     }
-            }
+            },
+            standPost:{},
+            managerObj:{},
+            ownerObj:{},
+            memberArr:[],
+            standmanagerObj:'',
+            standownerObj:'',
+            standmemberArr:[],
+            memberArrStr:[],
+            TaskName:'',
+            TaskSummary:''
+
         }
     },
     methods:{
         gettaskDetail(){
             getDealTaskDetail({TaskID:this.taskID}).then(res=>{
                 if(res.data.code==2303){
+                    this.standPost=JSON.parse(JSON.stringify(res.data)) 
+                    this.standPost.project.members=[]
+
                     this.postdata={
                         TaskTypeID:res.data.taskTypeID,//任务类别ID，与TaskTypes表的TaskTypeID对应（开发3/立项4/变动5），取自对应的菜单项
                         TaskName:res.data.taskName,//任务名（UI中的请示事项要点）
@@ -540,22 +515,22 @@ export default {
                             Region:parseInt(res.data.client.region),
                             Country:res.data.client.country,
                             CodsCode:res.data.client.codsCode,//社会统一
-                            ClientStatus:1//状态，1表示最新信息，0表示历史信息
+                            ClientStatus:res.data.client.clientStatus//状态，1表示最新信息，0表示历史信息
                         },
                         Project:{
+
                             ProjectID:res.data.project.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
                             ClientID:res.data.client.clientID,//客户ID 
                             ClientCode:res.data.project.clientCode,//客户代码，不同项目使用“客户代码 + 项目品种 + 项目角色”唯一区分
+                            CurNumber:res.data.project.curNumber,
+                            CurYear:res.data.project.curYear,
                             ProjectType:parseInt(res.data.project.projectType),//项目品种，下拉表，从后台字典表中获取
                             ProjectRole:parseInt(res.data.project.projectRole),//项目角色，下拉表，从后台字典表中获取
                             ProjectSummary:res.data.project.projectSummary,//项目概要
                             Source:res.data.project.source,//项目来源
-                            // ProjectStartDate:res.data.project.projectStartDate,//项目开始日期
-                            // ProjectEndDate:res.data.project.projectEndDate,//项目结束日期
                             EstimatedFeeCost:res.data.project.estimatedFeeCost,//预计直接费用
                             EstimatedHourCost:res.data.project.estimatedHourCost,//预计工时费用
                             ProjectStatus:res.data.project.projectStatus,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
-                            
                             PlatformID:res.data.project.platformID,//权属平台id
                             RealStartDate:res.data.project.realStartDate,//实际项目开始日期
                             RealEndDate:res.data.project.realEndDate,//实际项目结束日期
@@ -567,14 +542,17 @@ export default {
                             RelatedClient:res.data.project.relatedClient,//相关其他客户代码
                             ProjectLabel:res.data.project.projectLabel,//项目标签
                             EstIncome:res.data.project.estIncome,//预计总收入
+                            EstHourCost:res.data.project.estHourCost,
+                            EstFeeCost:res.data.project.estFeeCost,
                             Schedules:res.data.project.schedules,//项目进度
                             Summary:res.data.project.summary,//项目概要
                             EstStartDate:res.data.project.estStartDate,//预计项目开始日期
-                            EstEndDate:res.data.project.estEndDate//预计项目结束日期
+                            EstEndDate:res.data.project.estEndDate,//预计项目结束日期
+                            Members:[]
                         }
                     };
-                    // this.taskFlows=res.data.taskFlows;
-                    // console.log(this.taskFlows)
+                    this.TaskSummary=res.data.taskSummary;
+                    this.TaskName=res.data.taskName;
                     this.loadMember(res.data.project.members);//加载人员信息                  
                 }else{
                     this.$Message.error({
@@ -588,82 +566,137 @@ export default {
                     case 91:
                         //项目经理
                         this.ManagerVlaue=item.memberID;
+                        this.standmanagerObj=item.memberID;
+                        this.managerObj={
+                                ID:0,
+                                ProjectID:item.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                                MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                                MemberName:item.memberName,//项目成员的姓名
+                                MemberType:91,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                                Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                        }
                     break;
-                     case 92:
+                    case 92:
                          //项目主办
                         this.OwnerVlaue=item.memberID;
+                        this.standownerObj=item.memberID;
+                        this.ownerObj={
+                             ID:0,
+                            ProjectID:item.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                            MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                            MemberName:item.memberName,//项目成员的姓名
+                            MemberType:92,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                            Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                        }
+                      
                     break;
-                     case 93:
-                         //项目成员
+                    case 93:
+                        //项目成员
                         this.MemberData.push(item.memberID);
+                        this.standmemberArr.push(item.memberID);
+                        this.memberArr.push({
+                             ID:0,
+                            ProjectID:item.projectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                            MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                            MemberName:item.memberName,//项目成员的姓名
+                            MemberType:93,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                            Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                        })
                     break;
                 }              
             })
-        },loadDepartmentIndex(){
-            // this.departmentList
-
-        },
-        handleSubmit(){
-            console.log(this.postdata);
-            this.postdata.Project.ClientCode= this.postdata.Client.ClientCode;
-            if(this.fileWrap.length==0){//没有文件上传
-                addNewProjecttask(this.postdata).then(res=>{
-                    if(res.data.code==2301){
-                        this.$Message.success({
-                            content:"操作成功"
-                        })     
-                    }else{
-                         this.$Message.error({
-                            content:"信息提交失败:"+res.data.message
-                        })
-                    }
-                })
-            }else{//有文件上传
-
-            }
-            
-
-
-
-        },
-        getManager(value){
-            this.postdata.Project.Members[0]={
-                
-                    ID:0,//数据ID (用默认值0)
-                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                    MemberID:value.value,//项目成员ID，与用户表UserID对应
-                    MemberName:value.label,//项目成员的姓名
-                    MemberType:91,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                    //EstimatedHour:0,//预计投入工时，暂未使用
-                    Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                
+        },getManager(value){
+            this.managerObj={
+                ID:0,
+                ProjectID:this.postdata.Project.ProjectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                MemberID:value.value,//项目成员ID，与用户表UserID对应
+                MemberName:value.label,//项目成员的姓名
+                MemberType:91,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
             }
         },
         getOwner(value){
-            this.postdata.Project.Members[1]={
-                    ID:0,//数据ID (用默认值0)
-                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
-                    MemberID:value.value,//项目成员ID，与用户表UserID对应
-                    MemberName:value.label,//项目成员的姓名
-                    MemberType:92,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                   // EstimatedHour:0,//预计投入工时，暂未使用
-                    Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
+            this.ownerObj={
+                ID:0,
+                ProjectID:this.postdata.Project.ProjectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                MemberID:value.value,//项目成员ID，与用户表UserID对应
+                MemberName:value.label,//项目成员的姓名
+                MemberType:92,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
             }
         },
         getMember(value){
-            this.postdata.Project.Members.splice(2,this.postdata.Project.Members.length-1)
+            this.memberArr=[];
+            this.memberArrStr=[];
             value.forEach(element=>{
-                 this.postdata.Project.Members.push({
+                this.memberArrStr.push(element.value)
+                 this.memberArr.push({
                     ID:0,//数据ID (用默认值0)
-                    ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                    ProjectID:this.postdata.Project.ProjectID,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
                     MemberID:element.value,//项目成员ID，与用户表UserID对应
                     MemberName:element.label,//项目成员的姓名
                     MemberType:93,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                    //EstimatedHour:0,//预计投入工时，暂未使用
                     Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
                  })
             })
         },
+        handleSubmitAgree(TaskName,TaskSummary){
+            this.postdata.Project.ClientCode= this.postdata.Client.ClientCode;
+            var postClient=JSON.stringify(orderObj(toUpperCase(this.postdata.Client))),
+                standClient=JSON.stringify(orderObj(toUpperCase(this.standPost.client))),
+                postProject=JSON.stringify(orderObj(toUpperCase(this.postdata.Project))),
+                standProject=JSON.stringify(orderObj(toUpperCase(this.standPost.project))),
+                flag=TaskName==this.TaskName&&TaskSummary==this.TaskSummary;
+           
+            var projectFlag=
+                (this.standmanagerObj==this.managerObj['MemberID'])
+                &&
+                (this.standownerObj==this.ownerObj['MemberID'])
+                &&
+                (JSON.stringify(this.standmemberArr)==JSON.stringify(this.memberArrStr));
+
+            if((postClient==standClient)&&((postProject==standProject)&&projectFlag)&&flag){
+                //无信息修改
+                taskFlowAgree({TaskID:this.taskID,TaskFlowID:this.taskFlowID}).then(res=>{
+                    if(res.data.code==2022){
+                        this.$Message.success({
+                            content:"操作成功"
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:"操作成功"+res.data.message
+                        })
+                    }
+                })
+            }else{
+                //有信息修改
+                 if(postClient==standClient){
+                    //客户信息无修改
+                    this.postdata.Client.ClientID=0  
+                }
+                if((postProject==standProject)&&projectFlag){
+                    //项目信息无修改
+                this.postdata.Project.ProjectID=0
+                } 
+                this.postdata.Project.Members=this.memberArr;
+                this.postdata.Project.Members.push(this.ownerObj);
+                this.postdata.Project.Members.push(this.managerObj);
+                this.postdata.TaskID=this.taskID;
+                this.postdata.TaskFlowID=this.taskFlowID;
+                addNewProjecttaskMod(this.postdata).then(res=>{
+                     if(res.data.code==2304){
+                        this.$Message.success({
+                            content:"操作成功"
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:"操作成功"+res.data.message
+                        })
+                    }
+                })
+            }
+        },
+        
         getClientOpenDate(value){
             this.postdata.Client.OpenDate=value;
         },
@@ -699,9 +732,13 @@ export default {
             }
         },
         getFund(value){//设置基金
-            console.log(value)
-            //  this.postdata.Project.FundID=value.
-            //  this.postdata.Project.FundCode=value.
+            this.postdata.Project.FundID=val.value;
+             for(var i=0;i<this.fundListData.length;i++){
+                if(this.fundListData[i].fundID==val.value){
+                    this.postdata.Project.FundCode=this.fundListData[i].fundCode
+                    break;
+                }
+            }
 
         },
 
@@ -751,6 +788,17 @@ export default {
                 }else{
                     this.$Message.error({
                         content:"成员信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
+          getAllFundList(){
+            getAllFundList({FundStatus:1,USerID:JSON.parse(localStorage.getItem('userId'))}).then(res=>{
+                if(res.data.code==2405){
+                    this.fundListData=res.data.fundList
+                }else{
+                    this.$Message.error({
+                        content:'基金列表加载失败:'+res.data.message
                     })
                 }
             })
@@ -810,34 +858,7 @@ export default {
                     })
                 }
             })
-        },
-        deleteFile(index){
-            this.fileName.splice(index,1);
-            this.fileWrap.splice(index,1);
-
-        },
-        handleUploadEvent(flag,filename,fileWrap){
-            this.fileModal=flag;
-            if(filename){
-                 this.fileName=filename;
-            }
-            if(fileWrap){
-                this.fileWrap=fileWrap;
-            }
-            this.showFile=true;
-        },showUploadFile(){
-            //显示modal
-            this.$refs["uploadModal"].showModal(true);
-        },getTapValue(tap,tapDet){
-            console.log(tap,tapDet)
         }
     }
 }
 </script>
-<style lang="less" scoped>
-   
-    .content{
-   font-size: 14px;
-        font-weight: bold;
-    }
-</style>

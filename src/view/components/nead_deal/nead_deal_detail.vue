@@ -1,105 +1,105 @@
 <template>
     <div class="neadDealDetail">
         <!-- 运营会议展示 -->
-        <opra-tem           :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='opra'&&flowRequire>100" ></opra-tem>
+        <opra-tem           :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='opra'&&flowRequire>0" ></opra-tem>
        <!-- 运营会议编辑 -->
-        <opra-edict         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='opra'&&flowRequire<=100" ></opra-edict >
+        <opra-edict         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='opra'&&flowRequire==0" ></opra-edict >
+       
        <!-- 周报 -->
-       <weekly-show         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='weekly'&&flowRequire>100"></weekly-show>
-       <weekly-edict        :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='weekly'&&flowRequire<=100"></weekly-edict>
+       <weekly-show         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='weekly'&&flowRequire>0"></weekly-show>
+       <weekly-edict        :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='weekly'&&flowRequire==0"></weekly-edict>
        
 <!-- 基金开发编辑 -->
-        <fundedict-tem      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='funDevelop'&&flowRequire<100"></fundedict-tem>
+        <fundedict-tem      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='funDevelop'&&flowRequire==0"></fundedict-tem>
 <!-- 基金开发,立项，变动展示 -->
-        <fundshow-tem       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="(typeStr=='funDevelop'||typeStr=='funChange')&&flowRequire>=100" ></fundshow-tem>
+        <fundshow-tem       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="(typeStr=='funDevelop'||typeStr=='funChange')&&flowRequire>0" ></fundshow-tem>
 <!-- 基金退出 -->
-        <fun-exit-edict     :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funExit'&&flowRequire<=100" >   </fun-exit-edict>
-        <fun-exit-show      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funExit'&&flowRequire>100" >   </fun-exit-show>
+        <fun-exit-edict     :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='funExit'&&flowRequire==0" >   </fun-exit-edict>
+        <fun-exit-show      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='funExit'&&flowRequire>0" >   </fun-exit-show>
 <!-- 基金投资 -->
-        <fun-inves-edict    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funInvest'&&flowRequire<=100" >   </fun-inves-edict>
-        <fun-inves-show     :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funInvest'&&flowRequire>100" >   </fun-inves-show>
+        <fun-inves-edict    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='funInvest'&&flowRequire==0" >   </fun-inves-edict>
+        <fun-inves-show     :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='funInvest'&&flowRequire>0" >   </fun-inves-show>
 <!-- 基金会议3个 -->
-        <fun-exe-edict      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funExe'&&flowRequire<=100" >   </fun-exe-edict>
-        <fun-exe-show       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funExe'&&flowRequire>100" >   </fun-exe-show>
+        <fun-exe-edict      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='funExe'&&flowRequire==0" >   </fun-exe-edict>
+        <fun-exe-show       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='funExe'&&flowRequire>0" >   </fun-exe-show>
 <!-- 基金变动,立项 -->
-        <fun-change-edict   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funChange'&&flowRequire<=100" >   </fun-change-edict>
+        <fun-change-edict   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='funChange'&&flowRequire==0" >   </fun-change-edict>
         
       
       <!-- 项目开发 编辑 -->
-        <progedict-tem      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='proDevelop'&&flowRequire<100"  ></progedict-tem>
+        <progedict-tem      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='proDevelop'&&flowRequire==0"  ></progedict-tem>
       <!-- 项目开发，立项，变动展示 -->
-        <progshow-tem       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="(typeStr=='proDevelop'||typeStr=='proChange')&&flowRequire>100"  ></progshow-tem>    
+        <progshow-tem       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="(typeStr=='proDevelop'||typeStr=='proChange')&&flowRequire>0"  ></progshow-tem>    
      
       <!-- 项目变动，立项编辑-->
-        <pro-change-edict   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='proChange'&&flowRequire<=100" >   </pro-change-edict>
+        <pro-change-edict   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='proChange'&&flowRequire==0" >   </pro-change-edict>
       <!-- 项目进展的几个 -->
-        <pro-process-edict  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='proProcess'&&flowRequire<=100" >   </pro-process-edict>
-        <pro-process-show   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='proProcess'&&flowRequire>100" >   </pro-process-show>
+        <pro-process-edict  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='proProcess'&&flowRequire==0" >   </pro-process-edict>
+        <pro-process-show   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='proProcess'&&flowRequire>0" >   </pro-process-show>
     
    
         
         <!-- 外勤费 编辑 -->
-        <cost-field         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='field'&&flowRequire>100"      ></cost-field>
+        <cost-field         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'    v-if="typeStr=='field'&&flowRequire==0"      ></cost-field>
         <!-- 外勤费用展示 -->
-        <cost-field-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"      v-if="typeStr=='field'&&flowRequire<=100"      ></cost-field-show>
+        <cost-field-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'     v-if="typeStr=='field'&&flowRequire>0"      ></cost-field-show>
           
         <!-- 招待 -->
-        <cost-entertain     :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='entertain'&&flowRequire>100"  ></cost-entertain>
+        <cost-entertain     :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'    v-if="typeStr=='entertain'&&flowRequire==0"  ></cost-entertain>
         <!-- 招待 展示 -->
-        <cost-entertain-show :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='entertain'&&flowRequire<=100"  ></cost-entertain-show>
+        <cost-entertain-show :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'    v-if="typeStr=='entertain'&&flowRequire>0"  ></cost-entertain-show>
           
         <!-- 工资 编辑 -->
-        <cost-wage          :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='wage'&&flowRequire>100"       ></cost-wage>
+        <cost-wage          :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='wage'&&flowRequire==0"       ></cost-wage>
         <!-- 工资 展示 -->
-        <cost-wage-show      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='wage'&&flowRequire<=100"       ></cost-wage-show>
+        <cost-wage-show      :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='wage'&&flowRequire>0"       ></cost-wage-show>
              
         <!-- 项目收入编辑 -->
-        <cost-program       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='program'&&flowRequire>100"    ></cost-program>
+        <cost-program       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='program'&&flowRequire==0"    ></cost-program>
         <!-- 项目收入展示 -->
-        <cost-program-show  :taskFlowID="taskFlowID.toString()"  :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='program'&&flowRequire<=100"    ></cost-program-show>
+        <cost-program-show  :taskFlowID="taskFlowID.toString()"  :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'    v-if="typeStr=='program'&&flowRequire>0"    ></cost-program-show>
            
         <!-- 差旅 编辑 -->
-        <cost-train         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='train'&&flowRequire>100"      ></cost-train>
+        <cost-train         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='train'&&flowRequire==0"      ></cost-train>
         <!-- 差旅展示 -->
-        <cost-train-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"      v-if="typeStr=='train'&&flowRequire<=100"      ></cost-train-show>
+        <cost-train-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'    v-if="typeStr=='train'&&flowRequire>0"      ></cost-train-show>
            
         <!-- 一般费用编辑 -->
-        <cost-general       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='general'&&flowRequire<=100"    ></cost-general>
+        <cost-general       :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='general'&&flowRequire==0"    ></cost-general>
         <!-- 一般费用 展示 -->
-        <cost-general-show  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"      v-if="typeStr=='general'&&flowRequire>100"    ></cost-general-show>
+        <cost-general-show  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'    v-if="typeStr=='general'&&flowRequire>0"    ></cost-general-show>
 
 
 
         <!-- 部门新增编辑 -->
-        <dep-edict          :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"      v-if="typeStr=='depApp'&&flowRequire>100"    ></dep-edict>
+        <dep-edict          :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'     v-if="typeStr=='depApp'&&flowRequire==0"    ></dep-edict>
         <!-- 部门新增展示 -->
-        <dep-show           :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='depApp'&&flowRequire<=100"    ></dep-show>
+        <dep-show           :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'    v-if="typeStr=='depApp'&&flowRequire>0"    ></dep-show>
                
         <!-- 平台新增 编辑     -->
-        <plat-edict         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"      v-if="typeStr=='platApp'&&flowRequire>100"    ></plat-edict>
+        <plat-edict         :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()'     v-if="typeStr=='platApp'&&flowRequire==0"    ></plat-edict>
         <!-- 平台新增展示      -->
-       <plat-show          :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"     v-if="typeStr=='platApp'&&flowRequire<=100"    ></plat-show>
+       <plat-show          :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  :flowRequire='flowRequire.toString()'   v-if="typeStr=='platApp'&&flowRequire>0"    ></plat-show>
 
 
 
 
 <!--还需项目立项，变动，（进展、总结、文件、业务协议、其他事宜)、动态模板、基金立项、变动、（执行、投决、合伙人）、投资、退出、部门变动、权属平台变动-->
         <!-- 平台修改 -->
-        <plat-change-edict  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='platChange'&&flowRequire<=100" >   </plat-change-edict>
-        <plat-change-show   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='platChange'&&flowRequire>100" >   </plat-change-show>
+        <plat-change-edict  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='platChange'&&flowRequire==0" >   </plat-change-edict>
+        <plat-change-show   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='platChange'&&flowRequire>0" >   </plat-change-show>
 
 <!-- 部门修改 -->
-        <dep-change-edict   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='depChange'&&flowRequire<=100" >   </dep-change-edict>
-        <dep-change-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='depChange'&&flowRequire>100" >   </dep-change-show>
+        <dep-change-edict   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='depChange'&&flowRequire==0" >   </dep-change-edict>
+        <dep-change-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='depChange'&&flowRequire>0" >   </dep-change-show>
 
-        <!-- <fun-change-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funChange'&&flowRequire>100" >   </fun-change-show> -->
+        <!-- <fun-change-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='funChange'&&flowRequire>0" >   </fun-change-show> -->
 <!-- 动态模板 -->
-        <pro-dynimic-edict  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='proDynimic'&&flowRequire<=100" >   </pro-dynimic-edict>
-        <pro-dynimic-show   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='proDynimic'&&flowRequire>100" >   </pro-dynimic-show>
+        <pro-dynimic-edict  :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='proDynimic'&&flowRequire==0" >   </pro-dynimic-edict>
+        <pro-dynimic-show   :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()" :flowRequire='flowRequire.toString()' v-if="typeStr=='proDynimic'&&flowRequire>0" >   </pro-dynimic-show>
 
         <!-- <pro-change-show    :taskFlowID="taskFlowID.toString()" :taskID="taskID.toString()" :taskTypeID="taskTypeID.toString()"  v-if="typeStr=='proChange'&&flowRequire<=100" >   </pro-change-show> -->
 <!-- 运营会议编辑 -->
-
 
 <!-- 
   项目开发，立项，变动，审批不可编辑审批页面同一个
@@ -107,10 +107,9 @@
 
 基金开发，立项，变动，审批不可编辑页面同一个
 基金执行事务，投决会，合伙人会，不可编辑审批页面为同一个
-
-
+flowRequire>100 审批不可编辑
+，0申请提交，1-100审批/阅处，1001-1100协同审批，10001传阅（增加一个功能单独显示传阅给本人的）
  -->
-
 
     </div>
 </template>
@@ -162,7 +161,7 @@ import funExeEdict from "@/view/components/template_show/fun_exe_edict"
 import funExeShow from "@/view/components/template_show/fun_exe_show"
 
 import funChangeEdict from "@/view/components/template_show/fun_change_edict"
-import funChangeShow from "@/view/components/template_show/fun_change_show"
+// import funChangeShow from "@/view/components/template_show/fun_change_show"
 
 import proDynimicEdict from "@/view/components/template_show/pro_dynimic_edict"
 import proDynimicShow from "@/view/components/template_show/pro_dynimic_show"
@@ -171,7 +170,7 @@ import proProcessEdict from "@/view/components/template_show/pro_process_edict"
 import proProcessShow from "@/view/components/template_show/pro_process_show"
 
 import proChangeEdict from "@/view/components/template_show/pro_change_edict"
-import proChangeShow from "@/view/components/template_show/pro_change_show"
+// import proChangeShow from "@/view/components/template_show/pro_change_show"
 
 import weeklyShow from "@/view/components/template_show/weekly_show"
 import weeklyEdict from "@/view/components/template_show/weekly_edict"
@@ -215,13 +214,13 @@ export default {
         funExeEdict,
         funExeShow,
         funChangeEdict,
-        funChangeShow,
+        // funChangeShow,
         proDynimicEdict,
         proDynimicShow,
         proProcessEdict,
         proProcessShow,
         proChangeEdict,
-        proChangeShow,
+        // proChangeShow,
         weeklyShow,
         weeklyEdict,
         opraEdict
@@ -296,7 +295,6 @@ export default {
         },
         getShowFlag(){
             this.typeStr=this.taskTypeList[this.taskTypeID];
-            console.log(this.typeStr)
         }
         
     }

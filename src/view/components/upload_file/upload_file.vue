@@ -1,34 +1,21 @@
 <template>
     <div class="upload_file">
         <Modal v-model="fileModal"   title="上传文件" width="650" @on-ok="closeFile()" @on-cancel="cancleFile()">
-            <Row :gutter="16" v-if="fileClass==1">
-                <Col span="6" v-for="(item,index) in fileTypeList" :key='index'>
-                    <Card  class="fileList">
-                        <div style="text-align:center;"  @dblclick="openFile(2,index,item.name)" >
-                            <img :src="fileImg" style="width:80px;height:auto;">
-                            <p>{{item.name}}</p>
-                        </div>
-                    </Card>
-                </Col>
-                
-            </Row>
-            <Row :gutter="16" v-if="fileClass==2" >
-                <Breadcrumb class="fileList">
-                    <BreadcrumbItem v-for="(item,index) in  road1"  :key='index'>{{item}}/</BreadcrumbItem>
-                </Breadcrumb>
-                <Col span="6" v-for="(item,index) in fileTypeList[fileSecIndex].children"  :key='index'>
-                    <Card  class="fileList">
-                        <div style="text-align:center;" @dblclick="openFile(0,index,item.name,item.typeId)">
-                            <img :src="fileImg" style="width:80px;height:auto;">
-                            <p>{{item.name}}</p>
-                        </div>
-                    </Card>
-                </Col>
-            </Row>
-            <Row v-if="fileClass==0">
-                 <Breadcrumb class="fileList">
-                    <BreadcrumbItem v-for="(item,index) in road2"  :key='index'>{{item}}</BreadcrumbItem>
-                </Breadcrumb>
+            <Form :label-width="100" >
+                <FormItem label='文件目录'>
+                     <Row :gutter='16'>
+                         <Col span="10">
+                            <Select  label-in-value  @on-change='getdetailMenu'>
+                                <Option v-for="(item,index) in fileTypeList" :key='index' :value='item.typeID' >{{item.typeName}}</Option>
+                            </Select>
+                         </Col>
+                         <Col span="10">
+                            <Select v-model="fileTypeID" clearable ref='secondMenu' label-in-value @on-change='getFinallList'>
+                                <Option v-for="(item,index) in fileDetail" :key='index' :value='item.typeID' >{{item.typeName}}</Option>
+                            </Select>
+                         </Col>
+                     </Row>
+                </FormItem>
                 <Card  class="fileList">
                     <Upload
                         multiple
@@ -53,63 +40,64 @@
                         </Row>
                     </p>
                 </Card>
-            </Row>
-
+            </Form>
         </Modal>
     </div>
 </template>
 <script>
-import fileImg from "@/assets/images/file.png"
+import {getUploadFileMenuList} from "@/api/data"
 export default {
     name:"UploadFile",
-    // props:{ 
-    //     fileModal:Boolean
-    // },
+    mounted(){
+        this.getUploadFileMenuList(1)
+    },
     data(){
-       
         return {
-            fileClass:1,
-            fileImg,
             fileName:[],
-            fileData:[],
             fileWrap:[],//用来保存要上传的文件，方便进行删除操作
-            road1:[],
-            road2:[],
-            fileSecIndex:0,
-            fileLastIndex:0,
             fileForm:new FormData(),
-            fileCode:"",
             file:null,
-            fileTypeList:[
-                {
-                    name:'公司证照资料',
-                    children:[
-                        {name:'营业执照',typeId:'SINO001'},
-                        {name:'国税登记',typeId:'SINO002'},
-                        {name:'地税登记',typeId:'SINO003'},
-                        {name:'组织机构代码',typeId:'SINO004'},
-                        {name:'银行基本账户',typeId:'SINO005'},
-                        {name:'其他资料',typeId:'SINO006'},
-
-                    ]
-                },
-                {
-                    name:'公司运行环境',
-                    children:[
-                        {name:'行业',typeId:'SINO001'},
-                        {name:'工商',typeId:'SINO001'},
-                        {name:'国税',typeId:'SINO001'},
-                        {name:'地税',typeId:'SINO001'},
-                        {name:'银行',typeId:'SINO001'},
-                        {name:'网站',typeId:'SINO001'},
-                        {name:'其他',typeId:'SINO001'},
-                    ]
-                }
-            ],
+            fileTypeList:[],
+            fileDetail:[],
             showFile:false,
-            fileModal:false
+            fileModal:false,
+            fatherName:'',
+            childName:'',
+            fileTypeID:-1
         }
     },methods:{
+        getUploadFileMenuList(FatherTypeID){
+            getUploadFileMenuList({FatherTypeID:FatherTypeID}).then(res=>{
+                if(res.data.code==2031){
+                    this.fileTypeList=res.data.fileTypeList;
+                }else{
+                    this.$Message.error({
+                        content:'文件目录加载失败：'+res.data.message
+                    })
+                }
+            })
+        },
+        getdetailMenu(res){
+            this.fileName=[];
+            this.fileWrap=[];
+            this.fatherName=res.label;
+            this.fileDetail=[];
+            this.$refs.secondMenu.clearSingleSelect()
+            getUploadFileMenuList({FatherTypeID:res.value}).then(res=>{
+                if(res.data.code==2031){
+                    this.fileDetail=res.data.fileTypeList;
+                }else{
+                    this.$Message.error({
+                        content:'文件目录加载失败：'+res.data.message
+                    })
+                }
+            })
+        },
+        getFinallList(res){
+           this.childName=res.label;
+           this.fileName=[];
+           this.fileWrap=[];
+        },
         openFile(num,index,name,code){
             this.fileClass=num;
             if(num==2){
@@ -126,16 +114,14 @@ export default {
             //确定
             this.fileClass=1;
             this.showFile=true;
-            this.$emit('handleUploadFileEvent',this.fileModal,this.fileName,this.fileWrap)
-           
+            this.$emit('handleUploadFileEvent',this.fileModal,this.fileName,this.fileWrap) 
         },
         cancleFile(){
             //取消
-            this.fileClass=1;
-            this.$emit('handleUploadFileEvent',this.fileModal)
+            // this.$emit('handleUploadFileEvent',this.fileModal)
         },
         handleUpload(file){
-            let nameStr=this.fileTypeList[this.fileSecIndex].name+'--'+this.fileTypeList[this.fileSecIndex].children[this.fileLastIndex].name
+            let nameStr=this.fatherName+'--'+this.childName
             this.fileName.push(
                     {
                         name:file.name,
@@ -145,7 +131,7 @@ export default {
             this.fileWrap.push(
                 {
                     file:file,
-                    type:this.fileCode,//文件类型，目录选择的时候确定
+                    type:this.fileTypeID,//文件类型，目录选择的时候确定
                     
                 }
             )
@@ -158,21 +144,8 @@ export default {
         },
         showModal(flag){
             this.fileModal=flag;
+
         }
     }
 }
 </script>
-<style lang="less" scoped>
-    .fileList{
-        margin-bottom: 25px !important;
-    }
-     .fileName{
-        // padding-left: 20px;
-        ivu-col{
-            padding-left: 20px !important;
-        }
-     }
-    .fileName:hover{
-        background: #eee;
-    }
-</style>

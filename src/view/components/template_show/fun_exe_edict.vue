@@ -115,7 +115,17 @@
                                 </FormItem>  
                             </Col>
                              <Col span="8">
-                                <FormItem label="成员名字:" >
+                                <FormItem v-if='item.MemberType==37||item.MemberType==39||item.MemberType==40||item.MemberType==41||item.MemberType==42'   label="成员名字:" >
+                                    <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                
+                                <FormItem v-if='item.MemberType==32||item.MemberType==33||item.MemberType==34||item.MemberType==36' label="平台简称:" >
+                                     <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                <FormItem v-if='item.MemberType==31||item.MemberType==35' label="客户代码:" >
+                                     <b> {{item.MemberName}} </b>
+                                </FormItem>  
+                                  <FormItem v-if='item.MemberType==38' label="基金简称:" >
                                     <b> {{item.MemberName}} </b>
                                 </FormItem>  
                             </Col>
@@ -155,46 +165,12 @@
                     </Card>
                  </Form>
             </Card>
-            <Card  class="itemCard">
-                <p slot="title">请示信息</p>
-                <Form :label-width="80">
-                    <FormItem label="事项要点" prop="TaskName">
-                        <Input v-model='postdata.TaskName'  placeholder="请输入事项要点"></Input>
-                    </FormItem>
-                    <FormItem label="具体内容" prop="TaskSummary">
-                        <Input v-model='postdata.TaskSummary'  type="textarea" :autosize="{minRows: 10,maxRows: 15}" placeholder="请输入事项的具体内容"></Input>
-                    </FormItem>
-                     <FormItem label="文件列表" v-if="fileName.length>0&&showFile">
-                            <p class="fileName" v-for="(item,index) in fileName" :key='index'>
-                                <Row >
-                                    <Col span="20">
-                                        <span style="color:#2b85e4;margin-right:8px;">{{item.name}}</span>
-                                        <span style="color:#808695;font-size:12px;">{{item.file}}</span>
-                                    </Col>
-                                    <Col span="4" style="color:#ed4014;cursor:pointer;" >
-                                    <span @click="deleteFile(index)">删除</span> 
-                                    
-                                    </Col>
-                                </Row>
-                            </p>
-                    </FormItem>
-                     <FormItem>
-                         <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                         <Button style="margin-right: 8px" type="primary" :loading="loading"  @click="handleSubmitAgree()">
-                                <span v-if="!loading">同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-                            <Button :loading="loading2" @click="handleSubmitDisgree()"  style="margin-right: 8px" type="error">
-                                <span v-if="!loading">不同意</span>
-                                <span v-else>提交中...</span>
-                            </Button> 
-
-                    </FormItem>
-                </Form>   
-
-            </Card>
-        <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
-
+            <task-file :fileList='postdata.TaskFiles' :flowRequire='flowRequire'></task-file>
+            <task-flows :taskFlows='postdata.TaskFlows' :taskFlowID='taskFlowID'></task-flows>
+           <edict-button @handle-submit-agree='handleSubmitAgree' :TaskID='taskID' 
+                :TaskFlowID='taskFlowID' :TaskStr='postdata' 
+                >
+            </edict-button>
 
     </div>
 </template>
@@ -203,16 +179,21 @@ import {
     getuserList,
     getFundDetail,
     getPlatform,
-    getDealTaskDetailFund
+    getDealTaskDetailFund,
+    taskFlowAgree,
+    addNewFunOperaTaskModAgree
 } from "@/api/data"
-import UploadFiles from "@/view/components/upload_file/upload_file"
+import edictButton from "@/view/components/template/return_edict_button"
+import taskFile from "@/view/components/template/task_file_show"
+import taskFlows from "@/view/components/template/approval_process"
 export default {
     components:{
-        UploadFiles
+        edictButton,taskFile,taskFlows
     },
     props:{
         taskID:String,
-        taskFlowID:String
+        taskFlowID:String,
+        flowRequire:String
     },
     data(){
         return{
@@ -289,15 +270,37 @@ export default {
     methods:{
         //有修改 修改并同意
         //无修改直接同意
-        handleSubmitAgree(){
+        handleSubmitAgree(TaskName,TaskSummary){
            if((this.standPost.TaskName==this.postdata.TaskName)&&(this.standPost.TaskSummary==this.postdata.TaskSummary)){
-               alert('无修改')
+               this.taskFlowAgree()
            }else{
-                alert('有修改')
+               this.addNewFunOperaTaskModAgree(TaskName,TaskSummary)
            }
+        },addNewFunOperaTaskModAgree(TaskName,TaskSummary){
+            addNewFunOperaTaskModAgree({TaskID:this.taskID, TaskName:TaskName, TaskSummary:TaskSummary, TaskFlowID:this.taskFlowID}).then(res=>{
+                if(res.data.code==2409){
+                    this.$Message.success({
+                        content:"操作成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"操作成功"+res.data.message
+                    })
+                }
+            })
         },
-        handleSubmitDisgree(){      
-
+        taskFlowAgree(){      
+            taskFlowAgree({TaskID:this.taskID,TaskFlowID:this.taskFlowID}).then(res=>{
+                if(res.data.code==2022){
+                    this.$Message.success({
+                        content:"操作成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"操作成功"+res.data.message
+                    })
+                }
+            })
         },
         getDealTaskDetailFund(){
             getDealTaskDetailFund({TaskID:this.taskID}).then(res=>{

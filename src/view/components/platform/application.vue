@@ -4,19 +4,18 @@
             <p slot="title">报送人信息</p>
              <Form class="formWrap"  :label-width="110">
            
-                <Row>
+               <Row>
                     <Col span="12">
                         <FormItem label="报送人">
-                            <Input v-model="name" disabled placeholder="填写报送人"></Input>
+                            {{name}}
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="联系电话">
-                            <Input v-model="phone"  type="number" placeholder="联系电话"></Input>
+                            {{phone}}
                         </FormItem>
                     </Col>
                 </Row>
-                
 
             </Form>
         </Card>
@@ -117,11 +116,12 @@
                 </Form>   
 
             </Card>
-            <upload-files ref="uploadModal"  @handleUploadFileEvent="handleUploadEvent"></upload-files>
+            <upload-files ref="uploadModal" @handleUploadFileEvent="handleUploadEvent"></upload-files>
             <!-- 平台人员选择对话框 -->
-            <Modal v-model="memModal" title="编辑人员信息" @on-ok="setMember">
+            <Modal v-model="memModal"  width='650' title="编辑人员信息" @on-ok="setMember">
                 <Form :label-width="100">
                          <Row >
+
                             <Col span="12">
                                 <FormItem label="人员类型">
                                     <Select   v-model="inputMemberType" label-in-value @on-change="getInputMemberType">
@@ -129,13 +129,38 @@
                                     </Select>
                                 </FormItem>
                             </Col>
-                             <Col span="12">
-                                <FormItem label="人员姓名">
+                            <Col span="12" v-if='inputMemberType==0'>
+                                <FormItem label="人员选择">
                                     <Select  v-model="inputMemberId" label-in-value @on-change="getInputMemberId">
                                         <Option v-for="item in memberArr" :key="item.value" :value="item.value">{{item.label}}</Option>
                                     </Select>
                                 </FormItem>
                             </Col>
+                             <Col span="12" v-if='inputMemberType==1||inputMemberType==4||inputMemberType==5||inputMemberType==6||inputMemberType==7||inputMemberType==8||inputMemberType==9'>
+                                <FormItem label="人员选择">
+                                    <Select  v-model="inputMemberId" label-in-value @on-change="getInputMemberId">
+                                        <Option v-for="item in memberArr" :key="item.value" :value="item.value">{{item.label}}</Option>
+                                    </Select>
+                                </FormItem>
+                            </Col>
+
+                            <Col span="12" v-if='inputMemberType==2'>
+                                <FormItem label="平台选择">
+                                    <Select  v-model="inputMemberId" label-in-value @on-change="getInputMemberId" placeholder="请选择平台">
+                                         <Option v-for="item in platformList" :value="item.platformID" :key="item.platformID">{{ item.shortName }}</Option>
+                                    </Select>
+                                </FormItem>
+                            </Col>
+                            <Col span="12" v-if='inputMemberType==3'>
+                                <FormItem label="客户选择">
+                                    <Select  v-model="inputMemberId" label-in-value @on-change="getInputMemberId" placeholder="请选择客户">
+                                        <Option v-for="item in clientListObj" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                    </Select>
+                                </FormItem>
+                            </Col>
+                       
+
+
                              <Col span="12">
                                 <FormItem label="持股比例">
                                     <Input placeholder="持股比例" type="number" v-model="inputScale"><span slot="append">%</span></Input>
@@ -164,9 +189,10 @@
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
 
-import {getAllUserList,upPlatform} from  "@/api/data"
+import {getAllUserList,upPlatform,upPlatformFile,uploadFile,
+getPlatform,clientListQuery} from  "@/api/data"
 
-// import {} from "@/api/data"
+import {TaskTypeID} from "@/libs/data"
 
 export default {
     components:{
@@ -177,6 +203,8 @@ export default {
         this.phone=JSON.parse(localStorage.getItem("phone"));
         this.postData.TaskOwner=JSON.parse(localStorage.getItem("userId"));
         this.getuserList();
+        this.getPlatform();
+        this.clientListQuery();
     },
     data(){
         return{
@@ -191,7 +219,7 @@ export default {
             memberType:"",
             memdeal:1,//1新增2修改
             memdealIndex:0,
-            inputMemberType:"",
+            inputMemberType:0,
             inputMemberId:"",
             inputScale:"",
             inputMoney:"",
@@ -218,7 +246,7 @@ export default {
             ],
             memberArr:[],
             postData:{
-                TaskTypeID:"37",//任务类别id
+                TaskTypeID:'',//任务类别id
                 TaskName:'',//请示事项要点
                 TaskSummary:'',//请示具体内容
                 TaskOwner:'',//提交人id
@@ -233,47 +261,20 @@ export default {
                     RegisteredCapital:0,//注册资本
                     OperateScope:'',//经营范围
                     PlatStatus:1,//1，0为历史2表示生效
-                    Members:[
-                        // {
-                        //     ID:'',//数据id
-                        //     PlatformID:'',//平台id，新增为0
-                        //     MemberID:'',//用户id
-                        //     MemberName:'',//用户姓名
-                        //     MemberType:'',//用户类型
-                        //     ShareRate:'',//持股比例
-                        //     Subscription:'',//认缴金额
-                        //     MemberStatus:'',//1表示目前人员0过往人员
-                        // }
-                    ]
+                    Members:[]
 
                 }
-            }
+            },
+            typeSelect:1,
+            platformList:[],
+            clientList:[]
             
         }
     },methods:{
         setMember(){
             //1新增2是修改
-            //inputMemberType
-            //inputMemberId
-            //inputScale
-            //inputMoney
-            //inputMemberStatus
-            //检测是否选择了数据
-            if( this.inputMemberType==''){
-                return;
-            }
-            if( this.inputMemberId==''){
-                return;
-            }
-            if( this.inputScale==''){
-                return;
-            }
-            if( this.inputMoney==''){
-                return;
-            }
-            if( this.inputMemberStatus==''){
-                return;
-            }
+
+            
             if(this.memdeal==1){
                 this.memberData.push({
                     memberTypeName:this.inputMemberTypeName,
@@ -303,6 +304,33 @@ export default {
             this.inputMemberTypeName=res.label;
             this.inputMemberType=res.value;
         },
+        getPlatform(){
+            getPlatform({'PlatStatus':1,'USerID':JSON.parse(localStorage.getItem("userId"))}).then(res=>{
+                if(res.data.code==2105){
+                    this.platformList=res.data.platList;
+                }else{
+                     this.$Message.error({
+                        content:"权属平台信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },clientListQuery(){
+            clientListQuery({ProjectStatus:0,UserID:JSON.parse(localStorage.getItem('userId'))}).then(res=>{
+                if(res.data.code==2306){
+                    res.data.clientList.forEach(element=>{
+                        this.clientListObj.push({
+                            label:element.ShortName,
+                            value:element.ClientID
+                        })
+                    })
+                  
+                }else{
+                    this.$Message.error({
+                        content:"客户信息加载失败:"+res.data.message
+                    })
+                }
+            })
+        },
         getInputMemberId(res){
             //设置人员姓名
             this.inputMemberId=res.value;
@@ -319,6 +347,7 @@ export default {
         handleSubmit(formValidate){
             //提交数据
             this.postData.Platform.Members=[];
+            this.postData.TaskTypeID=TaskTypeID.PlarformAdd;
             this.memberData.forEach(element=>{
                 this.postData.Platform.Members.push({
                         ID:0,
@@ -331,36 +360,67 @@ export default {
                         MemberStatus:element.status,//1表示目前人员0过往人员
                 })
             })
-            //if(){
+            if(this.fileName.length>0){
                 //提交文件
-            this.submitWithFile()
-            //}else{
+                this.submitWithFile();    
+            }else{
                 //未提交文件
-            //}
+                this.submitWithoutFile();
+            }
 
 
 
         },
-        submitWithFile(){   
+        submitWithoutFile(){   
             //提交没有文件
-            console.log(this.postData)
             upPlatform(this.postData).then(res=>{
-                console.log(res);
-                if(res.data.code==2102){
+                if(res.data.code==2101){
                     this.$Message.success({
-                        content:"操作成功"
+                        content:"任务创建成功"
                     })
                 }else{
                      this.$Message.error({
-                        content:"操作失败："+res.data.message
+                        content:"任务创建失败："+res.data.message
                     })
                 }
 
             })
             
         },
-        submitWithoutFile(){
+        submitWithFile(){
             //提交有文件
+            upPlatformFile(this.postData).then(res=>{
+                if(res.data.code==2102){
+                    this.uploadFile(res.data.taskID,res.data.taskFlowID);
+                    this.$Message.success({
+                        content:"任务创建成功"
+                    })
+
+                }else{
+                     this.$Message.error({
+                        content:"任务创建失败："+res.data.message
+                    })
+                }
+            })
+        },
+        uploadFile(taskID,taskFlowID){
+                this.fileForm.append('TaskID',taskID)
+                this.fileForm.append('TaskFlowID',taskFlowID)
+                this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                this.fileWrap.forEach(element=>{
+                    this.fileForm.append('TaskFiles',element.file)
+                })
+                uploadFile(this.fileForm).then(res=>{
+                    if(res.data.code==2032&&res.data.taskFiles.length>0){
+                        this.$Message.success({
+                            content:'文件上传成功'
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:'文件上传失败:'+res.data.message
+                        })
+                    }
+                })
         },
         showEdict(type,index){
             //type人员操作类型，index操作的人员序列
@@ -394,7 +454,7 @@ export default {
         },
         clearEdictMemInfor(){
             //清空人员信息
-                this.inputMemberType='';
+                this.inputMemberType=0;
                 this.inputMemberId='';
                 this.inputScale="";
                 this.inputMoney="",
@@ -430,7 +490,6 @@ export default {
         },
         getuserList(){
             getAllUserList({"Status":1}).then(res=>{
-                console.log(res)
                 if(res.data.code==0){
                     res.data.userList.forEach(element => {
                         this.memberArr.push({

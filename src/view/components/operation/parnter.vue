@@ -75,7 +75,7 @@
     </div>
 </template>
 <script>
-import {getPlatform,addNewPlatformMeet} from "@/api/data"
+import {getPlatform,addNewPlatformMeet,uploadFile,addNewPlatformMeetFile} from "@/api/data"
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import {TaskTypeID} from "@/libs/data"
 
@@ -114,18 +114,54 @@ export default {
     },
     methods:{
        handleSubmit(){
-            addNewPlatformMeet(this.postdata).then(res=>{
-                if(res.data.code==2107){    
-                    this.$Message.success({
-                        content:'操作成功'
-                    })
-                }else{
-                     this.$Message.error({
-                        content:'操作失败:'+res.data.message
-                    })
-                }
-            })
+             if(this.fileName.length==0){
+                //无文件上传
+                addNewPlatformMeet(this.postdata).then(res=>{
+                    if(res.data.code==2107){    
+                        this.$Message.success({
+                            content:'任务创建成功'
+                        })
+                    }else{
+                         this.$Message.error({
+                            content:'任务创建失败:'+res.data.message
+                        })
+                    }
+                })
+            }else{
+                //有文件上传
+                addNewPlatformMeetFile(this.postdata).then(res=>{
+                    if(res.data.code== 2108){    
+                        this.uploadFile(res.data.taskID,res.data.taskFlowID);
+                        this.$Message.success({
+                            content:'任务创建成功'
+                        })
+
+                    }else{
+                         this.$Message.error({
+                            content:'任务创建失败:'+res.data.message
+                        })
+                    }
+                })
+            }
       
+        },uploadFile(taskID,taskFlowID){
+               this.fileForm.append('TaskID',taskID)
+                this.fileForm.append('TaskFlowID',taskFlowID)
+                this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                this.fileWrap.forEach(element=>{
+                    this.fileForm.append('TaskFiles',element.file)
+                })
+                uploadFile(this.fileForm).then(res=>{
+                    if(res.data.code==2032&&res.data.taskFiles.length>0){
+                        this.$Message.success({
+                            content:'文件上传成功'
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:'文件上传失败:'+res.data.message
+                        })
+                    }
+                })
         },getPlatform(){
             getPlatform({'PlatStatus':1,'USerID':JSON.parse(localStorage.getItem("userId"))}).then(res=>{
                 if(res.data.code==2105){

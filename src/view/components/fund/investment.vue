@@ -2,7 +2,7 @@
     <div class="fund_invest">
          <Card class="itemCard">
                 <p slot="title">报送人信息</p>
-                <Form :label-width="80">
+                <Form :label-width="100">
                     <Row>
                         <Col span="8">
                             <FormItem label="报送人：" prop="name">
@@ -91,7 +91,7 @@
         </Card>
         <Card  class="itemCard">
             <p slot="title">投资信息</p>
-             <Form :label-width="120">
+             <Form :label-width="140">
                     <Row>
                         <Col span="8">
                             <FormItem label="投资类型">
@@ -202,7 +202,10 @@ import {geAllPlatformDetail,
         getAllFundList,
         getFundDetail,
         getProjectList,
-        addNewFundInvestTask
+        addNewFundInvestTask,
+        addNewFundInvestTaskFile,
+        uploadFile
+
 } from "@/api/data"
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import {TaskTypeID} from "@/libs/data"
@@ -257,19 +260,60 @@ export default {
 
     },methods:{
         handleSubmit(){
-            addNewFundInvestTask(this.postdata).then(res=>{
-                if(res.data.code==2410){
+             if(this.fileName.length>0){
+                this.submitWithFile();
+            }else{
+                this.submitWithoutFile()
+            }
+            
+
+        },submitWithFile(){
+            addNewFundInvestTaskFile(this.postdata).then(res=>{
+                if(res.data.code==2411){
+                    this.uploadFile(res.data.taskID,res.data.taskFlowID);
                     this.$Message.success({
-                        content:'操作成功'
+                        content:'任务创建成功'
                     })
                 }else{
                     this.$Message.error({
-                        content:'操作失败:'+res.data.message
+                        content:'任务创建失败:'+res.data.message
                     })
                 }
             })
 
-        },
+        },uploadFile(taskID,taskFlowID){
+                    this.fileForm.append('TaskID',taskID)
+                    this.fileForm.append('TaskFlowID',taskFlowID)
+                    this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                    this.fileWrap.forEach(element=>{
+                        this.fileForm.append('TaskFiles',element.file)
+                    })
+                    uploadFile(this.fileForm).then(res=>{
+                        if(res.data.code==2032&&res.data.taskFiles.length>0){
+                            this.$Message.success({
+                                content:'文件上传成功'
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:'文件上传失败:'+res.data.message
+                            })
+                        }
+                    })
+            },
+        submitWithoutFile(){
+            addNewFundInvestTask(this.postdata).then(res=>{
+                if(res.data.code==2410){
+                    this.$Message.success({
+                        content:'任务创建成功'
+                    })
+                }else{
+                    this.$Message.error({
+                        content:'任务创建失败:'+res.data.message
+                    })
+                }
+            })
+        },  
+
        setDate(value){
            this.postdata.FundInvest.InvestDate=value;
        },

@@ -35,6 +35,14 @@ export const addNewProjecttaskTofile = (data) => {
             method: 'post',
         })
     }
+    //项目开发，立项有文件申请修改并同意
+export const addNewProjecttaskMod = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/projecttask/pmtmodagree',
+            data,
+            method: 'post',
+        })
+    }
     //进展 中止 终止 提交申请，无文件提交
 export const addNewProTaskProcess = (data) => {
         return axios.request({
@@ -45,21 +53,47 @@ export const addNewProTaskProcess = (data) => {
     }
     //进展 中止 终止 提交申请，文件提交
 export const addNewProTaskProcessFile = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/projecttask/potaddtofile/',
+            data,
+            method: 'post',
+        })
+    }
+    //进展 中止 终止 修改并同意
+export const addNewProTaskProcessMod = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/projecttask/potaddtofile/',
+        url: 'http://120.78.154.66:8089/api/projecttask/potmodagree',
         data,
         method: 'post',
     })
 }
 
+
 //基金开发，立项,变动
 export const addNewFundTask = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fmtadd/',
+            data,
+            method: 'post',
+        })
+    }
+    //基金开发，立项,变动文件
+export const addNewFundTaskFile = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fmtaddtofile/',
+            data,
+            method: 'post',
+        })
+    }
+    //基金开发立项修改并同意
+export const addNewFundTaskModAgree = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/fundtask/fmtadd/',
+        url: 'http://120.78.154.66:8089/api/fundtask/fmtmodagree',
         data,
         method: 'post',
     })
 }
+
 
 //基金执行，投决，合伙人
 export const addNewFunOperaTask = (data) => {
@@ -69,25 +103,71 @@ export const addNewFunOperaTask = (data) => {
             method: 'post'
         })
     }
-    //基金投资
+    //基金执行，投决，合伙文件
+export const addNewFunOperaTaskFile = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fotaddtofile/',
+            data,
+            method: 'post'
+        })
+    }
+    //基金执行，投决，合伙文件修改并同意
+export const addNewFunOperaTaskModAgree = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/fundtask/fotmodagree',
+        data,
+        method: 'post'
+    })
+}
+
+//基金投资
 export const addNewFundInvestTask = (data) => {
-    return axios.request({
-        url: 'http://120.78.154.66:8089/api/fundtask/fitadd/',
-        data,
-        method: 'post'
-    })
-}
-
-
-//基金退出
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fitadd/',
+            data,
+            method: 'post'
+        })
+    }
+    //基金投资文件
+export const addNewFundInvestTaskFile = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fitaddtofile/',
+            data,
+            method: 'post'
+        })
+    }
+    //基金投资修改并同意
+export const addNewFundInvestTaskModAgree = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fitmodagree',
+            data,
+            method: 'post'
+        })
+    }
+    //基金退出
 export const addNewFundExitTask = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fetadd/',
+            data,
+            method: 'post'
+        })
+    }
+    //基金退出文件
+export const addNewFundExitTaskFile = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/fundtask/fetaddtofile/',
+            data,
+            method: 'post'
+        })
+    }
+    //基金退出修改并同意
+export const addNewFundExitTaskModAgree = (data) => {
     return axios.request({
-        url: 'http://120.78.154.66:8089/api/fundtask/fetadd/',
+        url: 'http://120.78.154.66:8089/api/fundtask/fetmodagree',
         data,
         method: 'post'
     })
 }
-
 
 //获取所有的基金列表
 export const getAllFundList = (data) => {
@@ -348,14 +428,17 @@ export const getDepartmentDetail = (data) => {
     }
     //部门信息提交不提交文件
 export const upDepartment = (data) => {
-        return axios.request({
-            url: "http://120.78.154.66:8089/api/depttask/dmtadd",
-            data,
-            method: "post"
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/depttask/dmtadd",
+        data,
+        method: "post"
 
-        })
-    }
-    //部门信息提交并提交文件
+    })
+}
+
+
+
+//部门信息提交并提交文件
 export const getDepartmentFile = (data) => {
     return axios.request({
         url: "http://120.78.154.66:8089/api/depttask/dmtaddtofile",
@@ -364,6 +447,8 @@ export const getDepartmentFile = (data) => {
 
     })
 }
+
+
 
 //获取部门的任务详情
 export const getDepartmentTaskInfor = (data) => {
@@ -375,7 +460,7 @@ export const getDepartmentTaskInfor = (data) => {
 }
 
 
-//审批部门申请并同意
+//审批部门申请并同意,修改并同意
 export const setDepartment = (data) => {
     return axios.request({
         url: "http://120.78.154.66:8089/api/depttask/dmtmodagree",
@@ -422,7 +507,7 @@ export const upPlatformFile = (data) => {
 
         })
     }
-    //审批平台信息并同意
+    //审批平台信息并同意,修改并同意
 export const setPlatform = (data) => {
         return axios.request({
             url: "http://120.78.154.66:8089/api/plattask/pmtmodagree",
@@ -440,7 +525,27 @@ export const addNewPlatformMeet = (data) => {
 
         })
     }
-    //获取平台的任务详情
+    //总经理会 董事会 监事会 总经理会 合伙人会申请并且添加文件
+export const addNewPlatformMeetFile = (data) => {
+        return axios.request({
+            url: "http://120.78.154.66:8089/api/plattask/potaddtofile",
+            data,
+            method: "post"
+        })
+    }
+    //总经理会 董事会 监事会 总经理会 合伙人会修改并同意
+export const addNewPlatformMeetMod = (data) => {
+    return axios.request({
+        url: "http://120.78.154.66:8089/api/plattask/potmodagree",
+        data,
+        method: "post"
+
+    })
+}
+
+
+
+//获取平台的任务详情
 export const getPlatformTaskDetail = (data) => {
     return axios.request({
         url: 'http://120.78.154.66:8089/api/plattask/query/',
@@ -542,6 +647,44 @@ export const deleteDefine = (data) => {
         method: 'post'
     })
 }
+
+
+//获取上传文件目录
+export const getUploadFileMenuList = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/taskfile/typequery/',
+            data,
+            method: 'post'
+        })
+    }
+    //上传文件接口
+export const uploadFile = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/taskfile/add',
+        data,
+        method: 'post'
+    })
+}
+
+//删除文件接口
+export const deleteTaskFile = (data) => {
+        return axios.request({
+            url: 'http://120.78.154.66:8089/api/taskfile/del',
+            data,
+            method: 'post'
+        })
+    }
+    //修改文件接口
+export const changeTaskFile = (data) => {
+    return axios.request({
+        url: 'http://120.78.154.66:8089/api/taskfile/mod',
+        data,
+        method: 'post'
+    })
+}
+
+
+
 
 
 //修改这个流程下的某个步骤

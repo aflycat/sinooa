@@ -162,53 +162,73 @@
                                 </FormItem>  
                             </Col>
                              <Col span="8">
-                                <FormItem label="成员名字" >
-                                    <Select filterable v-model='item.MemberID' label-in-value @on-change='setFundMemName(index,$event)' placeholder="请选择成员名字">
+                             <FormItem v-if='item.MemberType==0'  label="成员名字" >
+                                    <Select   v-model='item.MemberID' label-in-value @on-change='setFundMemName(index,$event)' placeholder="请选择成员名字">
                                         <Option v-for="item in MemberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                    </Select>
+                                </FormItem>  
+                               <FormItem v-if='item.MemberType==37||item.MemberType==39||item.MemberType==40||item.MemberType==41||item.MemberType==42'  label="成员名字" >
+                                    <Select   v-model='item.MemberID' label-in-value @on-change='setFundMemName(index,$event)' placeholder="请选择成员名字">
+                                        <Option v-for="item in MemberList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                    </Select>
+                                </FormItem>  
+                                <FormItem v-if='item.MemberType==32||item.MemberType==33||item.MemberType==34||item.MemberType==36' label="平台选择" >
+                                    <Select   v-model='item.MemberID' label-in-value @on-change='setFundMemName(index,$event)' placeholder="请选择平台">
+                                        <Option v-for="item in platformList" :value="item.platformID.toString()" :key="item.platformID">{{ item.shortName }}</Option>
+                                    </Select>
+                                </FormItem>  
+                                <FormItem v-if='item.MemberType==31||item.MemberType==35' label="客户选择" >
+                                    <Select   v-model='item.MemberID' label-in-value @on-change='setFundMemName(index,$event)' placeholder="请选择成员名字">
+                                        <Option v-for="item in clientListObj" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                    </Select>
+                                </FormItem>  
+                                  <FormItem v-if='item.MemberType==38' label="基金选择" >
+                                    <Select   v-model='item.MemberID' label-in-value @on-change='setFundMemName(index,$event)' placeholder="请选择基金">
+                                        <Option v-for="item in fundList" :value="item.fundID.toString()" :key="item.fundID">{{ item.shortName }}</Option>
                                     </Select>
                                 </FormItem>  
                             </Col>
                              <Col span="8">
                                 <FormItem label="投资人类型" >
                                     <Select v-model="item.InvestorType"  filterable   placeholder="请选择基金类型">
-                                        <Option   value="自然人(非员工跟投)" >自然人（非员工跟投）</Option>
-                                        <Option   value="自然人(员工跟投)" >自然人（员工跟投）</Option>
-                                        <Option   value="境内法人机构(公司等)" >境内法人机构(公司等)</Option>
-                                        <Option   value="境内非法人机构(一般合伙企业等)" >境内非法人机构(一般合伙企业等)</Option>
-                                         <Option  value="本产品管理人跟投" >本产品管理人跟投</Option>
-                                        <Option   value="私募基金产品" >私募基金产品</Option>
-                                        <Option   value="证券公司及其子公司资产管理计划" >证券公司及其子公司资产管理计划</Option>
-                                        <Option   value="基金公司及其子公司资产管理计划" >基金公司及其子公司资产管理计划</Option>
-                                         <Option  value="期货公司及其子公司资产管理计划" >期货公司及其子公司资产管理计划</Option>
-                                        <Option   value="信托计划" >信托计划</Option>
-                                        <Option   value="商业银行理财产品" >商业银行理财产品</Option>
-                                        <Option   value="保险资产管理计划" >保险资产管理计划</Option>
-                                         <Option  value="慈善基金、捐赠基金等社会公益基金" >慈善基金、捐赠基金等社会公益基金</Option>
-                                        <Option   value="养老基金" >养老基金</Option>
-                                        <Option   value="社会保障基金" >社会保障基金</Option>
-                                        <Option   value="企业年金" >企业年金</Option>
-                                         <Option  value="政府类引导基金" >政府类引导基金</Option>
-                                        <Option   value="财政直接出资" >财政直接出资</Option>
-                                        <Option   value="境外资金(QFII、RQFII等)" >境外资金（QFII、RQFII等）</Option>
-                                        <Option   value="境外机构" >境外机构</Option>
+                                        <Option   value="1" >自然人（非员工跟投）</Option>
+                                        <Option   value="2" >自然人（员工跟投）</Option>
+                                        <Option   value="3" >境内法人机构(公司等)</Option>
+                                        <Option   value="4" >境内非法人机构(一般合伙企业等)</Option>
+                                         <Option  value="5" >本产品管理人跟投</Option>
+                                        <Option   value="6" >私募基金产品</Option>
+                                        <Option   value="7" >证券公司及其子公司资产管理计划</Option>
+                                        <Option   value="8" >基金公司及其子公司资产管理计划</Option>
+                                         <Option  value="9" >期货公司及其子公司资产管理计划</Option>
+                                        <Option   value="10" >信托计划</Option>
+                                        <Option   value="11" >商业银行理财产品</Option>
+                                        <Option   value="12" >保险资产管理计划</Option>
+                                         <Option  value="13" >慈善基金、捐赠基金等社会公益基金</Option>
+                                        <Option   value="14" >养老基金</Option>
+                                        <Option   value="15" >社会保障基金</Option>
+                                        <Option   value="16" >企业年金</Option>
+                                         <Option  value="17" >政府类引导基金</Option>
+                                        <Option   value="18" >财政直接出资</Option>
+                                        <Option   value="19" >境外资金（QFII、RQFII等）</Option>
+                                        <Option   value="20" >境外机构</Option>
                                     </Select>
                                 </FormItem>  
                             </Col>
                              <Col span="8">
                                 <FormItem label="认缴金额">
-                                    <Input v-model="item.OrderMoney"  placeholder="请输入认缴金额"></Input>
+                                    <Input v-model="item.OrderMoney"  placeholder="请输入认缴金额"> <span slot="append">万元</span></Input>
 
                                 </FormItem>  
                             </Col>
                              <Col span="8">
                                 <FormItem label="实缴金额" >
-                                <Input v-model="item.PaidMoney" placeholder="请输实缴金额"></Input>
+                                <Input v-model="item.PaidMoney" placeholder="请输实缴金额"> <span slot="append">万元</span></Input>
 
                                 </FormItem>  
                             </Col>
                              <Col span="8">
                                 <FormItem label="份额类型" >
-                                     <Select v-model="item.ShareType"  filterable   placeholder="请选择份额类型">
+                                     <Select v-model="item.ShareType"     placeholder="请选择份额类型">
                                         <Option  value="优先级">优先级</Option>
                                         <Option  value="劣后级">劣后级</Option>
                                         <Option  value="无分级">无分级</Option>
@@ -316,7 +336,9 @@
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
 import {TaskTypeID} from "@/libs/data"
-import {getPlatform,getuserList,addNewFundTask,getAllFundList,getFundDetail} from "@/api/data"
+import {getPlatform,getuserList,
+addNewFundTask,getAllFundList,getFundDetail,addNewFundTaskFile,uploadFile,clientListQuery
+} from "@/api/data"
 export default {
     components:{
         UploadFiles
@@ -348,6 +370,9 @@ export default {
             ],
             progressData:[],
             platformList:[],
+            platforListObj:[],
+            clientListObj:[],
+            fundListObj:[],
             limitData:[],
             MemberList:[],
             fileName:[],
@@ -388,20 +413,60 @@ export default {
         this.getuserList();
         this.getPlatform();
         this.getAllFundList();
+         this.clientListQuery();
     },
     methods:{
         handleSubmit(){
             this.postdata.Fund.Members=this.postdata.Members;
             this.postdata.Fund.Schedules=this.progressData;
-
-            addNewFundTask(this.postdata).then(res=>{
-                if(res.data.code==2401){
+            if(this.fileName.length>0){
+                this.submitWithFile();
+            }else{
+                this.submitWithoutFile()
+            }
+           
+        },submitWithFile(){
+            addNewFundTaskFile(this.postdata).then(res=>{
+                if(res.data.code==2402){
+                    this.uploadFile(res.data.taskID,res.data.taskFlowID);
                     this.$Message.success({
-                        content:'操作成功'
+                        content:'任务创建成功'
                     })
                 }else{
                     this.$Message.error({
-                        content:'操作失败:'+res.data.message
+                        content:'任务创建失败:'+res.data.message
+                    })
+                }
+            })
+
+        },uploadFile(taskID,taskFlowID){
+                    this.fileForm.append('TaskID',taskID)
+                    this.fileForm.append('TaskFlowID',taskFlowID)
+                    this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                    this.fileWrap.forEach(element=>{
+                        this.fileForm.append('TaskFiles',element.file)
+                    })
+                    uploadFile(this.fileForm).then(res=>{
+                        if(res.data.code==2032&&res.data.taskFiles.length>0){
+                            this.$Message.success({
+                                content:'文件上传成功'
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:'文件上传失败:'+res.data.message
+                            })
+                        }
+                    })
+            },
+        submitWithoutFile(){
+             addNewFundTask(this.postdata).then(res=>{
+                if(res.data.code==2401){
+                    this.$Message.success({
+                        content:'任务创建成功'
+                    })
+                }else{
+                    this.$Message.error({
+                        content:'任务创建失败:'+res.data.message
                     })
                 }
             })
@@ -413,6 +478,22 @@ export default {
                 }else{
                     this.$Message.error({
                         content:'基金列表加载失败:'+res.data.message
+                    })
+                }
+            })
+        },clientListQuery(){
+            clientListQuery({ProjectStatus:0,UserID:JSON.parse(localStorage.getItem('userId'))}).then(res=>{
+                if(res.data.code==2306){
+                    res.data.clientList.forEach(element=>{
+                        this.clientListObj.push({
+                            label:element.ShortName,
+                            value:element.ClientID
+                        })
+                    })
+                  
+                }else{
+                    this.$Message.error({
+                        content:"客户信息加载失败:"+res.data.message
                     })
                 }
             })
@@ -459,6 +540,7 @@ export default {
         loadMembers(dat){
             this.postdata.Members=[];
             dat.forEach(element=>{
+    
                 this.postdata.Members.push({
                     ID:0,
                     FundID:element.fundID,
@@ -473,6 +555,7 @@ export default {
                     RewardRate:element.rewardRate,
                     Status:element.status
                 })
+
             })
         },
         loadProcess(dat){
@@ -502,7 +585,7 @@ export default {
                 FundID:this.fundID,
                 MemberID:'',
                 MemberName:'',
-                MemberType:'',
+                MemberType:0,
                 InvestorType:'',
                 OrderMoney:'',
                 PaidMoney:'',
@@ -525,6 +608,9 @@ export default {
             getPlatform({'PlatStatus':1,'USerID':JSON.parse(localStorage.getItem("userId"))}).then(res=>{
                 if(res.data.code==2105){
                     this.platformList=res.data.platList;
+                    // res.data.platList.forEach(element=>{
+                    //      this.platformList.push()   
+                    // })
                     
                 }else{
                      this.$Message.error({

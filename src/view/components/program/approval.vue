@@ -30,7 +30,6 @@
                             </FormItem>
                         </Col>
                       </Row>
-                   
                 </Form>
             </Card>
             <Card  class="itemCard">
@@ -311,8 +310,8 @@
                             </FormItem>
                         </Col>
                           <Col span="8">
-                            <FormItem label="预计工时费用" >
-                                <Input v-model="postdata.Project.EstimatedHourCost" type="number" placeholder="请输入工时费">
+                            <FormItem label="预计工时费用">
+                                <Input v-model="postdata.Project.EstHourCost" type="number" placeholder="请输入工时费">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -324,9 +323,9 @@
                                 </Input>
                             </FormItem>
                         </Col>
-                         <Col span="8">
-                            <FormItem label="预计直接费用" prop="EstimatedFeeCost">
-                                <Input v-model="postdata.Project.EstimatedFeeCost" type="number" placeholder="请输入直接费用">
+                          <Col span="8">
+                            <FormItem label="预计直接费用">
+                                <Input v-model="postdata.Project.EstFeeCost" type="number" placeholder="请输入直接费用">
                                       <span slot="append">万元</span>
                                 </Input>
                             </FormItem>   
@@ -373,7 +372,7 @@
                     </FormItem>
                      <FormItem>
                         <Button @click="showUploadFile()" style="margin-right: 8px">添加附件</Button>
-                        <Button type="primary" :loading="loading" @click="handleSubmit('formValidate')">
+                        <Button type="primary" :loading="loading" @click="handleSubmit()">
 
                              <span v-if="!loading">提交</span>
                             <span v-else>提交中...</span>
@@ -434,7 +433,8 @@
 import store from "@/store"
 import {getprogectType,getprogectRole,getuserList,
 getCityList,getIndustryList,getProjectList,getPlatform,getAllDepartment,
-getProjectDetail,addNewProjecttask,getAllFundList
+getProjectDetail,addNewProjecttask,getAllFundList,
+addNewProjecttaskTofile,uploadFile
 } from "@/api/data"
 
 
@@ -472,9 +472,7 @@ export default {
                 {title:'说明',key:'Summary'},
                 {title:'操作', slot: 'action',width: 150}
             ],
-            progressData:[
-                
-            ],
+            progressData:[],
             ProjectData:[],
             cityData:[],
             IndustryData:[],
@@ -483,8 +481,10 @@ export default {
             TypeData:[],
             RoleVlaue:'',
             RoleData:[],
+            
             ManagerVlaue:'',
             ManagerData:[],
+           
             OwnerVlaue:'',
             OwnerData:[],
             MemberData:[],
@@ -553,48 +553,39 @@ export default {
                         RelatedClient:'',//相关其他客户代码
                         ProjectLabel:'',//项目标签
                         EstIncome:'',//预计总收入
-                        Schedules:[
-                            //ID数据id
-                            //ProjectID项目id
-                            //ScheduleID进度序号
-                            //ScheduleName进度明
-                            //Summary//详细说明
-                            //EstStartDate//预计开始日期
-                            //EstEndDate//预计结束日期
-                            //RealStartDate实际开始日期
-                            //RealEndDate实际结束日期
-                            //Status   1最新进度 0过往进度
-
-                        ],//项目进度
+                        Schedules:[],//项目进度
                         Summary:'',//项目概要
                         EstStartDate:'',//预计项目开始日期
                         EstEndDate:''//预计项目结束日期
                     }
-            }
+            },
+            RoleDataObj:{},
+            TypeDataObj:{},
+             managerObj:{},
+            ownerObj:{},
+            memberArr:[],
+
         }
     },
     mounted(){
         this.name=JSON.parse(localStorage.getItem("userName"));
         this.phone=JSON.parse(localStorage.getItem("phone"));
         this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"))
-        this.getProList(2);
         
         this.getCityList();
         this.getIndustryList();
         this.getprogectType();
         this.getprogectRole();
         this.getuserList();
-         this.getPlatform();
+        this.getPlatform();
         this.getAllDepartment();
-         this.getAllFundList();
+        this.getAllFundList();
+        this.getProList(2);
+
     },
     methods:{
             handleSubmit(){
-                // this.postdata.TaskOwner=JSON.parse(localStorage.getItem("userId"));
-               
-                // this.postdata
                 this.postdata.Project.Schedules=[];
-
                 this.progressData.forEach(element=>{
                      this.postdata.Project.Schedules.push({
                          ID:0,
@@ -609,20 +600,66 @@ export default {
                          Status:element.Status,
                      })
                 })
-                addNewProjecttask(this.postdata).then(res=>{
-                    if(res.data.code==2301){
+                this.postdata.Project.Members=[];
+                this.postdata.Project.Members=this.memberArr;
+                this.postdata.Project.Members.push(this.ownerObj);
+                this.postdata.Project.Members.push(this.managerObj);
+                if(this.fileName.length>0){
+                    this.submitWithFile();
+                }else{
+                    this.submitWithoutFile()
+                }
+
+                 
+
+            },
+            submitWithFile(){
+                addNewProjecttaskTofile(this.postdata).then(res=>{
+                     if(res.data.code==2302){
+                        this.uploadFile(res.data.taskID,res.data.taskFlowID);
                         this.$Message.success({
-                            content:"操作成功"
+                            content:"任务创建成功"
                         })     
                     }else{
                          this.$Message.error({
-                            content:"信息提交失败:"+res.data.message
+                            content:"任务创建失败:"+res.data.message
                         })
                     }
-                })    
-
+                })
             },
-             getAllFundList(){
+            submitWithoutFile(){
+                 addNewProjecttask(this.postdata).then(res=>{
+                    if(res.data.code==2301){
+                        this.$Message.success({
+                            content:"任务创建成功"
+                        })     
+                    }else{
+                         this.$Message.error({
+                            content:"任务创建失败:"+res.data.message
+                        })
+                    }
+                })  
+            },
+             uploadFile(taskID,taskFlowID){
+                    this.fileForm.append('TaskID',taskID)
+                    this.fileForm.append('TaskFlowID',taskFlowID)
+                    this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                    this.fileWrap.forEach(element=>{
+                        this.fileForm.append('TaskFiles',element.file)
+                    })
+                    uploadFile(this.fileForm).then(res=>{
+                        if(res.data.code==2032&&res.data.taskFiles.length>0){
+                            this.$Message.success({
+                                content:'文件上传成功'
+                            })
+                        }else{
+                            this.$Message.error({
+                                content:'文件上传失败:'+res.data.message
+                            })
+                        }
+                    })
+            },
+            getAllFundList(){
                     getAllFundList({FundStatus:1,USerID:JSON.parse(localStorage.getItem('userId'))}).then(res=>{
                         if(res.data.code==2405){
                             this.fundListData=res.data.fundList
@@ -678,7 +715,7 @@ export default {
                                 TaskSummary:'',//任务概要（UI中的请示事项具体内容）
                                 TaskOwner:JSON.parse(localStorage.getItem('userId')),//任务申请人ID，与User表的UserID对应，取自当前登录用户
                                 Client:{
-                                    ClientID:res.data.client.clientID,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
+                                    ClientID:0,//客户ID，开发/立项（未选已有项目）报告：为0，提交后新增客户信息，立项（选已有项目）/变动报告：为选中的项目的客户ID，提交后保存客户历史信息（ClientStatus设为0）并新增最新信息
                                     ClientName:res.data.client.clientName,//公司全称
                                     Region:res.data.client.region,//所在省市，下拉表，从后台字典表中获取
                                     ShortName:res.data.client.shortName,//公司简称
@@ -705,7 +742,7 @@ export default {
                                     Region:parseInt(res.data.client.region),
                                     Country:res.data.client.country,
                                     CodsCode:res.data.client.codsCode,//社会统一
-                                    ClientStatus:1//状态，1表示最新信息，0表示历史信息
+                                    ClientStatus:res.data.client.clientStatus//状态，1表示最新信息，0表示历史信息
                                 },
                                 Project:{
                                     ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告：0，提交后新增项目信息，变动报告：为选中的项目ID，提交后保存项目历史信息（ProjectStatus设为0）并新增最新信息
@@ -715,10 +752,6 @@ export default {
                                     ProjectRole:parseInt(res.data.project.projectRole),//项目角色，下拉表，从后台字典表中获取
                                     Summary:res.data.project.projectSummary,//项目概要
                                     Source:res.data.project.source,//项目来源
-                                    // ProjectStartDate:res.data.project.projectStartDate,//项目开始日期
-                                    // ProjectEndDate:res.data.project.projectEndDate,//项目结束日期
-                                    EstimatedFeeCost:res.data.project.estimatedFeeCost,//预计直接费用
-                                    EstimatedHourCost:res.data.project.estimatedHourCost,//预计工时费用
                                     ProjectStatus:res.data.project.projectStatus,//状态，默认为1，0表示历史信息，2表示开发报告审批完的项目，3表示立项报告审批完的项目，4表示总结报告审批完的项目
                                     FundCode:res.data.project.fundCode,//基金代码
                                     FundID:res.data.project.fundID,//基金id
@@ -738,6 +771,8 @@ export default {
                                     EstStartDate:res.data.project.estStartDate,//预计项目开始日期
                                     EstEndDate:res.data.project.estEndDate,//预计项目结束日期
                                     Members:res.data.project.members,
+                                      EstFeeCost:res.data.project.estFeeCost,
+                                    EstHourCost:res.data.project.estHourCost,
                                     Schedules:res.data.project.schedules
                                 }
                         }
@@ -758,14 +793,38 @@ export default {
                         case 91:
                             //项目经理
                             this.ManagerVlaue=item.memberID;
+                            this.managerObj={
+                                ID:0,
+                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                                MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                                MemberName:item.memberName,//项目成员的姓名
+                                MemberType:91,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                                Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                            }
                         break;
                         case 92:
                             //项目主办
                             this.OwnerVlaue=item.memberID;
+                            this.ownerObj={
+                                ID:0,
+                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                                MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                                MemberName:item.memberName,//项目成员的姓名
+                                MemberType:92,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                                Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                            }
                         break;
                         case 93:
                             //项目成员
                             this.MemberData.push(item.memberID);
+                             this.memberArr.push({
+                                ID:0,
+                                ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
+                                MemberID:item.memberID,//项目成员ID，与用户表UserID对应
+                                MemberName:item.memberName,//项目成员的姓名
+                                MemberType:93,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
+                                Status:item.status//1表示目前的成员，0表示过往的成员(用默认值1)
+                            })
                         break;
                     }              
                 })
@@ -788,39 +847,34 @@ export default {
                 })
             },
             getManager(value){
-                 this.postdata.Project.Members[0]={
-                
-                    ID:0,//数据ID (用默认值0)
+                 this.managerObj={
+                    ID:0,
                     ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
                     MemberID:value.value,//项目成员ID，与用户表UserID对应
                     MemberName:value.label,//项目成员的姓名
                     MemberType:91,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                    //EstimatedHour:0,//预计投入工时，暂未使用
                     Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
-                
                 }
             },
             getOwner(value){
-                this.postdata.Project.Members[1]={
-                    ID:0,//数据ID (用默认值0)
+                this.ownerObj={
+                    ID:0,
                     ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
                     MemberID:value.value,//项目成员ID，与用户表UserID对应
                     MemberName:value.label,//项目成员的姓名
-                    MemberType:92,//91表示项目经理，92表示项目主办，93表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                    //EstimatedHour:0,//预计投入工时，暂未使用
+                    MemberType:92,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
                     Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
                 }
             },
             getMember(value){
-                this.postdata.Project.Members.splice(2,this.postdata.Project.Members.length-1)
+                this.memberArr=[];
                 value.forEach(element=>{
-                    this.postdata.Project.Members.push({
+                    this.memberArr.push({
                         ID:0,//数据ID (用默认值0)
                         ProjectID:0,//项目ID，开发/立项（未选已有项目）/立项（选已有项目）报告为0，变动报告为选中的项目ID
                         MemberID:element.value,//项目成员ID，与用户表UserID对应
                         MemberName:element.label,//项目成员的姓名
                         MemberType:93,//1表示项目经理，2表示项目主办，3表示项目成员，4基金合伙人，5基金投决会，6基金成员，与角色表对应
-                        //EstimatedHour:0,//预计投入工时，暂未使用
                         Status:1//1表示目前的成员，0表示过往的成员(用默认值1)
                     })
                 })
@@ -917,7 +971,7 @@ export default {
                     if(res.data.code==2307){
                         res.data.projectList.forEach(element => {
                             this.ProjectData.push({
-                                label:element.clientCode+'--'+element.projectType+'--'+element.projectRole,
+                                label:element.clientCode+'--'+this.TypeDataObj[element.projectType]+'--'+this.RoleDataObj[element.projectRole],
                                 value:element.projectID
                             })
                         });
@@ -938,6 +992,7 @@ export default {
                             label:element.projectTypeName,
                             value:element.projectTypeId
                         })
+                         this.TypeDataObj[element.projectTypeId]=element.projectTypeName
                     });
                 }else{
                     this.$Message.error({
@@ -954,7 +1009,10 @@ export default {
                             label:element.projectRoleName,
                             value:element.projectRoleId
                         })
+                        this.RoleDataObj[element.projectRoleId]=element.projectRoleName;
+                        
                     });
+
                 }else{
                     this.$Message.error({
                         content:"项目角色信息加载失败:"+res.data.message
@@ -970,6 +1028,7 @@ export default {
                             label:element.userName,
                             value:element.userId
                         })
+                       
                     });
                 }else{
                     this.$Message.error({

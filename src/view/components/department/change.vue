@@ -3,15 +3,15 @@
          <Card  class="itemCard">
             <p slot="title">报送人信息</p>
              <Form class="formWrap"  :label-width="110">
-                <Row>
+               <Row>
                     <Col span="12">
                         <FormItem label="报送人">
-                            <Input v-model="name" disabled placeholder="填写报送人"></Input>
+                            {{name}}
                         </FormItem>
                     </Col>
                     <Col span="12">
                         <FormItem label="联系电话">
-                            <Input v-model="phone"  type="number" placeholder="联系电话"></Input>
+                            {{phone}}
                         </FormItem>
                     </Col>
                 </Row>
@@ -23,7 +23,7 @@
             <p slot="title">部门信息</p>
             <Form class="formWrap"  :label-width="110">
                 <FormItem  label="部门选择">
-                     <Select  placeholder="请选择部门"   filterable @on-change="selectDepartment">
+                     <Select  placeholder="请选择部门"    @on-change="selectDepartment">
                                 <Option v-for="item in deparmentList.deptList" :key="item.departmentID" :value="item.departmentID">{{item.deptName}}</Option>
                             </Select>
                 </FormItem>
@@ -120,7 +120,7 @@
 
 <script>
 import UploadFiles from "@/view/components/upload_file/upload_file"
-import {getPlatform,getAllUserList,upDepartment,getAllDepartment,getDepartmentDetail} from "@/api/data"
+import {getPlatform,getAllUserList,upDepartment,getAllDepartment,getDepartmentDetail,getDepartmentFile,uploadFile} from "@/api/data"
 export default {
     components:{
         UploadFiles
@@ -148,13 +148,15 @@ export default {
             member:[],//成员
             memberArr:[],
             platList:[],
-
             memWrap:[],//成员专门的数组
+
             managerWrap:[],
+            deputyManageWrap:[],
             deparmentList:"",
 
+
             postData:{
-                TaskTypeID:40,
+                TaskTypeID:41,
                 TaskName:"",
                 TaskSummary:"",
                 TaskOwner:"",
@@ -212,11 +214,10 @@ export default {
             })
         },
         selectDepartment(value){
-            console.log(value)
             getDepartmentDetail({DepartmentID:value}).then(res=>{
                 if(res.data.code==2206){
                     this.postData={
-                        TaskTypeID:40,
+                        TaskTypeID:41,
                         TaskName:"",
                         TaskSummary:"",
                         TaskOwner:JSON.parse(localStorage.getItem("userId")),
@@ -232,9 +233,6 @@ export default {
                         }
                     }
                     this.setMemberInfor(res.data.department.members)
-                    // this.manager=
-                    // this.deputyManager=
-                    // this.member=
 
                 }else{
                     this.$Message.error({
@@ -248,10 +246,35 @@ export default {
             dat.forEach(element=>{
                 if(element.memberType==21){
                     this.manager=element.memberID
+                    this.managerWrap.push({
+                            ID:0,
+                            DepartmentID:element.departmentID,
+                            MemberID:element.memberID,
+                            MemberName:element.memberName,
+                            MemberType:21,//21经理22副经理23员工
+                            MemberStatus:1
+                    })  
                 }else if(element.memberType==22){
                     this.deputyManager=element.memberID
+                    this.deputyManageWrap.push({
+                            ID:0,
+                            DepartmentID:element.departmentID,
+                            MemberID:element.memberID,
+                            MemberName:element.memberName,
+                            MemberType:22,//21经理22副经理23员工
+                            MemberStatus:1
+                    })
+
                 }else{
                     this.member.push(element.memberID)
+                    this.memWrap.push({
+                            ID:0,
+                            DepartmentID:element.departmentID,
+                             MemberID:element.memberID,
+                            MemberName:element.memberName,
+                            MemberType:23,//21经理22副经理23员工
+                            MemberStatus:1
+                    })
                 }
             })
         },
@@ -259,27 +282,29 @@ export default {
             //设置经理
             this.manager=dat.value;
             this.managerName=dat.label;
-            this.managerWrap[0]={
+            this.managerWrap=[];
+            this.managerWrap.push({
                     ID:0,
-                    DepartmentID:0,
+                    DepartmentID:this.postData.Department.DepartmentID,
                     MemberID:dat.value,
                     MemberName:dat.label,
                     MemberType:21,//21经理22副经理23员工
                     MemberStatus:1
-            }
+            })
         },
         setDeputyManager(dat){
             //设置副经理
             this.deputyManager=dat.value;
             this.deputyManagerName=dat.label;
-            this.managerWrap[1]={
-                 ID:0,
-                DepartmentID:0,
-                MemberID:dat.value,
-                MemberName:dat.label,
-                MemberType:22,//21经理22副经理23员工
-                MemberStatus:1
-            }
+            this.deputyManageWrap=[];
+            this.deputyManageWrap.push({
+                    ID:0,
+                    DepartmentID:this.postData.Department.DepartmentID,
+                    MemberID:dat.value,
+                    MemberName:dat.label,
+                    MemberType:22,//21经理22副经理23员工
+                    MemberStatus:1
+            })
         },
         setMember(dat){
             //设置员工
@@ -287,7 +312,7 @@ export default {
            dat.forEach(element=>{
                this.memWrap.push({
                    ID:0,
-                    DepartmentID:0,
+                    DepartmentID:this.postData.Department.DepartmentID,
                     MemberID:element.value,
                     MemberName:element.label,
                     MemberType:23,//21经理22副经理23员工
@@ -302,22 +327,63 @@ export default {
             this.postData.Department.CloseDate=value;
         },
         handleSubmit(){
-            this.postData.Department.Members=this.managerWrap.concat(this.memWrap);
-            upDepartment(this.postData).then(res=>{
+            let arr=this.managerWrap.concat(this.memWrap);
+            this.postData.Department.Members=arr.concat(this.deputyManageWrap);
+            
+            if(this.fileName.length>0){
+                this.submitWithFile()
+            }else{
+                this.submitWithoutFile()
+            }
+
+        },
+        submitWithFile(){
+            
+            getDepartmentFile(this.postData).then(res=>{
                 if(res.data.code=2201){
+                    this.uploadFile(res.data.taskID,res.data.taskFlowID);
                     this.$Message.success({
-                        content:"操作成功"
+                        content:"任务创建成功"
                     })
                 }else{
                     this.$Message.error({
-                        content:"操作失败:"+res.data.message
+                        content:"任务创建失败:"+res.data.message
                     })
                 }
             })
 
-
-
-
+        },
+        uploadFile(taskID,taskFlowID){
+                this.fileForm.append('TaskID',taskID)
+                this.fileForm.append('TaskFlowID',taskFlowID)
+                this.fileForm.append('FileTypeID',this.fileWrap[0].type) 
+                this.fileWrap.forEach(element=>{
+                    this.fileForm.append('TaskFiles',element.file)
+                })
+                uploadFile(this.fileForm).then(res=>{
+                    if(res.data.code==2032&&res.data.taskFiles.length>0){
+                        this.$Message.success({
+                            content:'文件上传成功'
+                        })
+                    }else{
+                        this.$Message.error({
+                            content:'文件上传失败:'+res.data.message
+                        })
+                    }
+                })
+        },
+        submitWithoutFile(){
+            upDepartment(this.postData).then(res=>{
+                if(res.data.code=2201){
+                    this.$Message.success({
+                        content:"任务创建成功"
+                    })
+                }else{
+                    this.$Message.error({
+                        content:"任务创建失败:"+res.data.message
+                    })
+                }
+            })
         },
          deleteFile(index){
             this.fileName.splice(index,1);

@@ -51,7 +51,7 @@ import funInvesShow from "./fun_inves_show.vue"
 import funExeEdict from "./fun_exe_edict.vue"
 import funEexeShow from "./fun_exe_show.vue"
 import funChangeEdict from "./fun_change_edict.vue"
-import funChangeShow from "./fun_change_show.vue"
+// import funChangeShow from "./fun_change_show.vue"
 import proDynimicSdict from "./pro_dynimic_edict"
 import proDynimicShow from "./pro_dynimic_show"
 import proProcessEdict from "./pro_process_edict.vue"
@@ -73,7 +73,7 @@ export default funExeEdict
 export default funEexeShow
 
 export default funChangeEdict
-export default funChangeShow
+// export default funChangeShow
 export default proDynimicSdict
 export default proDynimicShow
 export default proProcessEdict
